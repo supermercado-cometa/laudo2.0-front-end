@@ -66,10 +66,11 @@ export function LoginForm() {
       // Fluxo de navegação
       if (goAdmin) {
         if (data?.isAdmin === true) {
+          console.log("Admin login success, redirecting to /admin");
           // Usar window.location.href para garantir que o middleware receba o cookie fresco
-          // e para evitar que o estado de loading fique preso em caso de redirecionamento.
           window.location.href = "/admin";
         } else {
+          console.warn("User is not admin, redirecting to /infoFormulario");
           setErrorMsg("Seu perfil não tem acesso ao painel administrador.");
           setLoading(false);
           router.push("/infoFormulario");
@@ -78,7 +79,7 @@ export function LoginForm() {
         router.push("/infoFormulario");
       }
     } catch (err) {
-      console.error("Login error:", err);
+      console.error("Login error detail:", err);
       setErrorMsg("Erro de rede ou servidor indisponível");
       setLoading(false);
     }
