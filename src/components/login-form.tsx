@@ -76,7 +76,9 @@ export function LoginForm() {
           router.push("/infoFormulario");
         }
       } else {
-        router.push("/infoFormulario");
+        console.log("Normal user login success, redirecting to /infoFormulario");
+        // Usar window.location.href para garantir que o middleware receba o cookie fresco
+        window.location.href = "/infoFormulario";
       }
     } catch (err) {
       console.error("Login error detail:", err);

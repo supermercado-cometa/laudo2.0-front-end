@@ -32,7 +32,7 @@ export default function AdminLayout({
         try {
           const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || window.location.origin;
           const res = await fetch(`${API_BASE_URL}/auth/me`, {
-            headers: { Authorization: token },
+            headers: { Authorization: token ? `Bearer ${token}` : "" },
             cache: 'no-store'
           });
           

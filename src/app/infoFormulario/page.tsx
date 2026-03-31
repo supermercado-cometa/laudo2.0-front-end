@@ -68,7 +68,7 @@ export default function InfoFormularioPage() {
   const sigPadRef = useRef<SignatureCanvas>(null);
   const [assinaturaDataUrl, setAssinaturaDataUrl] = useState<string>("");
   const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
   // Remova a definição inline de LojaType; use o import acima
   const [lojas, setLojas] = useState<LojaType[]>([]);
@@ -78,23 +78,26 @@ export default function InfoFormularioPage() {
     const baseUrl = API_BASE_URL || "http://localhost:4000";
     const token = localStorage.getItem("token");
     fetch(`${baseUrl}/auth/me`, {
+      cache: "no-store",
       headers: {
-        Authorization: token || "",
+        Authorization: token ? `Bearer ${token}` : "",
       },
     })
       .then(async (resp) => {
         if (!resp.ok) {
+          console.warn(`Auth check failed: ${resp.status}`);
           router.replace("/");
           return;
         }
         const data = await resp.json();
+        console.log("User data loaded:", data);
         const name = String(
-          data?.fullName || localStorage.getItem("fullName") || ""
+          data?.user?.fullName || data?.fullName || localStorage.getItem("fullName") || ""
         );
-        setFullName(name);
         const tokens = name.trim().split(/\s+/);
         const firstTwo = tokens.slice(0, 2).join(" ");
         setFullName(firstTwo || name);
+        
         const d = new Date();
         const pad = (n: number) => String(n).padStart(2, "0");
         const formatted = `${pad(d.getDate())}/${pad(
@@ -102,7 +105,8 @@ export default function InfoFormularioPage() {
         )}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
         setDataAtual(formatted);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("Auth fetch error:", err);
         router.replace("/");
       });
   }, [router, API_BASE_URL]);

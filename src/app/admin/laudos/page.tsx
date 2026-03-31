@@ -204,9 +204,9 @@ export default function AdminLaudosGeradosPage() {
       return `${dd}/${mm}/${yyyy} ${HH}:${MM}`;
     };
 
-    // @ts-ignore
+    // @ts-expect-error - dynamic import
     const pdfMakeMod = await import("pdfmake/build/pdfmake");
-    // @ts-ignore
+    // @ts-expect-error - dynamic import
     const pdfFontsMod = await import("pdfmake/build/vfs_fonts");
     const pdfMake = pdfMakeMod.default || pdfMakeMod;
     const pdfFonts = pdfFontsMod.default || pdfFontsMod;
@@ -414,7 +414,7 @@ export default function AdminLaudosGeradosPage() {
       }),
       content,
     };
-    // @ts-ignore
+    // @ts-expect-error - createPdf is present but types can be tricky
     pdfMake.createPdf(docDefinition).open();
   }
 
