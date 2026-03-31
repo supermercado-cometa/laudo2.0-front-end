@@ -18,24 +18,24 @@ export default function AdminModelosPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingNome, setEditingNome] = useState("");
 
-  const loadEquipamentos = async () => {
+  const loadEquipamentos = React.useCallback(async () => {
     const res = await fetch(`${API_BASE_URL}/equipamentos`);
     const data = await res.json();
     setEquipamentos(data);
     if (data.length > 0 && equipamentoId == null) {
       setEquipamentoId(data[0].id);
     }
-  };
+  }, [API_BASE_URL, equipamentoId]);
 
-  const loadModelos = async (id: number) => {
+  const loadModelos = React.useCallback(async (id: number) => {
     const res = await fetch(`${API_BASE_URL}/modelos?equipamentoId=${id}`);
     const data = await res.json();
     setModelos(data);
-  };
+  }, [API_BASE_URL]);
 
   useEffect(() => {
     loadEquipamentos();
-  }, []);
+  }, [loadEquipamentos]);
 
   useEffect(() => {
     if (equipamentoId != null) {
@@ -43,7 +43,7 @@ export default function AdminModelosPage() {
     } else {
       setModelos([]);
     }
-  }, [equipamentoId]);
+  }, [equipamentoId, loadModelos]);
 
   const criar = async () => {
     const nome = novoNome.trim();

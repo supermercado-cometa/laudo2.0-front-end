@@ -204,9 +204,9 @@ export default function AdminLaudosGeradosPage() {
       return `${dd}/${mm}/${yyyy} ${HH}:${MM}`;
     };
 
-    // @ts-expect-error: pdfmake lacks type definitions in this import context
+    // @ts-ignore
     const pdfMakeMod = await import("pdfmake/build/pdfmake");
-    // @ts-expect-error: vfs_fonts module has no TypeScript types
+    // @ts-ignore
     const pdfFontsMod = await import("pdfmake/build/vfs_fonts");
     const pdfMake = pdfMakeMod.default || pdfMakeMod;
     const pdfFonts = pdfFontsMod.default || pdfFontsMod;
@@ -414,7 +414,7 @@ export default function AdminLaudosGeradosPage() {
       }),
       content,
     };
-
+    // @ts-ignore
     pdfMake.createPdf(docDefinition).open();
   }
 

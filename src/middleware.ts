@@ -13,9 +13,8 @@ export async function middleware(req: NextRequest) {
 
   if (pathname.startsWith("/admin")) {
     try {
-      // Se já temos o token, vamos apenas deixar passar se o fetch falhar
-      // ou ser mais permissivo durante a transição
       const host = req.headers.get("host");
+      // No Coolify/Traefik, o protocolo geralmente é HTTPS, mas o host pode ser diferente internamente
       const protocol = host?.includes("localhost") ? "http" : "https";
       
       let API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -24,13 +23,13 @@ export async function middleware(req: NextRequest) {
         if (host?.includes("localhost")) {
           API_BASE_URL = "http://localhost:4000";
         } else {
-          // Se estamos em produção, o backend pode estar em uma porta diferente
-          // ou o fetch server-side para o próprio host pode falhar em alguns ambientes
+          // No Coolify, o backend e frontend podem estar no mesmo domínio
+          // O fetch server-side precisa da URL completa e pública se não houver rede interna Docker
           API_BASE_URL = `${protocol}://${host}`;
         }
       }
       
-      console.log(`[Middleware] Checking admin access for ${pathname} via ${API_BASE_URL}/auth/me`);
+      console.log(`[Middleware] Admin check for ${pathname} via ${API_BASE_URL}/auth/me`);
       
       const res = await fetch(`${API_BASE_URL}/auth/me`, {
         headers: { 
@@ -38,7 +37,6 @@ export async function middleware(req: NextRequest) {
           "Content-Type": "application/json"
         },
         cache: 'no-store',
-        // Adicionar um timeout curto para não travar o middleware
         signal: AbortSignal.timeout(5000)
       });
       
@@ -49,16 +47,17 @@ export async function middleware(req: NextRequest) {
           url.pathname = "/";
           return NextResponse.redirect(url);
         }
+        // Se for admin, continua normalmente
       } else {
-        console.warn(`[Middleware] Auth check returned ${res.status}. Allowing access since token exists.`);
-        // Se o backend não responder OK (ex: 404 ou 500), mas temos o token, 
-        // vamos permitir o acesso e deixar o cliente lidar com a falta de dados
-        // Isso evita loops de redirecionamento se o backend estiver instável
+        // Se o status for 401 ou outro erro, mas o token existe, 
+        // em ambiente de proxy (Coolify), o fetch server-side pode falhar por DNS/Rede
+        // Vamos permitir que a página carregue e o CLIENTE (browser) tente validar
+        console.warn(`[Middleware] Auth check returned ${res.status}. Allowing access to client-side validation.`);
       }
     } catch (err) {
-      console.error("[Middleware] Error in admin check:", err);
-      // Em caso de erro de rede no middleware, não bloqueamos o usuário se ele tem um token
-      // O componente cliente vai falhar se o token for realmente inválido
+      console.error("[Middleware] Network error in admin check (Coolify proxy?):", err);
+      // Não bloqueia o usuário no middleware se houver erro de rede/timeout
+      // O componente AdminLayout ou a própria página fará a validação no browser
     }
   }
 

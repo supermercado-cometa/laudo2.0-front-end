@@ -94,7 +94,7 @@ export default function InfoFormularioPage() {
         setFullName(name);
         const tokens = name.trim().split(/\s+/);
         const firstTwo = tokens.slice(0, 2).join(" ");
-        setNomeTecnico(firstTwo || name);
+        setFullName(firstTwo || name);
         const d = new Date();
         const pad = (n: number) => String(n).padStart(2, "0");
         const formatted = `${pad(d.getDate())}/${pad(

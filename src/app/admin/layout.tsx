@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { clearBrowserCachesAndCookies } from "@/lib/browser-cleanup";
 
@@ -12,14 +13,64 @@ export default function AdminLayout({
 }) {
   const [displayName, setDisplayName] = React.useState("Usuário");
   const [isAuditoriaOpen, setIsAuditoriaOpen] = React.useState(true);
+  const [authorized, setAuthorized] = React.useState(false);
+  const router = useRouter();
 
   React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      const fullName = localStorage.getItem("fullName");
-      const username = localStorage.getItem("username");
-      setDisplayName(fullName || username || "Usuário");
-    }
-  }, []);
+    const checkAuth = async () => {
+      if (typeof window !== "undefined") {
+        const token = localStorage.getItem("token");
+        const fullName = localStorage.getItem("fullName");
+        const username = localStorage.getItem("username");
+        setDisplayName(fullName || username || "Usuário");
+
+        if (!token) {
+          router.replace("/");
+          return;
+        }
+
+        try {
+          const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || window.location.origin;
+          const res = await fetch(`${API_BASE_URL}/auth/me`, {
+            headers: { Authorization: token },
+            cache: 'no-store'
+          });
+          
+          if (!res.ok) {
+            router.replace("/");
+            return;
+          }
+          
+          const data = await res.json();
+          if (!data?.user?.isAdmin) {
+            router.replace("/infoFormulario");
+            return;
+          }
+          
+          setAuthorized(true);
+        } catch (err) {
+          console.error("Layout auth check error:", err);
+          // Se houver erro de rede no browser, mas temos o token, 
+          // permitimos ver o layout para evitar tela branca, 
+          // as requisições subsequentes do admin vão falhar se o token for inválido.
+          setAuthorized(true);
+        }
+      }
+    };
+    
+    checkAuth();
+  }, [router]);
+
+  if (!authorized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4288a8] mx-auto mb-4"></div>
+          <p className="text-gray-600">Verificando permissões...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex">
