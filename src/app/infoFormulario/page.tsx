@@ -24,8 +24,6 @@ import GlpiRelateModal, {
 type EstadoEquipamento = "funcionando" | "nao_funcionando" | "";
 type Necessidade = "substituido" | "enviar_conserto" | "descartado" | "";
 // Tipos locais para listagem
-type EquipamentoListItem = { id: number; nome: string };
-type ModeloListItem = { id: number; nome: string; equipamentoId: number };
 type SetorType = { id: number; nome: string };
 
 export default function InfoFormularioPage() {
@@ -33,7 +31,6 @@ export default function InfoFormularioPage() {
   const [glpiTicketId, setGlpiTicketId] = useState<number | null>(null);
 
   const [numeroChamado, setNumeroChamado] = useState("");
-  const [nomeTecnico, setNomeTecnico] = useState("");
   const [equipamento, setEquipamento] = useState("");
   const [loja, setLoja] = useState("");
   const [tombo, setTombo] = useState("");
@@ -70,9 +67,6 @@ export default function InfoFormularioPage() {
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string>("");
   const sigPadRef = useRef<SignatureCanvas>(null);
   const [assinaturaDataUrl, setAssinaturaDataUrl] = useState<string>("");
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const isDrawingRef = useRef<boolean>(false);
-  const lastPosRef = useRef<{ x: number; y: number } | null>(null);
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
 
@@ -111,7 +105,7 @@ export default function InfoFormularioPage() {
       .catch(() => {
         router.replace("/");
       });
-  }, [router]);
+  }, [router, API_BASE_URL]);
 
   function onlyDigits(value: string) {
     return value.replace(/\D/g, "");
@@ -157,7 +151,7 @@ export default function InfoFormularioPage() {
       .then((res) => res.json())
       .then((data: LojaType[]) => setLojas(data))
       .catch((err) => console.error("Erro ao carregar lojas:", err));
-  }, []);
+  }, [API_BASE_URL]);
 
   useEffect(() => {
     const baseUrl = API_BASE_URL || "http://localhost:4000";
@@ -176,7 +170,7 @@ export default function InfoFormularioPage() {
       .catch((err) => {
         console.error("Erro ao buscar setores:", err);
       });
-  }, []);
+  }, [API_BASE_URL]);
 
   // Carregar equipamentos (novo)
   useEffect(() => {
@@ -189,7 +183,7 @@ export default function InfoFormularioPage() {
       })
       .then((data: EquipamentoListItem[]) => setEquipamentos(data))
       .catch((err) => console.error("Erro ao buscar equipamentos:", err));
-  }, []);
+  }, [API_BASE_URL]);
 
   // Carregar modelos quando equipamento muda (novo)
   useEffect(() => {
@@ -209,7 +203,7 @@ export default function InfoFormularioPage() {
     } else {
       setModelos([]);
     }
-  }, [equipamentoId]);
+  }, [equipamentoId, API_BASE_URL]);
 
   const fileToDataURL = (file: File) =>
     new Promise<string>((resolve, reject) => {
@@ -269,8 +263,6 @@ export default function InfoFormularioPage() {
   const [glpiPassword, setGlpiPassword] = useState("");
   const [isRelateDecisionOpen, setIsRelateDecisionOpen] = useState(false);
   const [isRelateFormOpen, setIsRelateFormOpen] = useState(false);
-  const [glpiRelacaoForm, setGlpiRelacaoForm] =
-    useState<GlpiRelacaoPayload | null>(null);
   const [pendingRelateAfterAuth, setPendingRelateAfterAuth] = useState(false);
 
   // Nova pergunta após "Sim, relacionar"
@@ -285,7 +277,6 @@ export default function InfoFormularioPage() {
   };
   const chooseRelateNo = () => {
     setIsRelateDecisionOpen(false);
-    setGlpiRelacaoForm(null);
     setPendingRelateAfterAuth(false);
     setIsGlpiModalOpen(true);
   };
@@ -312,7 +303,6 @@ export default function InfoFormularioPage() {
       await registrarFollowupNoGLPI(glpiPassword);
       setDoFollowupOnOriginal(false);
     }
-    setGlpiRelacaoForm(null);
   };
 
   const confirmGlpiPassword = async (pwd: string) => {
@@ -480,14 +470,6 @@ export default function InfoFormularioPage() {
     }
   }
 
-  // Abrir/fechar modal e confirmar envio
-  const openGlpiModal = () => setIsGlpiModalOpen(true);
-  const closeGlpiModal = () => setIsGlpiModalOpen(false);
-  const confirmGlpiAndSend = async (pwd: string) => {
-    closeGlpiModal();
-    await registrarFollowupNoGLPI(pwd);
-  };
-
   // Imprimir: apenas gerar o PDF (NÃO envia para GLPI e NÃO abre modal)
   //=========================
   // Função para imprimir o PDF e salvar no banco
@@ -501,7 +483,7 @@ export default function InfoFormularioPage() {
     const pdfFontsMod = await import("pdfmake/build/vfs_fonts");
     const pdfMake = pdfMakeMod.default || pdfMakeMod;
     const pdfFonts = pdfFontsMod.default || pdfFontsMod;
-    //@ts-ignore
+    // @ts-expect-error - pdfmake types don't always match the build artifacts
     pdfMake.vfs = pdfFonts.pdfMake?.vfs || pdfFonts.vfs;
 
     // Dados formatados
@@ -563,31 +545,6 @@ export default function InfoFormularioPage() {
       style: "header",
       alignment: "center",
       margin: [0, 0, 0, 3], // sem moldura, igual ao admin
-    };
-
-    // Removido: const emissaoBanner = {
-    const emissaoBanner = {
-      table: {
-        widths: ["*"],
-        body: [
-          [
-            {
-              text: `Emitido por: ${fullName || "Técnico"} em ${
-                dataAtual || "-"
-              }`,
-              alignment: "center",
-              margin: [4, 6, 4, 6],
-            },
-          ],
-        ],
-      },
-      layout: {
-        hLineWidth: () => 0.5,
-        vLineWidth: () => 0.5,
-        hLineColor: () => "#e5e7eb",
-        vLineColor: () => "#e5e7eb",
-      },
-      margin: [0, 0, 0, 0],
     };
 
     // Bloco de informações com layout idêntico ao admin
@@ -728,7 +685,7 @@ export default function InfoFormularioPage() {
       },
       content,
     };
-    //@ts-ignore
+    // @ts-expect-error - createPdf is present but types can be tricky with dynamic imports
     pdfMake.createPdf(docDefinition).open();
 
     // Limpa todos os campos do formulário após imprimir

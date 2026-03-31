@@ -81,6 +81,31 @@ export default function AdminLaudosGeradosPage() {
     }
   }
 
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const token =
+          typeof window !== "undefined" ? localStorage.getItem("token") : null;
+        const res = await fetch(`${API_BASE_URL}/info-laudos`, {
+          cache: "no-store",
+          headers: {
+            ...(token ? { Authorization: token } : {}),
+          },
+        });
+        if (!res.ok) {
+          setLaudos([]);
+          return;
+        }
+        const dataJson = (await res.json()) as InfoLaudo[];
+        setLaudos(dataJson);
+      } catch (err) {
+        console.error("Erro ao buscar laudos:", err);
+        setLaudos([]);
+      }
+    };
+    loadData();
+  }, [API_BASE_URL]);
+
   // --- Carrega laudos ---
   const load = async () => {
     try {
@@ -97,11 +122,11 @@ export default function AdminLaudosGeradosPage() {
 
       const res = await fetch(url.toString(), {
         method: "GET",
+        cache: "no-store",
         headers: {
           ...(token ? { Authorization: token } : {}),
         },
       });
-      console.log(res);
       if (!res.ok) {
         setLaudos([]);
         return;
@@ -113,10 +138,6 @@ export default function AdminLaudosGeradosPage() {
       setLaudos([]);
     }
   };
-
-  useEffect(() => {
-    load();
-  }, []);
 
   // --- Seleção de laudos ---
   const toggleSelect = (id: number) => {
@@ -207,11 +228,6 @@ export default function AdminLaudosGeradosPage() {
         : l.necessidade === "DESCARTADO"
         ? "Ser descartado"
         : "-";
-
-    const equipamentoModelo =
-      l.modelo && l.modelo.trim()
-        ? `${l.equipamento} - ${l.modelo}`
-        : l.equipamento;
 
     // Helper para aplicar moldura sem alterar estrutura interna
     const moldura = (conteudo: unknown, margin: number[] = [0, 0, 0, 10]) => ({

@@ -17,15 +17,20 @@ export default function AdminLojasPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingNome, setEditingNome] = useState("");
 
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch(`${API_BASE_URL}/lojas`);
+      const data = await res.json();
+      setLojas(data);
+    };
+    load();
+  }, [API_BASE_URL]);
+
   const load = async () => {
     const res = await fetch(`${API_BASE_URL}/lojas`);
     const data = await res.json();
     setLojas(data);
   };
-
-  useEffect(() => {
-    load();
-  }, []);
 
   const criar = async () => {
     const nome = novoNome.trim();

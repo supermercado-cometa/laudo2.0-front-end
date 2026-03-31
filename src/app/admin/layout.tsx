@@ -12,7 +12,6 @@ export default function AdminLayout({
 }) {
   const [displayName, setDisplayName] = React.useState("Usuário");
   const [isAuditoriaOpen, setIsAuditoriaOpen] = React.useState(true);
-  const [showNotice, setShowNotice] = React.useState(false);
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
@@ -24,13 +23,6 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen flex">
-      {showNotice && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[1000]">
-          <div className="rounded-md bg-green-600 text-white px-4 py-2 shadow">
-            Aplicação atualizada - cache limpo
-          </div>
-        </div>
-      )}
       <aside className="w-64 bg-gray-50 border-r flex flex-col">
         <div className="p-4 border-b">
           <p className="text-sm font-medium">Bem-vindo, {displayName}</p>

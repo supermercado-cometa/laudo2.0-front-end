@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Equipamento } from "@/types/domain";
-type EquipamentoType = Equipamento;
 
 export default function AdminEquipamentosPage() {
   const API_BASE_URL =
@@ -17,15 +16,20 @@ export default function AdminEquipamentosPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingNome, setEditingNome] = useState("");
 
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch(`${API_BASE_URL}/equipamentos`);
+      const data = await res.json();
+      setEquipamentos(data);
+    };
+    load();
+  }, [API_BASE_URL]);
+
   const load = async () => {
     const res = await fetch(`${API_BASE_URL}/equipamentos`);
     const data = await res.json();
     setEquipamentos(data);
   };
-
-  useEffect(() => {
-    load();
-  }, []);
 
   const criar = async () => {
     const nome = novoNome.trim();
