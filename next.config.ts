@@ -1,8 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-
-  distDir: "build",
+  // Configuração padrão do Next.js (usa .next como diretório de build)
 };
 
 export default nextConfig;
