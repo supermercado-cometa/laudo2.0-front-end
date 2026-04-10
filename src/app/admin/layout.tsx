@@ -30,7 +30,7 @@ export default function AdminLayout({
         }
 
         try {
-          const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || window.location.origin;
+          const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
           const res = await fetch(`${API_BASE_URL}/auth/me`, {
             headers: { Authorization: token ? `Bearer ${token}` : "" },
             cache: 'no-store'
@@ -153,8 +153,7 @@ export default function AdminLayout({
               className="w-full"
               onClick={async () => {
                 try {
-                  const API_BASE_URL =
-                    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+                  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
                   await fetch(`${API_BASE_URL}/auth/logout`, {
                     method: "POST",
                     cache: "no-store",

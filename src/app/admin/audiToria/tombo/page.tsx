@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import type { InfoLaudo } from "@/types/domain";
 
 export default function AdminAuditoriaTomboPage() {
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
   const [tomboQuery, setTomboQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);

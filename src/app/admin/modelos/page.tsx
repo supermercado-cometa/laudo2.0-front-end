@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Equipamento, ModeloType } from "@/types/domain";
 
 export default function AdminModelosPage() {
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
   const [equipamentos, setEquipamentos] = useState<Equipamento[]>([]);
   const [equipamentoId, setEquipamentoId] = useState<number | null>(null);

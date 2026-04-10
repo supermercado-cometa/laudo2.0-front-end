@@ -82,8 +82,7 @@ export default function InfoFormularioPage() {
   const [username, setUsername] = useState<string>("");
   const sigPadRef = useRef<SignatureCanvas>(null);
   const [assinaturaDataUrl, setAssinaturaDataUrl] = useState<string>("");
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
   // Remova a definição inline de LojaType; use o import acima
   const [lojas, setLojas] = useState<LojaType[]>([]);

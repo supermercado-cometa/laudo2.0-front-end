@@ -9,8 +9,7 @@ import SignatureCanvas from "react-signature-canvas";
 import type { InfoLaudo } from "@/types/domain";
 
 export default function AdminLaudosGeradosPage() {
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
   const [laudos, setLaudos] = useState<InfoLaudo[]>([]);
   const [tecnico, setTecnico] = useState("");
