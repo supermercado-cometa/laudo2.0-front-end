@@ -1,16 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -88,66 +78,78 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle>Entrar</CardTitle>
-        <CardDescription>Acesse sua conta para continuar</CardDescription>
-      </CardHeader>
-
-      <form className="grid gap-6" onSubmit={handleSubmit}>
-        <CardContent className="grid gap-4">
+    <div className="w-full">
+      <form className="flex flex-col" onSubmit={handleSubmit}>
+        <div className="flex flex-col gap-[20px] md:gap-[24px]">
           <div className="grid gap-2">
-            <Label htmlFor="username">Usuário (AD)</Label>
-            <Input
+            <Label 
+              htmlFor="username" 
+              className="text-[14px] font-[500] text-foreground/80"
+            >
+              Usuário (AD)
+            </Label>
+            <input
               id="username"
               name="username"
               type="text"
               placeholder="seu_usuario"
               required
               autoComplete="username"
+              className="input-custom"
             />
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="password">Senha</Label>
-            <Input
+            <Label 
+              htmlFor="password" 
+              className="text-[14px] font-[500] text-foreground/80"
+            >
+              Senha
+            </Label>
+            <input
               id="password"
               name="password"
               type="password"
               placeholder="••••••••"
               required
               autoComplete="current-password"
+              className="input-custom"
             />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <input
               id="adminPanel"
               type="checkbox"
               checked={goAdmin}
               onChange={(e) => setGoAdmin(e.target.checked)}
+              className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
             />
-            <Label htmlFor="adminPanel">
+            <Label 
+              htmlFor="adminPanel" 
+              className="text-[14px] font-[500] text-foreground/80 cursor-pointer"
+            >
               Ir direto ao painel administrador
             </Label>
           </div>
 
-          {errorMsg && <p className="text-sm text-red-600">{errorMsg}</p>}
-        </CardContent>
+          {errorMsg && (
+            <div className="p-4 bg-red-50 border-l-4 border-red-600 rounded-r-lg">
+              <p className="text-sm font-semibold text-red-600">{errorMsg}</p>
+            </div>
+          )}
+        </div>
 
-        <CardFooter className="flex flex-col gap-2">
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Entrando..." : "Entrar"}
-          </Button>
-          <Button
-            variant="link"
-            className="w-full justify-center hover:via-blue-950"
-            type="button"
+        <div className="flex flex-col gap-4 mt-[48px] md:mt-[40px]">
+          <button 
+            type="submit" 
+            className="btn-entrar rounded-[16px] md:rounded-[8px] text-[15px]" 
+            disabled={loading}
           >
-            Esqueci minha senha
-          </Button>
-        </CardFooter>
+            {loading ? "Entrando..." : "Entrar"}
+          </button>
+        </div>
       </form>
-    </Card>
+    </div>
   );
 }

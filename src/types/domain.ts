@@ -11,6 +11,12 @@ export type LojaType = {
   nome: string;
 };
 
+export type ModeloType = {
+  id: number;
+  nome: string;
+  equipamento_id?: number;
+};
+
 export type Equipamento = {
   id: number;
   nome: string;
