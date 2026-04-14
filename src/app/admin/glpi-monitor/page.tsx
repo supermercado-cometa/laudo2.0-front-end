@@ -31,7 +31,7 @@ export default function GlpiMonitorPage() {
       <SubPageHeader title={`Monitoramento\nGLPI`} icon={Activity} type="checklists" />
 
       {/* Lado Esquerdo */}
-      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#FF5252] to-[#D32F2F] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
+      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#0E3D8A] to-[#1E5BB5] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
         <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all">
           <ChevronLeft className="w-5 h-5" /> Voltar
         </button>
@@ -52,7 +52,7 @@ export default function GlpiMonitorPage() {
         <div className="max-w-[1000px] w-full mx-auto">
           <div className="mb-12 flex items-center justify-between">
             <h2 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800]">Status de Integração</h2>
-            <button className="bg-[#FF5252] text-white px-8 py-4 rounded-xl text-[14px] lg:font-medium font-bold uppercase tracking-widest shadow-xl flex items-center gap-2 hover:bg-[#D32F2F] transition-all">
+            <button className="bg-[#0E3D8A] text-white px-8 py-4 rounded-xl text-[14px] lg:font-medium font-bold uppercase tracking-widest shadow-xl flex items-center gap-2 hover:bg-[#0A2D66] transition-all">
               <RefreshCw className="w-5 h-5" /> Atualizar agora
             </button>
           </div>

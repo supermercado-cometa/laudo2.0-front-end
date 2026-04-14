@@ -53,7 +53,7 @@ export default function LaudosGeradosPage() {
       <SubPageHeader title={`Laudos\nGerados`} icon={FileText} type="checklists" />
 
       {/* Lado Esquerdo */}
-      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#9C27B0] to-[#7B1FA2] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
+      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#0E3D8A] to-[#1E5BB5] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
         <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all">
           <ChevronLeft className="w-5 h-5" /> Voltar
         </button>
@@ -83,7 +83,7 @@ export default function LaudosGeradosPage() {
 
           <div className="relative mb-8"><Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" /><input type="text" placeholder="Pesquisar por loja, técnico ou usuário..." className="w-full h-16 pl-14 pr-6 rounded-2xl bg-[#EDF1F7] border-none" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
 
-          {isLoading ? <div className="flex justify-center p-20 animate-spin"><Loader2 className="w-10 h-10 text-[#9C27B0]" /></div> : (
+          {isLoading ? <div className="flex justify-center p-20 animate-spin"><Loader2 className="w-10 h-10 text-[#0E3D8A]" /></div> : (
             <div className="space-y-4">
               {filtered.length === 0 ? (
                 <div className="text-center p-20 bg-white rounded-[32px] border border-dashed border-gray-200">
@@ -91,10 +91,10 @@ export default function LaudosGeradosPage() {
                   <p className="text-gray-500 font-medium">Nenhum laudo encontrado.</p>
                 </div>
               ) : filtered.map((item) => (
-                <div key={item.id} className="w-full bg-white p-6 lg:p-8 rounded-[32px] flex flex-col lg:flex-row lg:items-center justify-between shadow-sm hover:shadow-md transition-all border border-transparent hover:border-[#9C27B0]/10 gap-6">
+                <div key={item.id} className="w-full bg-white p-6 lg:p-8 rounded-[32px] flex flex-col lg:flex-row lg:items-center justify-between shadow-sm hover:shadow-md transition-all border border-transparent hover:border-[#0E3D8A]/10 gap-6">
                   <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 rounded-2xl bg-[#9C27B0]/5 flex items-center justify-center">
-                      <FileText className="text-[#9C27B0] w-8 h-8" />
+                    <div className="w-16 h-16 rounded-2xl bg-[#0E3D8A]/5 flex items-center justify-center">
+                      <FileText className="text-[#0E3D8A] w-8 h-8" />
                     </div>
                     <div>
                       <div className="flex items-center gap-3 mb-1">
@@ -109,7 +109,7 @@ export default function LaudosGeradosPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                     <button className="flex-1 lg:flex-none h-14 px-6 rounded-xl bg-[#9C27B0] text-white text-[13px] lg:font-medium font-bold uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-[#9C27B0]/20">
+                     <button className="flex-1 lg:flex-none h-14 px-6 rounded-xl bg-[#0E3D8A] text-white text-[13px] lg:font-medium font-bold uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-[#0E3D8A]/20">
                         <Download className="w-4 h-4" /> PDF
                      </button>
                      <button className="w-14 h-14 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-gray-100 transition-all">
