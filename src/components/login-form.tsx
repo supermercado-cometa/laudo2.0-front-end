@@ -9,6 +9,7 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [goAdmin, setGoAdmin] = useState(false);
+  
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {

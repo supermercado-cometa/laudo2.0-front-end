@@ -1,171 +1,178 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Equipamento, ModeloType } from "@/types/domain";
+import React, { useState, useEffect, useCallback } from "react";
+import { FileText, ClipboardCheck, Search, Plus, ChevronLeft, Loader2, Trash2, Edit3, X, Save, ShieldCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { SubPageHeader } from "@/components/subpage-header";
 
-export default function AdminModelosPage() {
+interface Template {
+  id: number;
+  nome: string;
+  setor?: string;
+  createdAt?: string;
+}
+
+export default function ModelosPage() {
+  const router = useRouter();
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Estados para o Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [formData, setFormData] = useState({ nome: "" });
+
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
-  const [equipamentos, setEquipamentos] = useState<Equipamento[]>([]);
-  const [equipamentoId, setEquipamentoId] = useState<number | null>(null);
-  const [modelos, setModelos] = useState<ModeloType[]>([]);
-  const [novoNome, setNovoNome] = useState("");
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editingNome, setEditingNome] = useState("");
-
-  const loadEquipamentos = React.useCallback(async () => {
-    const res = await fetch(`${API_BASE_URL}/equipamentos`);
-    const data = await res.json();
-    setEquipamentos(data);
-    if (data.length > 0 && equipamentoId == null) {
-      setEquipamentoId(data[0].id);
+  const fetchTemplates = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_BASE_URL}/modelos`, {
+        headers: { Authorization: token ? `Bearer ${token}` : "" }
+      });
+      if (res.ok) setTemplates(await res.json());
+    } catch (error) {
+      console.error("Erro:", error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [API_BASE_URL, equipamentoId]);
-
-  const loadModelos = React.useCallback(async (id: number) => {
-    const res = await fetch(`${API_BASE_URL}/modelos?equipamentoId=${id}`);
-    const data = await res.json();
-    setModelos(data);
   }, [API_BASE_URL]);
 
   useEffect(() => {
-    loadEquipamentos();
-  }, [loadEquipamentos]);
+    fetchTemplates();
+  }, [fetchTemplates]);
 
-  useEffect(() => {
-    if (equipamentoId != null) {
-      loadModelos(equipamentoId);
+  const handleOpenModal = (item?: Template) => {
+    if (item) {
+      setEditingId(item.id);
+      setFormData({ nome: item.nome });
     } else {
-      setModelos([]);
-    }
-  }, [equipamentoId, loadModelos]);
-
-  const criar = async () => {
-    const nome = novoNome.trim();
-    if (!nome || equipamentoId == null) return;
-    const res = await fetch(`${API_BASE_URL}/modelos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nome, equipamentoId }),
-    });
-    if (res.ok && equipamentoId != null) {
-      setNovoNome("");
-      await loadModelos(equipamentoId);
-    } else {
-      alert("Falha ao criar modelo");
-    }
-  };
-
-  const salvar = async (id: number) => {
-    const nome = editingNome.trim();
-    if (!nome) return;
-    const res = await fetch(`${API_BASE_URL}/modelos/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nome }),
-    });
-    if (res.ok && equipamentoId != null) {
       setEditingId(null);
-      setEditingNome("");
-      await loadModelos(equipamentoId);
-    } else {
-      alert("Falha ao atualizar modelo");
+      setFormData({ nome: "" });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleSave = async () => {
+    if (!formData.nome) return;
+    try {
+      const token = localStorage.getItem("token");
+      const url = editingId ? `${API_BASE_URL}/modelos/${editingId}` : `${API_BASE_URL}/modelos`;
+      const method = editingId ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "" 
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (res.ok) {
+        setIsModalOpen(false);
+        fetchTemplates();
+      }
+    } catch (err) {
+      console.error("Erro ao salvar:", err);
     }
   };
 
-  const excluir = async (id: number) => {
-    if (!confirm("Deseja excluir este modelo?")) return;
-    const res = await fetch(`${API_BASE_URL}/modelos/${id}`, {
-      method: "DELETE",
-    });
-    if (res.status === 204 && equipamentoId != null) {
-      await loadModelos(equipamentoId);
-    } else {
-      alert("Falha ao excluir modelo");
+  const handleDelete = async (id: number) => {
+    if (!confirm("Deseja realmente remover este template de auditoria?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_BASE_URL}/modelos/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: token ? `Bearer ${token}` : "" }
+      });
+      if (res.ok) fetchTemplates();
+    } catch (err) {
+      console.error("Erro:", err);
     }
   };
+
+  const filtered = templates.filter(t => t.nome.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Modelos</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <div className="grid gap-2 max-w-sm">
-          <Label>Equipamento</Label>
-          <select
-            className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
-            value={equipamentoId ?? ""}
-            onChange={(e) => setEquipamentoId(Number(e.target.value) || null)}
-          >
-            <option value="">Selecione...</option>
-            {equipamentos.map((eq) => (
-              <option key={eq.id} value={eq.id}>
-                {eq.nome}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">
+      <SubPageHeader title={`Templates\nde Auditoria`} icon={ClipboardCheck} type="templates" />
 
-        <div className="grid gap-2 max-w-sm">
-          <Label>Novo modelo</Label>
-          <Input
-            value={novoNome}
-            onChange={(e) => setNovoNome(e.target.value)}
-            placeholder="Nome do modelo"
-            disabled={equipamentoId == null}
-          />
-          <Button onClick={criar} disabled={equipamentoId == null}>
-            Criar
-          </Button>
+      {/* Lado Esquerdo */}
+      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#0E3D8A] to-[#1E5BB5] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
+        <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white font-bold hover:bg-white/20 transition-all">
+          <ChevronLeft className="w-5 h-5" /> Voltar
+        </button>
+        <div className="relative z-10 max-w-sm">
+          <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-xl">
+            <ShieldCheck className="text-white w-10 h-10" />
+          </div>
+          <div className="w-[80px] h-[4px] bg-[#FECC00] mb-8 rounded-full shadow-lg" />
+          <h1 className="text-white text-[48px] font-[800] leading-[1.1] uppercase whitespce-pre-line tracking-tight mb-8">
+            {`Templates\nde Auditoria`}
+          </h1>
+          <p className="text-white/70 text-lg font-medium">Controle total dos checklists. Defina os parâmetros técnicos que serão aplicados nas unidades Cometa.</p>
         </div>
+      </div>
 
-        <div className="grid gap-2">
-          {modelos.map((m) => (
-            <div key={m.id} className="flex items-center gap-2">
-              {editingId === m.id ? (
-                <>
-                  <Input
-                    className="max-w-sm"
-                    value={editingNome}
-                    onChange={(e) => setEditingNome(e.target.value)}
-                  />
-                  <Button onClick={() => salvar(m.id)}>Salvar</Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setEditingId(null);
-                      setEditingNome("");
-                    }}
-                  >
-                    Cancelar
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <span className="min-w-[200px]">{m.nome}</span>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setEditingId(m.id);
-                      setEditingNome(m.nome);
-                    }}
-                  >
-                    Editar
-                  </Button>
-                  <Button variant="ghost" onClick={() => excluir(m.id)}>
-                    Excluir
-                  </Button>
-                </>
-              )}
+      {/* Lado Direito */}
+      <div className="flex-1 lg:w-[60%] flex flex-col p-6 lg:p-24 overflow-y-auto">
+        <div className="max-w-[800px] w-full mx-auto">
+          <div className="mb-12 flex items-center justify-between">
+            <h2 className="text-[#1A1A2E] text-[32px] font-[800]">Padrões Técnicos</h2>
+            <button onClick={() => handleOpenModal()} className="bg-[#0E3D8A] text-white px-8 py-4 rounded-xl text-[14px] font-bold uppercase tracking-widest shadow-xl flex items-center gap-2 hover:bg-[#0A2D66] transition-all">
+              <Plus className="w-5 h-5" /> Novo Template
+            </button>
+          </div>
+
+          <div className="relative mb-8"><Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" /><input type="text" placeholder="Pesquisar..." className="w-full h-16 pl-14 pr-6 rounded-2xl bg-[#EDF1F7] border-none" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
+
+          {isLoading ? <div className="flex justify-center p-20 animate-spin"><Loader2 className="w-10 h-10 text-[#0E3D8A]" /></div> : (
+            <div className="space-y-4">
+              {filtered.map((template) => (
+                <div key={template.id} className="w-full bg-white p-6 rounded-2xl flex items-center justify-between shadow-sm group">
+                  <div className="flex items-center gap-8">
+                    <div className="w-14 h-14 rounded-2xl bg-[#0E3D8A]/5 flex items-center justify-center group-hover:bg-[#0E3D8A] transition-all">
+                      <FileText className="text-[#0E3D8A] group-hover:text-white w-7 h-7" />
+                    </div>
+                    <div>
+                      <h3 className="text-[#1A1A2E] text-[16px] font-[700] uppercase mb-1">{template.nome}</h3>
+                      <p className="text-[#6B7280] text-[12px] uppercase tracking-widest">{template.createdAt ? new Date(template.createdAt).toLocaleDateString() : 'Ajustado Hoje'}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                     <button onClick={() => handleDelete(template.id)} className="w-10 h-10 rounded-lg bg-red-50 text-red-500 flex items-center justify-center"><Trash2 className="w-4 h-4" /></button>
+                     <button onClick={() => handleOpenModal(template)} className="w-10 h-10 rounded-lg bg-blue-50 text-[#0E3D8A] flex items-center justify-center"><Edit3 className="w-4 h-4" /></button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+
+      {/* MODAL DE TEMPLATE */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-6">
+          <div className="bg-white rounded-[32px] p-10 max-w-lg w-full shadow-2xl animate-in zoom-in duration-300">
+             <div className="flex justify-between items-center mb-8">
+                <h3 className="text-[#1A1A2E] text-2xl font-black uppercase tracking-tighter">{editingId ? 'Editar Template' : 'Novo Template'}</h3>
+                <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-red-500"><X /></button>
+             </div>
+             <div className="space-y-6">
+                <div className="space-y-2">
+                   <label className="text-[11px] font-black uppercase text-gray-400 tracking-widest">Nome do Modelo</label>
+                   <input type="text" value={formData.nome} onChange={e => setFormData({nome: e.target.value})} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-bold" placeholder="Ex: CHECKLIST AÇOUGUE..." />
+                </div>
+                <button onClick={handleSave} className="w-full h-18 bg-[#0E3D8A] text-white rounded-2xl text-[15px] font-[800] tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl">
+                   <Save className="w-5 h-5" /> Salvar Modelo
+                </button>
+             </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

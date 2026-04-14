@@ -11,9 +11,20 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: "Laudo Tecnico",
-  description: "Laudo Tecnico",
+  description: "Sistema de emissão de laudos técnicos - Cometa",
+  generator: 'Next.js',
+  manifest: '/manifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: "Laudo Tecnico",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   icons: {
     icon: "/user-interface.png",
+    apple: "/icon-192x192.png",
   },
 };
 
@@ -30,6 +41,25 @@ export default function RootLayout({
         {/* Guarda de versão para limpar cache/cookies ao atualizar o app */}
         <AppVersionGuard />
         {children}
+        {/* Registro do Service Worker para PWA */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').then(
+                    function(registration) {
+                      console.log('Service Worker registrado com sucesso:', registration.scope);
+                    },
+                    function(err) {
+                      console.log('Falha ao registrar o Service Worker:', err);
+                    }
+                  );
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );

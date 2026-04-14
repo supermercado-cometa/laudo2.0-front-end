@@ -44,7 +44,7 @@ export async function middleware(req: NextRequest) {
       const data = await res.json();
       if (!data?.user?.isAdmin) {
         console.warn(`[Middleware] Acesso admin negado: ${data?.user?.username}`);
-        url.pathname = "/";
+        url.pathname = "/infoFormulario";
         return NextResponse.redirect(url);
       }
     }

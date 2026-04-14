@@ -9,6 +9,8 @@ export type SetorType = {
 export type LojaType = {
   id: number;
   nome: string;
+  filial?: string;
+  cidade?: string;
 };
 
 export type ModeloType = {

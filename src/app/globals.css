@@ -35,29 +35,34 @@
 }
 
 :root {
-  /* Design Tokens Cometa */
-  --primary: #0E3D8A;
-  --primary-foreground: #FFFFFF;
+  /* Cores Principais - Cometa */
+  --royal-blue: #0E3D8A;
+  --gold: #FECC00;
+  --white: #FFFFFF;
+  --background-grey: #F5F7FA;
+  --border-grey: #DDE2EA;
   
-  --secondary: #FECC00;
-  --secondary-foreground: #1A1A2E;
+  /* Tipografia */
+  --text-dark: #1A1A2E;
+  --text-muted: #6B7280;
   
-  --background: #FFFFFF;
-  --foreground: #1A1A2E;
-  
-  --muted: #F5F7FA;
-  --muted-foreground: #6B7280;
-  
-  --border: #DDE2EA;
-  --input: #F5F7FA;
-  --ring: #0E3D8A;
-  
-  --destructive: #DC2626;
-  --destructive-foreground: #FFFFFF;
-  
-  --card: #FFFFFF;
-  --card-foreground: #1A1A2E;
-  
+  /* Estados */
+  --error: #DC2626;
+  --success: #10B981;
+  --warning: #F59E0B;
+
+  /* Aliases para compatibilidade com Tailwind */
+  --primary: var(--royal-blue);
+  --primary-foreground: var(--white);
+  --secondary: var(--gold);
+  --secondary-foreground: var(--text-dark);
+  --background: var(--background-grey);
+  --foreground: var(--text-dark);
+  --muted: var(--background-grey);
+  --muted-foreground: var(--text-muted);
+  --border: var(--border-grey);
+  --input: var(--background-grey);
+  --ring: var(--royal-blue);
   --radius: 8px;
 }
 
@@ -67,6 +72,27 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Touch Safety and Mobile Ergonomics */
+  @media (max-width: 768px) {
+    /* Previne zoom automático indesejado no iOS ao focar em inputs */
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+    
+    /* Garante área mínima de toque para elementos maiores */
+    button, a, select {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    /* Checkbox e Radio mantêm tamanho proporcional, mas fáceis de tocar */
+    input[type="checkbox"], input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
   }
 }
 
