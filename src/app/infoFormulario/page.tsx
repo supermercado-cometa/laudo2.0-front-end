@@ -30,6 +30,7 @@ export default function InfoFormularioPage() {
   const [necessidade, setNecessidade] = useState("");
   
   const [lojas, setLojas] = useState<LojaType[]>([]);
+  const [equipamentos, setEquipamentos] = useState<{id: number, nome: string, tipo?: string}[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -55,6 +56,15 @@ export default function InfoFormularioPage() {
         else setLojas([]);
       })
       .catch(() => setLojas([]));
+
+    fetch(`${API_BASE_URL}/equipamentos`)
+      .then(res => res.ok ? res.json() : [])
+      .then(data => {
+        if (Array.isArray(data)) setEquipamentos(data);
+        else setEquipamentos([]);
+      })
+      .catch(() => setEquipamentos([]));
+      
     const storedName = localStorage.getItem("fullName");
     if (storedName) setNomeTecnico(storedName);
   }, [router]);
@@ -150,13 +160,15 @@ export default function InfoFormularioPage() {
                         <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Nome do Técnico</Label>
                         <Input value={nomeTecnico} onChange={e => setNomeTecnico(e.target.value)} className="h-16 rounded-2xl bg-gray-50 border-none lg:sm:font-medium font-bold" />
                      </div>
-                     <div className="space-y-3">
+                      <div className="space-y-3">
                         <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Equipamento</Label>
                         <select value={equipamento} onChange={e => setEquipamento(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 lg:sm:font-medium font-bold appearance-none">
                            <option value="">Selecione...</option>
-                           <option value="Monitor">Monitor</option><option value="Desktop">Desktop</option><option value="Impressora">Impressora</option>
+                           {equipamentos.map(e => (
+                             <option key={e.id} value={e.nome}>{e.nome}{e.tipo ? ` - ${e.tipo}` : ''}</option>
+                           ))}
                         </select>
-                     </div>
+                      </div>
                      <div className="space-y-3">
                         <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Loja</Label>
                         <select value={loja} onChange={e => setLoja(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 lg:sm:font-medium font-bold appearance-none">
