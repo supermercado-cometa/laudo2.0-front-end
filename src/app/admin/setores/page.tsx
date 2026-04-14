@@ -26,7 +26,7 @@ export default function SetoresPage() {
     try {
       setIsLoading(true);
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API_BASE_URL}/setor`, {
+      const res = await fetch(`${API_BASE_URL}/setores`, {
         headers: { Authorization: token ? `Bearer ${token}` : "" }
       });
       if (res.ok) {
@@ -61,7 +61,7 @@ export default function SetoresPage() {
     }
     try {
       const token = localStorage.getItem("token");
-      const url = editingId ? `${API_BASE_URL}/setor/${editingId}` : `${API_BASE_URL}/setor`;
+      const url = editingId ? `${API_BASE_URL}/setores/${editingId}` : `${API_BASE_URL}/setores`;
       const method = editingId ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -86,7 +86,7 @@ export default function SetoresPage() {
     if (!confirm("Remover este setor?")) return;
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API_BASE_URL}/setor/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/setores/${id}`, {
         method: "DELETE",
         headers: { Authorization: token ? `Bearer ${token}` : "" }
       });

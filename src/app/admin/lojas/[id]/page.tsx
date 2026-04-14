@@ -35,7 +35,7 @@ export default function LojaDetalhesPage() {
         if (resLoja.ok) setLojaInfo(await resLoja.json());
 
         // 2. Buscar Checklists da Loja (Placeholder para funcionalidade real)
-        const resChecks = await fetch(`${API_BASE_URL}/laudos?lojaId=${params.id}`, {
+        const resChecks = await fetch(`${API_BASE_URL}/info-laudos?lojaId=${params.id}`, {
           headers: { Authorization: token ? `Bearer ${token}` : "" }
         });
         if (resChecks.ok) setChecklists(await resChecks.json());

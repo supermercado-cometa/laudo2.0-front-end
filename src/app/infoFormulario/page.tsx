@@ -74,7 +74,7 @@ export default function InfoFormularioPage() {
          testesRealizados, diagnostico, estadoEquipamento, necessidade, signature
       };
 
-      const res = await fetch(`${API_BASE_URL}/laudos`, {
+      const res = await fetch(`${API_BASE_URL}/info-laudos`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

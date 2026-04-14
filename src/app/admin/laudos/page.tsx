@@ -25,7 +25,7 @@ export default function LaudosGeradosPage() {
       try {
         setIsLoading(true);
         const token = localStorage.getItem("token");
-        const res = await fetch(`${API_BASE_URL}/laudos`, {
+        const res = await fetch(`${API_BASE_URL}/info-laudos`, {
           headers: { Authorization: token ? `Bearer ${token}` : "" }
         });
         if (res.ok) {
