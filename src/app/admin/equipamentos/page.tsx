@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Monitor, Search, ChevronLeft, Loader2, Trash2, Edit3, Plus, X, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SubPageHeader } from "@/components/subpage-header";
+import { API_BASE_URL } from "@/lib/api-config";
 
 interface Equipamento {
   id: number;
@@ -21,8 +22,6 @@ export default function EquipamentosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState({ nome: "", tipo: "" });
-
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
   const fetchEquipamentos = useCallback(async () => {
     try {
@@ -135,7 +134,6 @@ export default function EquipamentosPage() {
             </button>
           </div>
 
-          {/* ... Busca ... */}
           <div className="relative mb-8"><Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" /><input type="text" placeholder="Pesquisar..." className="w-full h-16 pl-14 pr-6 rounded-2xl bg-[#EDF1F7] border-none" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
 
           {isLoading ? <div className="flex justify-center p-20 animate-spin"><Loader2 className="w-10 h-10 text-[#0E3D8A]" /></div> : (

@@ -11,6 +11,7 @@ import SignatureCanvas from "react-signature-canvas";
 import { motion, AnimatePresence } from "framer-motion";
 import { LojaType } from "@/types/domain";
 import { SubPageHeader } from "@/components/subpage-header";
+import { API_BASE_URL } from "@/lib/api-config";
 
 export default function InfoFormularioPage() {
   const router = useRouter();
@@ -32,9 +33,8 @@ export default function InfoFormularioPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [activeStep, setActiveStep] = useState(1);
   const sigPadRef = useRef<SignatureCanvas>(null);
-  
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
   useEffect(() => {
     setDataSistema(new Date().toLocaleString('pt-BR'));

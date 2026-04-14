@@ -4,6 +4,7 @@ import React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AdminHeader } from "@/components/admin-header";
 import { BottomNav } from "@/components/bottom-nav";
+import { API_BASE_URL } from "@/lib/api-config";
 
 export default function AdminLayout({
   children,
@@ -27,7 +28,6 @@ export default function AdminLayout({
         }
 
         try {
-          const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
           const res = await fetch(`${API_BASE_URL}/auth/me`, {
             headers: { Authorization: token ? `Bearer ${token}` : "" },
             cache: 'no-store'

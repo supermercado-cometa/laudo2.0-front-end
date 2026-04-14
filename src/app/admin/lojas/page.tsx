@@ -5,6 +5,7 @@ import { Store, ChevronLeft, ChevronRight, Search, LayoutGrid, Loader2, Plus, Tr
 import { useRouter } from "next/navigation";
 import { SubPageHeader } from "@/components/subpage-header";
 import { LojaType } from "@/types/domain";
+import { API_BASE_URL } from "@/lib/api-config";
 
 export default function LojasPage() {
   const router = useRouter();
@@ -16,8 +17,6 @@ export default function LojasPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState({ nome: "", filial: "", cidade: "" });
-
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
   const fetchLojas = useCallback(async () => {
     try {
@@ -53,7 +52,10 @@ export default function LojasPage() {
   };
 
   const handleSave = async () => {
-    if (!formData.nome) return;
+    if (!formData.nome) {
+      alert("Por favor, preencha o nome da loja antes de salvar.");
+      return;
+    }
     try {
       const token = localStorage.getItem("token");
       const url = editingId ? `${API_BASE_URL}/lojas/${editingId}` : `${API_BASE_URL}/lojas`;
