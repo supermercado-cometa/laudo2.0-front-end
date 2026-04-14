@@ -79,7 +79,7 @@ export default function AdminHomePage() {
   return (
     <div className="flex flex-col w-full">
       {/* Título da Seção - GUIA DESKTOP */}
-      <h2 className="text-[20px] lg:text-[22px] font-bold text-[#1A1C1E] mb-4 tracking-tight">
+      <h2 className="text-[20px] lg:text-[22px] font-bold lg:font-medium text-[#1A1C1E] mb-4 tracking-tight">
         Acesso Rápido
       </h2>
 
@@ -98,7 +98,7 @@ export default function AdminHomePage() {
       </div>
 
       {/* Footer / Nota Sutil */}
-      <div className="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
+      <div className="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center text-gray-400 text-xs font-bold lg:font-medium uppercase tracking-widest">
         <span>Cometa Supermercados 2026</span>
         <span>Gestão de Auditoria Técnica</span>
       </div>

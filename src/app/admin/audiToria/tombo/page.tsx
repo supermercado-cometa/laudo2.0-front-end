@@ -15,7 +15,7 @@ export default function AuditoriaTomboPage() {
 
       {/* Lado Esquerdo (Hero) */}
       <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#0E3D8A] to-[#1E5BB5] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
-        <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white font-bold hover:bg-white/20 transition-all group shadow-lg">
+        <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all group shadow-lg">
           <ChevronLeft className="w-5 h-5" />
           Voltar
         </button>
@@ -26,7 +26,7 @@ export default function AuditoriaTomboPage() {
           </div>
           <div className="w-[80px] h-[4px] bg-[#FECC00] mb-8 rounded-full shadow-lg" />
           
-          <h1 className="text-white text-[48px] font-[800] leading-[1.1] uppercase whitespace-pre-line tracking-tight mb-8">
+          <h1 className="text-white text-[48px] lg:font-medium font-[800] leading-[1.1] uppercase whitespace-pre-line tracking-tight mb-8">
             {`Auditoria\npor Tombo`}
           </h1>
           <p className="text-white/70 text-lg font-medium mb-12">Consulte o histórico detalhado de conformidade e status técnico de um equipamento específico pelo seu número de tombo.</p>
@@ -34,7 +34,7 @@ export default function AuditoriaTomboPage() {
           <ul className="space-y-8">
             <li className="flex items-center gap-5 group">
               <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-[#FECC00] transition-all duration-300"><BarChart3 className="w-5 h-5 text-white group-hover:text-[#0E3D8A]" /></div>
-              <span className="text-white/90 font-bold text-lg">Busca individualizada</span>
+              <span className="text-white/90 lg:font-medium font-bold text-lg">Busca individualizada</span>
             </li>
           </ul>
         </div>
@@ -45,7 +45,7 @@ export default function AuditoriaTomboPage() {
         <div className="max-w-[800px] w-full mx-auto">
           <div className="mb-12 hidden lg:block">
             {/* Título de Seção (32px 800) */}
-            <h2 className="text-[#1A1A2E] text-[32px] font-[800] leading-[1.1] tracking-[-0.5px] mb-4">Consulta Individual</h2>
+            <h2 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800] leading-[1.1] tracking-[-0.5px] mb-4">Consulta Individual</h2>
             <p className="text-[#6B7280] text-[16px] font-normal leading-relaxed">Insira o número de identificação (Tombo) para localizar o equipamento.</p>
           </div>
 
@@ -58,13 +58,13 @@ export default function AuditoriaTomboPage() {
                <input 
                  type="text" 
                  placeholder="Digite o número do tombo..." 
-                 className="w-full h-20 pl-16 pr-8 rounded-2xl bg-[#EDF1F7] border-none focus:ring-4 focus:ring-[#0E3D8A]/5 transition-all font-[800] text-[24px] text-[#1A1A2E] placeholder:text-gray-300"
+                 className="w-full h-20 pl-16 pr-8 rounded-2xl bg-[#EDF1F7] border-none focus:ring-4 focus:ring-[#0E3D8A]/5 transition-all lg:font-medium font-[800] text-[24px] text-[#1A1A2E] placeholder:text-gray-300"
                  value={tombo}
                  onChange={(e) => setTombo(e.target.value)}
                />
              </div>
              {/* Botão Principal (15px 800 tracking-1.0 UPPERCASE) */}
-             <button className="w-full h-18 bg-[#0E3D8A] text-white rounded-2xl text-[15px] font-[800] tracking-[1.0px] uppercase shadow-xl hover:shadow-2xl hover:bg-[#0A2D66] transition-all active:scale-[0.98] flex items-center justify-center gap-4">
+             <button className="w-full h-18 bg-[#0E3D8A] text-white rounded-2xl text-[15px] lg:font-medium font-[800] tracking-[1.0px] uppercase shadow-xl hover:shadow-2xl hover:bg-[#0A2D66] transition-all active:scale-[0.98] flex items-center justify-center gap-4">
                 Consultar Patrimônio
                 <ChevronRight className="w-5 h-5" />
              </button>

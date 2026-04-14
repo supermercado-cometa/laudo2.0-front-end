@@ -46,13 +46,13 @@ export function AdminHeader() {
           </div>
           <div>
             <p className="text-[#9E9E9E] text-[16px] font-[500] leading-none mb-1">{greeting}</p>
-            <h1 className="text-[#1A1C1E] text-[24px] font-[700] tracking-tight">{userName}</h1>
+            <h1 className="text-[#1A1C1E] text-[24px] lg:font-[500] font-[700] tracking-tight">{userName}</h1>
           </div>
         </div>
 
         <button 
           onClick={handleLogout}
-          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#DC262612] border border-[#DC262633] text-red-600 font-bold hover:bg-red-600 hover:text-white transition-all group"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#DC262612] border border-[#DC262633] text-red-600 lg:font-medium font-bold hover:bg-red-600 hover:text-white transition-all group"
         >
           Sair
           <LogOut className="w-4 h-4" />

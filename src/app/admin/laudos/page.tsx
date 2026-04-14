@@ -60,7 +60,7 @@ export default function LaudosPage() {
 
       {/* Lado Esquerdo (Hero) */}
       <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#0E3D8A] to-[#1E5BB5] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
-        <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white font-bold hover:bg-white/20 transition-all group shadow-lg">
+        <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all group shadow-lg">
           <ChevronLeft className="w-5 h-5" />
           Voltar
         </button>
@@ -69,7 +69,7 @@ export default function LaudosPage() {
             <History className="text-white w-10 h-10" />
           </div>
           <div className="w-[80px] h-[4px] bg-[#FECC00] mb-8 rounded-full shadow-lg" />
-          <h1 className="text-white text-[48px] font-[800] leading-[1.1] uppercase whitespace-pre-line tracking-tight mb-8">
+          <h1 className="text-white text-[48px] lg:font-medium font-[800] leading-[1.1] uppercase whitespace-pre-line tracking-tight mb-8">
             {`Laudos\nGerados`}
           </h1>
           <p className="text-white/70 text-lg font-medium">Histórico oficial de auditorias técnica. Acesse e exporte relatórios PDF em conformidade com as normas da rede.</p>
@@ -80,7 +80,7 @@ export default function LaudosPage() {
       <div className="flex-1 lg:w-[60%] flex flex-col p-6 lg:p-24 overflow-y-auto">
         <div className="max-w-[800px] w-full mx-auto">
           <div className="mb-12 hidden lg:block">
-            <h2 className="text-[#1A1A2E] text-[32px] font-[800] tracking-tighter">Acervo de Auditorias</h2>
+            <h2 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800] tracking-tighter">Acervo de Auditorias</h2>
             <p className="text-[#6B7280] text-[16px]">Filtre e baixe relatórios técnicos finalizados.</p>
           </div>
 
@@ -105,9 +105,9 @@ export default function LaudosPage() {
                     <FileText className="text-[#0E3D8A] group-hover:text-white w-7 h-7" />
                   </div>
                   <div className="flex-1 text-left">
-                    <h3 className="text-[#1A1A2E] text-[16px] font-[700] uppercase mb-1">{laudo.loja}</h3>
+                    <h3 className="text-[#1A1A2E] text-[16px] lg:font-medium font-[700] uppercase mb-1">{laudo.loja}</h3>
                     <div className="flex items-center gap-4 text-[#6B7280] text-[12px] font-medium uppercase tracking-widest">
-                      <span className="font-bold text-[#0E3D8A]">{laudo.tecnico}</span>
+                      <span className="lg:font-medium font-bold text-[#0E3D8A]">{laudo.tecnico}</span>
                       <span className="text-gray-300">|</span>
                       <span>{new Date(laudo.data).toLocaleDateString()}</span>
                     </div>
