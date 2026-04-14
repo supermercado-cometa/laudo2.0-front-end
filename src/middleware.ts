@@ -11,14 +11,10 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Determina a URL base do backend
-  const host = req.headers.get("host");
-  const protocol = host?.includes("localhost") ? "http" : "https";
+  // Determina a URL base do backend (Garantindo homologação no servidor)
   let API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (!API_BASE_URL) {
-    API_BASE_URL = host?.includes("localhost")
-      ? "http://localhost:4000"
-      : `${protocol}://${host}`;
+  if (!API_BASE_URL || API_BASE_URL.includes("undefined")) {
+    API_BASE_URL = "https://homoapilaudos.cometasupermercados.com.br";
   }
 
   try {
@@ -28,11 +24,10 @@ export async function middleware(req: NextRequest) {
         "Content-Type": "application/json",
       },
       cache: "no-store",
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(10000), // Mais tolerante: 10s
     });
 
     if (!res.ok) {
-      // Token inválido ou expirado: força novo login
       console.warn(`[Middleware] Token rejeitado (${res.status}) em ${pathname}`);
       const response = NextResponse.redirect(new URL("/", req.url));
       response.cookies.set("auth_token", "", { maxAge: 0, path: "/" });
@@ -48,11 +43,10 @@ export async function middleware(req: NextRequest) {
       }
     }
   } catch (err) {
-    // Erro de rede ou servidor: em rotas sensíveis, é melhor bloquear do que permitir
-    console.error("[Middleware] Falha crítica na verificação:", err);
-    const response = NextResponse.redirect(new URL("/", req.url));
-    response.cookies.set("auth_token", "", { maxAge: 0, path: "/" });
-    return response;
+    // Se a API cair ou der timeout, não vamos expulsar o usuário imediatamente.
+    // Deixamos ele passar para que a validação client-side das páginas decida.
+    console.error("[Middleware] Timeout ou Erro de Rede na API:", err);
+    return NextResponse.next();
   }
 
   return NextResponse.next();
