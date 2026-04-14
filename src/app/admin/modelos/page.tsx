@@ -56,7 +56,10 @@ export default function ModelosPage() {
   };
 
   const handleSave = async () => {
-    if (!formData.nome) return;
+    if (!formData.nome) {
+      alert("Por favor, preencha o título do modelo antes de salvar.");
+      return;
+    }
     try {
       const token = localStorage.getItem("token");
       const url = editingId ? `${API_BASE_URL}/modelos/${editingId}` : `${API_BASE_URL}/modelos`;

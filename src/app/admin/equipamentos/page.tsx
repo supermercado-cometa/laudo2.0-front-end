@@ -58,7 +58,10 @@ export default function EquipamentosPage() {
   };
 
   const handleSave = async () => {
-    if (!formData.nome) return;
+    if (!formData.nome || !formData.tipo) {
+      alert("Por favor, preencha todos os campos (Nome e Tipo) antes de salvar.");
+      return;
+    }
     try {
       const token = localStorage.getItem("token");
       const url = editingId ? `${API_BASE_URL}/equipamentos/${editingId}` : `${API_BASE_URL}/equipamentos`;

@@ -58,7 +58,10 @@ export default function SetoresPage() {
   };
 
   const handleSave = async () => {
-    if (!formData.nome) return;
+    if (!formData.nome) {
+      alert("Por favor, preencha o nome do setor antes de salvar.");
+      return;
+    }
     try {
       const token = localStorage.getItem("token");
       const url = editingId ? `${API_BASE_URL}/setor/${editingId}` : `${API_BASE_URL}/setor`;
