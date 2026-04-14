@@ -6,9 +6,17 @@ import { useRouter } from "next/navigation";
 import { SubPageHeader } from "@/components/subpage-header";
 import { API_BASE_URL } from "@/lib/api-config";
 
+interface Laudo {
+  id: number;
+  lojaNome: string;
+  tecnicoResponsavel?: string;
+  username?: string;
+  createdAt: string;
+}
+
 export default function LaudosGeradosPage() {
   const router = useRouter();
-  const [laudos, setLaudos] = useState<any[]>([]);
+  const [laudos, setLaudos] = useState<Laudo[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -32,7 +40,7 @@ export default function LaudosGeradosPage() {
     };
 
     fetchLaudos();
-  }, [API_BASE_URL]);
+  }, []);
 
   const filtered = laudos.filter(l => 
     l.lojaNome?.toLowerCase().includes(searchTerm.toLowerCase()) ||

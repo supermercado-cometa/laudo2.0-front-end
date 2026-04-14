@@ -37,7 +37,7 @@ export default function SetoresPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [API_BASE_URL]);
+  }, []);
 
   useEffect(() => {
     fetchSetores();

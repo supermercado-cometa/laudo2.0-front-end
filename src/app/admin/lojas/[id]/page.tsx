@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ClipboardList, ChevronLeft, ChevronRight, Loader2, CheckCircle2, AlertTriangle, Clock } from "lucide-react";
 import { SubPageHeader } from "@/components/subpage-header";
 import { LojaType } from "@/types/domain";
+import { API_BASE_URL } from "@/lib/api-config";
 
 interface Checklist {
   id: number;
@@ -21,8 +22,6 @@ export default function LojaDetalhesPage() {
   const [checklists, setChecklists] = useState<Checklist[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,7 +35,6 @@ export default function LojaDetalhesPage() {
         if (resLoja.ok) setLojaInfo(await resLoja.json());
 
         // 2. Buscar Checklists da Loja (Placeholder para funcionalidade real)
-        // Nota: Adaptado para a fidelidade total de dados
         const resChecks = await fetch(`${API_BASE_URL}/laudos?lojaId=${params.id}`, {
           headers: { Authorization: token ? `Bearer ${token}` : "" }
         });
@@ -49,7 +47,7 @@ export default function LojaDetalhesPage() {
       }
     };
     fetchData();
-  }, [params.id, API_BASE_URL]);
+  }, [params.id]);
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">

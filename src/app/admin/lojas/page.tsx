@@ -34,7 +34,7 @@ export default function LojasPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [API_BASE_URL]);
+  }, []);
 
   useEffect(() => {
     fetchLojas();

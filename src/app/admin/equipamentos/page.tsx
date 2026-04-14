@@ -39,7 +39,7 @@ export default function EquipamentosPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [API_BASE_URL]);
+  }, []);
 
   useEffect(() => {
     fetchEquipamentos();

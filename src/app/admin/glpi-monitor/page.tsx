@@ -1,36 +1,30 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Activity, Search, RefreshCw, ChevronLeft, Loader2, AlertCircle, Clock, CheckCircle2, LayoutGrid } from "lucide-react";
+import React, { useEffect } from "react";
+import { Activity, RefreshCw, ChevronLeft, AlertCircle, Clock, CheckCircle2, LayoutGrid } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SubPageHeader } from "@/components/subpage-header";
 import { API_BASE_URL } from "@/lib/api-config";
 
 export default function GlpiMonitorPage() {
   const router = useRouter();
-  const [data, setData] = useState<any[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(true);
         const token = localStorage.getItem("token");
         const res = await fetch(`${API_BASE_URL}/glpi/status`, {
           headers: { Authorization: token ? `Bearer ${token}` : "" }
         });
         if (res.ok) {
-          setData(await res.json());
+          await res.json();
         }
       } catch (err) {
         console.error("Erro GLPI:", err);
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchData();
-  }, [API_BASE_URL]);
+  }, []); // API_BASE_URL é constante, não precisa estar aqui
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">

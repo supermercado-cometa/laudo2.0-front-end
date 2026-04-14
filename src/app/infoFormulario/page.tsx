@@ -33,7 +33,6 @@ export default function InfoFormularioPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [activeStep, setActiveStep] = useState(1);
   const sigPadRef = useRef<SignatureCanvas>(null);
 
   useEffect(() => {
@@ -43,7 +42,7 @@ export default function InfoFormularioPage() {
     
     // Verificar se é admin pelo auth/me (mais seguro que localStorage)
     fetch(`${API_BASE_URL}/auth/me`, {
-       headers: { Authorization: token }
+       headers: { Authorization: `Bearer ${token}` }
     })
     .then(res => res.json())
     .then(data => setIsAdmin(data?.user?.isAdmin === true))
@@ -58,7 +57,7 @@ export default function InfoFormularioPage() {
       .catch(() => setLojas([]));
     const storedName = localStorage.getItem("fullName");
     if (storedName) setNomeTecnico(storedName);
-  }, [router, API_BASE_URL]);
+  }, [router]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) setImagem(e.target.files[0]);

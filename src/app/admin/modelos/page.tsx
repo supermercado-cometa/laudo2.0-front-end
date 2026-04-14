@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { FileText, ClipboardCheck, Search, Plus, ChevronLeft, Loader2, Trash2, Edit3, X, Save, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SubPageHeader } from "@/components/subpage-header";
+import { API_BASE_URL } from "@/lib/api-config";
 
 interface Template {
   id: number;
@@ -23,8 +24,6 @@ export default function ModelosPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState({ nome: "" });
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
-
   const fetchTemplates = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -38,7 +37,7 @@ export default function ModelosPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [API_BASE_URL]);
+  }, []); // API_BASE_URL removido daqui
 
   useEffect(() => {
     fetchTemplates();
