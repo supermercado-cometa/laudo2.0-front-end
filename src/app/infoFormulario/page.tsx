@@ -49,7 +49,13 @@ export default function InfoFormularioPage() {
     .then(data => setIsAdmin(data?.user?.isAdmin === true))
     .catch(() => setIsAdmin(false));
 
-    fetch(`${API_BASE_URL}/lojas`).then(res => res.json()).then(setLojas);
+    fetch(`${API_BASE_URL}/lojas`)
+      .then(res => res.ok ? res.json() : [])
+      .then(data => {
+        if (Array.isArray(data)) setLojas(data);
+        else setLojas([]);
+      })
+      .catch(() => setLojas([]));
     const storedName = localStorage.getItem("fullName");
     if (storedName) setNomeTecnico(storedName);
   }, [router, API_BASE_URL]);
