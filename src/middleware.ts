@@ -24,7 +24,7 @@ export async function middleware(req: NextRequest) {
   try {
     const res = await fetch(`${API_BASE_URL}/auth/me`, {
       headers: {
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       cache: "no-store",
@@ -44,18 +44,20 @@ export async function middleware(req: NextRequest) {
       const data = await res.json();
       if (!data?.user?.isAdmin) {
         console.warn(`[Middleware] Acesso admin negado: ${data?.user?.username}`);
-        url.pathname = "/infoFormulario";
-        return NextResponse.redirect(url);
+        return NextResponse.redirect(new URL("/infoFormulario", req.url));
       }
     }
   } catch (err) {
-    // Erro de rede (timeout, backend offline): deixa passar para validação client-side
-    console.error("[Middleware] Network error:", err);
+    // Erro de rede ou servidor: em rotas sensíveis, é melhor bloquear do que permitir
+    console.error("[Middleware] Falha crítica na verificação:", err);
+    const response = NextResponse.redirect(new URL("/", req.url));
+    response.cookies.set("auth_token", "", { maxAge: 0, path: "/" });
+    return response;
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/infoFormulario", "/admin/:path*"],
+  matcher: ["/infoFormulario", "/admin", "/admin/:path*"],
 };
