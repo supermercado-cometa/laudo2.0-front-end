@@ -126,9 +126,9 @@ export default function UsuariosPage() {
       {/* Lado Direito */}
       <div className="flex-1 lg:w-[60%] flex flex-col p-6 lg:p-24 overflow-y-auto">
         <div className="max-w-[800px] w-full mx-auto">
-          <div className="mb-12 flex items-center justify-between">
-            <h2 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800]">Administradores</h2>
-            <button onClick={() => handleOpenModal()} className="bg-[#0E3D8A] text-white px-8 py-4 rounded-xl text-[14px] lg:font-medium font-bold uppercase tracking-widest shadow-xl flex items-center gap-2 hover:bg-[#0A2D66] transition-all">
+          <div className="mb-12 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <h2 className="text-[#1A1A2E] text-[28px] lg:text-[32px] lg:font-medium font-[800]">Administradores</h2>
+            <button onClick={() => handleOpenModal()} className="w-full sm:w-auto bg-[#003B99] text-white px-8 py-4 rounded-xl text-[14px] lg:font-medium font-bold uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:bg-[#002D7A] transition-all">
               <Plus className="w-5 h-5" /> Novo Admin
             </button>
           </div>
@@ -140,15 +140,15 @@ export default function UsuariosPage() {
 
           {isLoading ? (
             <div className="flex justify-center p-20 animate-spin">
-              <Loader2 className="w-10 h-10 text-[#0E3D8A]" />
+              <Loader2 className="w-10 h-10 text-[#003B99]" />
             </div>
           ) : (
             <div className="space-y-4">
               {filteredUsuarios.map((usuario) => (
                 <div key={usuario.id} className="w-full bg-white p-6 rounded-2xl flex items-center gap-6 shadow-sm group">
                   <div className="flex-1 text-left flex items-center gap-8">
-                    <div className="w-14 h-14 rounded-2xl bg-[#0E3D8A]/5 flex items-center justify-center group-hover:bg-[#0E3D8A] transition-all">
-                      <Users className="text-[#0E3D8A] group-hover:text-white w-7 h-7" />
+                    <div className="w-14 h-14 rounded-2xl bg-[#003B99]/5 flex items-center justify-center group-hover:bg-[#003B99] transition-all">
+                      <Users className="text-[#003B99] group-hover:text-white w-7 h-7" />
                     </div>
                     <div>
                       <h3 className="text-[#1A1A2E] text-[16px] lg:font-medium font-[700] mb-1">{usuario.username}</h3>
@@ -161,7 +161,7 @@ export default function UsuariosPage() {
                   </div>
                   <div className="flex gap-2">
                      <button onClick={() => handleDelete(usuario.id)} className="w-10 h-10 rounded-lg bg-red-50 text-red-500 flex items-center justify-center transition-all hover:bg-red-100"><Trash2 className="w-4 h-4" /></button>
-                     <button onClick={() => handleOpenModal(usuario)} className="w-10 h-10 rounded-lg bg-blue-50 text-[#0E3D8A] flex items-center justify-center"><Edit3 className="w-4 h-4" /></button>
+                     <button onClick={() => handleOpenModal(usuario)} className="w-10 h-10 rounded-lg bg-blue-50 text-[#003B99] flex items-center justify-center"><Edit3 className="w-4 h-4" /></button>
                   </div>
                 </div>
               ))}
@@ -190,7 +190,7 @@ export default function UsuariosPage() {
                     type="checkbox"
                     checked={formData.canManageUsers}
                     onChange={(e) => setFormData({...formData, canManageUsers: e.target.checked})}
-                    className="w-5 h-5 rounded border-border text-[#0E3D8A] focus:ring-[#0E3D8A]"
+                    className="w-5 h-5 rounded border-border text-[#003B99] focus:ring-[#003B99]"
                   />
                   <div className="flex flex-col">
                     <label htmlFor="canManageUsers" className="text-[14px] font-bold text-[#1A1A2E] cursor-pointer">
@@ -200,7 +200,7 @@ export default function UsuariosPage() {
                   </div>
                 </div>
 
-                <button onClick={handleSave} className="w-full h-18 bg-[#0E3D8A] py-5 text-white rounded-2xl text-[15px] lg:font-medium font-[800] tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl">
+                <button onClick={handleSave} className="w-full h-18 bg-[#003B99] py-5 text-white rounded-2xl text-[15px] lg:font-medium font-[800] tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl">
                    <Save className="w-5 h-5" /> {editingUser ? 'Salvar Perfil' : 'Autorizar Usuário'}
                 </button>
              </div>

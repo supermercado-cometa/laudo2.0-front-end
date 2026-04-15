@@ -59,7 +59,7 @@ export default function AdminLayout({
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F5F7FB]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0E3D8A] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#003B99] mx-auto mb-4"></div>
           <p className="text-gray-600 font-medium">Verificando permissões...</p>
         </div>
       </div>

@@ -112,10 +112,10 @@ export const BottomNav = () => {
               className="flex flex-col items-center justify-center w-full h-full active:bg-gray-50 transition-colors"
             >
               <tab.icon 
-                className={`w-6 h-6 ${isActive || (tab.id === 'menu' && isMenuOpen) ? 'text-[#0E3D8A]' : 'text-[#9E9E9E]'}`} 
+                className={`w-6 h-6 ${isActive || (tab.id === 'menu' && isMenuOpen) ? 'text-[#003B99]' : 'text-[#9E9E9E]'}`} 
                 strokeWidth={isActive ? 2.5 : 2}
               />
-              <span className={`text-[10px] mt-1 font-medium ${isActive || (tab.id === 'menu' && isMenuOpen) ? 'text-[#0E3D8A]' : 'text-[#9E9E9E]'}`}>
+              <span className={`text-[10px] mt-1 font-medium ${isActive || (tab.id === 'menu' && isMenuOpen) ? 'text-[#003B99]' : 'text-[#9E9E9E]'}`}>
                 {tab.label}
               </span>
             </button>

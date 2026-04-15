@@ -45,7 +45,7 @@ export function AdminHeader() {
       {/* VERSÃO DESKTOP (CARD CENTRALIZADO 1400px - GUIA) */}
       <div className="hidden lg:flex w-full mb-8 bg-white rounded-[24px] px-8 py-6 items-center justify-between shadow-[0_8px_18px_rgba(0,0,0,0.04)]">
         <div className="flex items-center gap-5">
-          <div className="w-[64px] h-[64px] rounded-full bg-[#0E3D8A1F] flex items-center justify-center text-[#0E3D8A] text-[26px] font-bold">
+          <div className="w-[64px] h-[64px] rounded-full bg-[#003B991F] flex items-center justify-center text-[#003B99] text-[26px] font-bold">
             {userName.charAt(0).toUpperCase()}
           </div>
           <div>
@@ -66,13 +66,13 @@ export function AdminHeader() {
       {/* VERSÃO MOBILE (BORDA A BORDA) */}
       <div className="flex lg:hidden w-full bg-white px-6 pt-12 pb-8 rounded-b-[30px] shadow-[0_5px_15px_rgba(0,0,0,0.05)] items-center justify-between mb-8">
         <div className="flex items-center gap-4">
-          <div className="w-[60px] h-[60px] rounded-full bg-[#0E3D8A1A] flex items-center justify-center">
-            <span className="text-[#0E3D8A] text-2xl font-bold">{userName.charAt(0).toUpperCase()}</span>
+          <div className="w-[60px] h-[60px] rounded-full bg-[#003B991A] flex items-center justify-center">
+            <span className="text-[#003B99] text-2xl font-bold">{userName.charAt(0).toUpperCase()}</span>
           </div>
           
           <div className="flex flex-col">
             <span className="text-gray-400 text-base font-medium">{greeting}</span>
-            <h1 className="text-[#0E3D8A] text-2xl font-bold leading-tight">{userName}</h1>
+            <h1 className="text-[#003B99] text-2xl font-bold leading-tight">{userName}</h1>
           </div>
         </div>
 

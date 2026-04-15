@@ -80,13 +80,13 @@ export default function LaudosGeradosPage() {
       {/* Lado Direito */}
       <div className="flex-1 lg:w-[60%] flex flex-col p-6 lg:p-24 overflow-y-auto">
         <div className="max-w-[1000px] w-full mx-auto">
-          <div className="mb-12 flex items-center justify-between">
-            <h2 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800]">Laudos Emitidos</h2>
-            <div className="flex bg-gray-100 p-1 rounded-xl">
-              <button onClick={() => setActiveTab("todos")} className={`px-6 py-3 rounded-lg text-xs lg:font-medium font-bold uppercase tracking-widest transition-all ${activeTab === 'todos' ? 'bg-white shadow-sm text-[#0E3D8A]' : 'text-gray-500 hover:text-gray-700'}`}>
+          <div className="mb-12 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <h2 className="text-[#1A1A2E] text-[28px] lg:text-[32px] lg:font-medium font-[800]">Laudos Emitidos</h2>
+            <div className="flex bg-gray-100 p-1 rounded-xl self-start sm:self-auto">
+              <button onClick={() => setActiveTab("todos")} className={`px-4 sm:px-6 py-3 rounded-lg text-xs lg:font-medium font-bold uppercase tracking-widest transition-all ${activeTab === 'todos' ? 'bg-white shadow-sm text-[#003B99]' : 'text-gray-500 hover:text-gray-700'}`}>
                 Todos
               </button>
-              <button onClick={() => setActiveTab("meus")} className={`px-6 py-3 rounded-lg text-xs lg:font-medium font-bold uppercase tracking-widest transition-all ${activeTab === 'meus' ? 'bg-white shadow-sm text-[#0E3D8A]' : 'text-gray-500 hover:text-gray-700'}`}>
+              <button onClick={() => setActiveTab("meus")} className={`px-4 sm:px-6 py-3 rounded-lg text-xs lg:font-medium font-bold uppercase tracking-widest transition-all ${activeTab === 'meus' ? 'bg-white shadow-sm text-[#003B99]' : 'text-gray-500 hover:text-gray-700'}`}>
                 Meus Laudos
               </button>
             </div>
@@ -94,7 +94,7 @@ export default function LaudosGeradosPage() {
 
           <div className="relative mb-8"><Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" /><input type="text" placeholder="Pesquisar por loja, técnico ou usuário..." className="w-full h-16 pl-14 pr-6 rounded-2xl bg-[#EDF1F7] border-none" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
 
-          {isLoading ? <div className="flex justify-center p-20 animate-spin"><Loader2 className="w-10 h-10 text-[#0E3D8A]" /></div> : (
+          {isLoading ? <div className="flex justify-center p-20 animate-spin"><Loader2 className="w-10 h-10 text-[#003B99]" /></div> : (
             <div className="space-y-4">
               {filtered.length === 0 ? (
                 <div className="text-center p-20 bg-white rounded-[32px] border border-dashed border-gray-200">
@@ -102,10 +102,10 @@ export default function LaudosGeradosPage() {
                   <p className="text-gray-500 font-medium">Nenhum laudo encontrado.</p>
                 </div>
               ) : filtered.map((item) => (
-                <div key={item.id} className="w-full bg-white p-6 lg:p-8 rounded-[32px] flex flex-col lg:flex-row lg:items-center justify-between shadow-sm hover:shadow-md transition-all border border-transparent hover:border-[#0E3D8A]/10 gap-6">
+                <div key={item.id} className="w-full bg-white p-6 lg:p-8 rounded-[32px] flex flex-col lg:flex-row lg:items-center justify-between shadow-sm hover:shadow-md transition-all border border-transparent hover:border-[#003B99]/10 gap-6">
                   <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 rounded-2xl bg-[#0E3D8A]/5 flex items-center justify-center">
-                      <FileText className="text-[#0E3D8A] w-8 h-8" />
+                    <div className="w-16 h-16 rounded-2xl bg-[#003B99]/5 flex items-center justify-center">
+                      <FileText className="text-[#003B99] w-8 h-8" />
                     </div>
                     <div>
                       <div className="flex items-center gap-3 mb-1">
@@ -120,7 +120,7 @@ export default function LaudosGeradosPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                     <button className="flex-1 lg:flex-none h-14 px-6 rounded-xl bg-[#0E3D8A] text-white text-[13px] lg:font-medium font-bold uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-[#0E3D8A]/20">
+                     <button className="flex-1 lg:flex-none h-14 px-6 rounded-xl bg-[#003B99] text-white text-[13px] lg:font-medium font-bold uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-[#003B99]/20">
                         <Download className="w-4 h-4" /> PDF
                      </button>
                      <button className="w-14 h-14 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-gray-100 transition-all">

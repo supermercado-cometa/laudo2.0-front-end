@@ -14,7 +14,7 @@ export default function AuditoriaTomboPage() {
       <SubPageHeader title={`Auditoria\npor Tombo`} icon={ShieldCheck} type="checklists" />
 
       {/* Lado Esquerdo (Hero) */}
-      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#0E3D8A] to-[#1E5BB5] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
+      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
         <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all group shadow-lg">
           <ChevronLeft className="w-5 h-5" />
           Voltar
@@ -33,7 +33,7 @@ export default function AuditoriaTomboPage() {
           
           <ul className="space-y-8">
             <li className="flex items-center gap-5 group">
-              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-[#FECC00] transition-all duration-300"><BarChart3 className="w-5 h-5 text-white group-hover:text-[#0E3D8A]" /></div>
+              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-[#FECC00] transition-all duration-300"><BarChart3 className="w-5 h-5 text-white group-hover:text-[#003B99]" /></div>
               <span className="text-white/90 lg:font-medium font-bold text-lg">Busca individualizada</span>
             </li>
           </ul>
@@ -51,20 +51,20 @@ export default function AuditoriaTomboPage() {
 
           <div className="bg-white p-10 rounded-[32px] shadow-sm border border-gray-100">
              <div className="relative group mb-8">
-               <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#0E3D8A]">
+               <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#003B99]">
                  <Search className="w-6 h-6 border-none" />
                </div>
                {/* Input (24px Black) - Mantendo impacto na busca */}
                <input 
                  type="text" 
                  placeholder="Digite o número do tombo..." 
-                 className="w-full h-20 pl-16 pr-8 rounded-2xl bg-[#EDF1F7] border-none focus:ring-4 focus:ring-[#0E3D8A]/5 transition-all lg:font-medium font-[800] text-[24px] text-[#1A1A2E] placeholder:text-gray-300"
+                 className="w-full h-20 pl-16 pr-8 rounded-2xl bg-[#EDF1F7] border-none focus:ring-4 focus:ring-[#003B99]/5 transition-all lg:font-medium font-[800] text-[24px] text-[#1A1A2E] placeholder:text-gray-300"
                  value={tombo}
                  onChange={(e) => setTombo(e.target.value)}
                />
              </div>
              {/* Botão Principal (15px 800 tracking-1.0 UPPERCASE) */}
-             <button className="w-full h-18 bg-[#0E3D8A] text-white rounded-2xl text-[15px] lg:font-medium font-[800] tracking-[1.0px] uppercase shadow-xl hover:shadow-2xl hover:bg-[#0A2D66] transition-all active:scale-[0.98] flex items-center justify-center gap-4">
+             <button className="w-full h-18 bg-[#003B99] text-white rounded-2xl text-[15px] lg:font-medium font-[800] tracking-[1.0px] uppercase shadow-xl hover:shadow-2xl hover:bg-[#0A2D66] transition-all active:scale-[0.98] flex items-center justify-center gap-4">
                 Consultar Patrimônio
                 <ChevronRight className="w-5 h-5" />
              </button>

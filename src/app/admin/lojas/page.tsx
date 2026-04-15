@@ -103,7 +103,7 @@ export default function LojasPage() {
       <SubPageHeader title={`Checklists\npor Loja`} icon={Store} type="checklists" />
 
       {/* Lado Esquerdo */}
-      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-b from-[#0E3D8A] to-[#1E5BB5] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen">
+      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
         <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all">
           <ChevronLeft className="w-5 h-5" /> Voltar
         </button>
@@ -122,22 +122,22 @@ export default function LojasPage() {
       {/* Lado Direito */}
       <div className="flex-1 lg:w-[60%] flex flex-col p-6 lg:p-24 overflow-y-auto">
         <div className="max-w-[800px] w-full mx-auto">
-          <div className="mb-12 flex items-center justify-between">
-            <h2 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800]">Unidades de Rede</h2>
-            <button onClick={() => handleOpenModal()} className="bg-[#0E3D8A] text-white px-8 py-4 rounded-xl text-[14px] lg:font-medium font-bold uppercase tracking-widest shadow-xl flex items-center gap-2 hover:bg-[#0A2D66] transition-all">
+          <div className="mb-12 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <h2 className="text-[#1A1A2E] text-[28px] lg:text-[32px] lg:font-medium font-[800]">Unidades de Rede</h2>
+            <button onClick={() => handleOpenModal()} className="w-full sm:w-auto bg-[#003B99] text-white px-8 py-4 rounded-xl text-[14px] lg:font-medium font-bold uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:bg-[#002D7A] transition-all">
               <Plus className="w-5 h-5" /> Nova Loja
             </button>
           </div>
 
           <div className="relative mb-8"><Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" /><input type="text" placeholder="Pesquisar loja..." className="w-full h-16 pl-14 pr-6 rounded-2xl bg-[#EDF1F7] border-none" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
 
-          {isLoading ? <div className="flex justify-center p-20 animate-spin"><Loader2 className="w-10 h-10 text-[#0E3D8A]" /></div> : (
+          {isLoading ? <div className="flex justify-center p-20 animate-spin"><Loader2 className="w-10 h-10 text-[#003B99]" /></div> : (
             <div className="space-y-4">
               {filteredLojas.map((loja) => (
                 <div key={loja.id} className="w-full bg-white p-6 rounded-2xl flex items-center gap-6 shadow-sm group">
                   <button onClick={() => router.push(`/admin/lojas/${loja.id}`)} className="flex-1 text-left flex items-center gap-8">
-                    <div className="w-14 h-14 rounded-2xl bg-[#0E3D8A]/5 flex items-center justify-center group-hover:bg-[#0E3D8A] transition-all">
-                      <Store className="text-[#0E3D8A] group-hover:text-white w-7 h-7" />
+                    <div className="w-14 h-14 rounded-2xl bg-[#003B99]/5 flex items-center justify-center group-hover:bg-[#003B99] transition-all">
+                      <Store className="text-[#003B99] group-hover:text-white w-7 h-7" />
                     </div>
                     <div>
                       <h3 className="text-[#1A1A2E] text-[16px] lg:font-medium font-[700] uppercase mb-1">{loja.nome}</h3>
@@ -150,7 +150,7 @@ export default function LojasPage() {
                   </button>
                   <div className="flex gap-2">
                      <button onClick={() => handleDelete(loja.id)} className="w-10 h-10 rounded-lg bg-red-50 text-red-500 flex items-center justify-center"><Trash2 className="w-4 h-4" /></button>
-                     <button onClick={() => handleOpenModal(loja)} className="w-10 h-10 rounded-lg bg-blue-50 text-[#0E3D8A] flex items-center justify-center"><Edit3 className="w-4 h-4" /></button>
+                     <button onClick={() => handleOpenModal(loja)} className="w-10 h-10 rounded-lg bg-blue-50 text-[#003B99] flex items-center justify-center"><Edit3 className="w-4 h-4" /></button>
                      <ChevronRight onClick={() => router.push(`/admin/lojas/${loja.id}`)} className="text-gray-300 w-6 h-6 self-center cursor-pointer" />
                   </div>
                 </div>
@@ -174,7 +174,7 @@ export default function LojasPage() {
                   <div className="space-y-2"><label className="text-[11px] lg:font-medium font-black uppercase text-gray-400">Filial</label><input type="text" value={formData.filial} onChange={e => setFormData({...formData, filial: e.target.value})} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-bold" /></div>
                   <div className="space-y-2"><label className="text-[11px] lg:font-medium font-black uppercase text-gray-400">Cidade</label><input type="text" value={formData.cidade} onChange={e => setFormData({...formData, cidade: e.target.value})} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-bold" /></div>
                 </div>
-                <button onClick={handleSave} className="w-full h-18 bg-[#0E3D8A] text-white rounded-2xl text-[15px] lg:font-medium font-[800] tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl">
+                <button onClick={handleSave} className="w-full h-18 bg-[#003B99] text-white rounded-2xl text-[15px] lg:font-medium font-[800] tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl">
                    <Save className="w-5 h-5" /> Salvar Unidade
                 </button>
              </div>

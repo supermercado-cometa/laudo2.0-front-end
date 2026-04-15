@@ -19,7 +19,7 @@ export default function Error({
       <p className="text-gray-600 mb-8">Ocorreu um erro inesperado ao carregar esta página.</p>
       <button
         onClick={() => reset()}
-        className="px-8 py-4 bg-[#0E3D8A] text-white rounded-2xl font-bold uppercase tracking-widest hover:bg-[#0A2D66] transition-all"
+        className="px-8 py-4 bg-[#003B99] text-white rounded-2xl font-bold uppercase tracking-widest hover:bg-[#0A2D66] transition-all"
       >
         Tentar Novamente
       </button>

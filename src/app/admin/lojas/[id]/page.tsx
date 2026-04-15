@@ -54,7 +54,7 @@ export default function LojaDetalhesPage() {
       <SubPageHeader title={`Checklists\n${lojaInfo?.nome || 'Monitoramento'}`} icon={ClipboardList} type="checklists" />
 
       {/* Lado Esquerdo (Hero) */}
-      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#0E3D8A] to-[#1E5BB5] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
+      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
         <button onClick={() => router.push("/admin/lojas")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all group">
           <ChevronLeft className="w-5 h-5" />
           Voltar para Lojas
@@ -80,12 +80,12 @@ export default function LojaDetalhesPage() {
           </div>
 
           {isLoading ? (
-            <div className="flex items-center justify-center p-20"><Loader2 className="w-10 h-10 text-[#0E3D8A] animate-spin" /></div>
+            <div className="flex items-center justify-center p-20"><Loader2 className="w-10 h-10 text-[#003B99] animate-spin" /></div>
           ) : (
             <div className="space-y-4">
               {checklists.length > 0 ? (
                 checklists.map((check) => (
-                  <div key={check.id} className="w-full bg-white p-6 rounded-2xl flex items-center justify-between shadow-sm group border border-transparent hover:border-[#0E3D8A]/5">
+                  <div key={check.id} className="w-full bg-white p-6 rounded-2xl flex items-center justify-between shadow-sm group border border-transparent hover:border-[#003B99]/5">
                     <div className="flex items-center gap-6">
                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${check.status === 'Finalizado' ? 'bg-green-50 text-green-500' : 'bg-orange-50 text-orange-500'}`}>
                           {check.status === 'Finalizado' ? <CheckCircle2 className="w-6 h-6" /> : <Clock className="w-6 h-6" />}
@@ -95,7 +95,7 @@ export default function LojaDetalhesPage() {
                           <p className="text-[#6B7280] text-[12px] uppercase lg:font-medium font-bold tracking-wider">{check.tecnico} • {new Date(check.data).toLocaleDateString()}</p>
                        </div>
                     </div>
-                    <ChevronRight className="text-gray-300 group-hover:text-[#0E3D8A] translate-x-0 group-hover:translate-x-2 transition-all" />
+                    <ChevronRight className="text-gray-300 group-hover:text-[#003B99] translate-x-0 group-hover:translate-x-2 transition-all" />
                   </div>
                 ))
               ) : (

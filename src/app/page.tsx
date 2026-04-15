@@ -7,7 +7,7 @@ export default function Home() {
       {/* Mobile Layout */}
       <div className="md:hidden relative min-h-screen bg-white">
         {/* HEADER PREMIUM (Seção de Destaque) */}
-        <div className="relative h-[380px] w-full bg-gradient-to-bl from-[#0F2872] to-[#0E3D8A] rounded-bl-[100px] flex flex-col items-center justify-center px-8 shadow-portal-mobile overflow-hidden">
+        <div className="relative h-[380px] w-full bg-gradient-to-bl from-[#0F2872] to-[#003B99] rounded-bl-[100px] flex flex-col items-center justify-center px-8 shadow-portal-mobile overflow-hidden">
           {/* Círculos Decorativos */}
           <div className="absolute -top-[60px] -right-[40px] w-[280px] h-[280px] rounded-full bg-white opacity-[0.04]" />
           <div className="absolute bottom-[20px] right-[40px] w-[60px] h-[60px] rounded-full bg-[#FECC00] opacity-[0.10]" />

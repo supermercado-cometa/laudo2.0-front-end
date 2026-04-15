@@ -71,15 +71,15 @@ export default function AdminHomePage() {
     {
       title: "Auditoria",
       icon: ShieldCheck,
-      colorClass: "text-[#0E3D8A]",
-      bgColorClass: "bg-[#0E3D8A1F]", // 12% Opacidade
+      colorClass: "text-[#003B99]",
+      bgColorClass: "bg-[#003B991F]",
       path: "/admin/auditoria/tombo",
     },
     {
       title: "Laudo Técnico",
       icon: ClipboardCheck,
-      colorClass: "text-gray-600",
-      bgColorClass: "bg-gray-100",
+      colorClass: "text-[#003B99]",
+      bgColorClass: "bg-[#003B991F]",
       path: "/infoFormulario",
     },
   ];

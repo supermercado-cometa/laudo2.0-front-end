@@ -114,7 +114,7 @@ export default function InfoFormularioPage() {
       <SubPageHeader title={`Laudo\nTécnico`} icon={ClipboardCheck} hideBack={!isAdmin} />
 
       {/* Lado Esquerdo (Hero) */}
-      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#0E3D8A] to-[#1E5BB5] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
+      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
         {isAdmin && (
           <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all">
             <ChevronLeft className="w-5 h-5" /> Voltar
@@ -133,12 +133,12 @@ export default function InfoFormularioPage() {
         <div className="max-w-[800px] w-full mx-auto pb-20">
           <AnimatePresence>
             {showSuccess && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0E3D8A]/90 backdrop-blur-md p-6">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-[#003B99]/90 backdrop-blur-md p-6">
                  <div className="bg-white rounded-[32px] p-10 text-center shadow-2xl max-w-sm w-full">
                     <CheckCircle2 className="text-green-500 w-20 h-20 mx-auto mb-6" />
                     <h2 className="text-3xl lg:font-medium font-[800] text-[#1A1A2E] mb-2 uppercase tracking-tighter">Sucesso!</h2>
                     <p className="text-[#6B7280] font-medium mb-8">Todos os dados foram registrados no banco de dados.</p>
-                    <Button className="w-full h-18 bg-[#0E3D8A] rounded-2xl text-[15px] lg:font-medium font-[800] tracking-widest uppercase" onClick={resetFormulario}>Novo Laudo</Button>
+                    <Button className="w-full h-18 bg-[#003B99] rounded-2xl text-[15px] lg:font-medium font-[800] tracking-widest uppercase" onClick={resetFormulario}>Novo Laudo</Button>
                  </div>
               </motion.div>
             )}
@@ -149,7 +149,7 @@ export default function InfoFormularioPage() {
                
                {/* 1. SEÇÃO DE DADOS (CONFORME IMAGEM) */}
                <div className="space-y-10">
-                  <div className="border-l-4 border-[#0E3D8A] pl-4"><h3 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800] tracking-tighter uppercase leading-none">Informações do Laudo</h3></div>
+                  <div className="border-l-4 border-[#003B99] pl-4"><h3 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800] tracking-tighter uppercase leading-none">Informações do Laudo</h3></div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                      <div className="space-y-3">
@@ -204,7 +204,7 @@ export default function InfoFormularioPage() {
                   <div className="flex flex-col md:flex-row items-center gap-6 p-8 rounded-[32px] bg-gray-100 border-2 border-dashed border-gray-200 relative group">
                      {imagem ? (
                         <div className="flex flex-col items-center gap-4">
-                           <ImageIcon className="w-12 h-12 text-[#0E3D8A]" />
+                           <ImageIcon className="w-12 h-12 text-[#003B99]" />
                            <span className="text-gray-600 lg:font-medium font-black text-xs uppercase tracking-widest">{imagem.name}</span>
                            <Button variant="ghost" className="text-red-500 lg:font-medium font-black uppercase text-[10px]" onClick={() => setImagem(null)}><Trash2 className="w-4 h-4 mr-2" /> Limpar Imagem</Button>
                         </div>
@@ -257,7 +257,7 @@ export default function InfoFormularioPage() {
 
                {/* BOTÃO FINALIZAR */}
                <div className="pt-6">
-                  <Button disabled={isSubmitting} className="w-full h-20 bg-[#0E3D8A] text-white rounded-2xl text-[16px] lg:font-medium font-[800] tracking-widest uppercase shadow-xl hover:bg-[#0A2D66]" onClick={handleSubmit}>
+                  <Button disabled={isSubmitting} className="w-full h-20 bg-[#003B99] text-white rounded-2xl text-[16px] lg:font-medium font-[800] tracking-widest uppercase shadow-xl hover:bg-[#0A2D66]" onClick={handleSubmit}>
                      {isSubmitting ? <Loader2 className="animate-spin" /> : "Finalizar e Enviar para GLPI"}
                   </Button>
                </div>
