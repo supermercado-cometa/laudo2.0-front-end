@@ -31,6 +31,7 @@ export default function InfoFormularioPage() {
   
   const [lojas, setLojas] = useState<LojaType[]>([]);
   const [equipamentos, setEquipamentos] = useState<{id: number, nome: string, tipo?: string}[]>([]);
+  const [setores, setSetores] = useState<{id: number, nome: string}[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -64,6 +65,14 @@ export default function InfoFormularioPage() {
         else setEquipamentos([]);
       })
       .catch(() => setEquipamentos([]));
+
+    fetch(`${API_BASE_URL}/setores`)
+      .then(res => res.ok ? res.json() : [])
+      .then(data => {
+        if (Array.isArray(data)) setSetores(data);
+        else setSetores([]);
+      })
+      .catch(() => setSetores([]));
       
     const storedName = localStorage.getItem("fullName");
     if (storedName) setNomeTecnico(storedName);
@@ -189,7 +198,10 @@ export default function InfoFormularioPage() {
                      </div>
                      <div className="space-y-3">
                         <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Setor</Label>
-                        <Input value={setor} onChange={e => setSetor(e.target.value)} className="h-16 rounded-2xl bg-gray-50 border-none font-medium text-gray-600" />
+                        <select value={setor} onChange={e => setSetor(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-medium text-gray-600 appearance-none">
+                           <option value="">Selecione...</option>
+                           {setores.map(s => <option key={s.id} value={s.nome}>{s.nome}</option>)}
+                        </select>
                      </div>
                      <div className="space-y-3">
                         <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Data Atual do Sistema</Label>
