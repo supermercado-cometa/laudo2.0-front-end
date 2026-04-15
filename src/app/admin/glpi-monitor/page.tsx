@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Activity, RefreshCw, ChevronLeft, UserX, Users, Database, Zap, Clock, ShieldAlert, History, User, LucideIcon } from "lucide-react";
+import { Activity, RefreshCw, ChevronLeft, UserX, Users, Database, Zap, Clock, ShieldAlert, History, User, LucideIcon, CheckCircle2, LayoutGrid } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SubPageHeader } from "@/components/subpage-header";
 import { API_BASE_URL } from "@/lib/api-config";
@@ -30,6 +30,11 @@ interface GlpiMetrics {
     linkTickets: number;
     setRequester: number;
     setAssigned: number;
+  };
+  db: {
+    totalLaudos: number;
+    totalLojas: number;
+    totalSetores: number;
   };
 }
 
@@ -144,6 +149,14 @@ export default function GlpiMonitorPage() {
           </div>
 
           {/* Grid de Métricas Principais */}
+          {/* Grid de Métricas do Banco (Sincronização) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 border-b border-gray-100 pb-12">
+             <MetricCard icon={CheckCircle2} label="Laudos no Banco" value={metrics?.db?.totalLaudos || 0} color="green" />
+             <MetricCard icon={LayoutGrid} label="Lojas Ativas" value={metrics?.db?.totalLojas || 0} color="blue" />
+             <MetricCard icon={Database} label="Setores Cadastrados" value={metrics?.db?.totalSetores || 0} color="gray" />
+          </div>
+
+          <h3 className="text-[#1A1A2E] text-xl lg:font-medium font-black uppercase mb-8">Performance da Integração</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
              <MetricCard icon={User} label="Sessões iniciadas" value={metrics?.initSessions || 0} color="blue" />
              <MetricCard icon={Zap} label="Hits de cache" value={metrics?.sessionCacheHits || 0} color="green" />
