@@ -150,12 +150,12 @@ export default function GlpiMonitorPage() {
           <div className="bg-white rounded-[40px] p-10 shadow-sm border border-gray-100">
              <h3 className="text-[#1A1A2E] text-xl lg:font-medium font-black uppercase mb-8 border-b border-gray-50 pb-6">Detalhamento de Atividade</h3>
              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
-                <OpDetail label="Followup" value={metrics?.operations.createFollowup || 0} />
-                <OpDetail label="Followup c/ cabeçalho" value={metrics?.operations.createFollowupWithHeader || 0} />
-                <OpDetail label="Criar Ticket" value={metrics?.operations.createTicket || 0} />
-                <OpDetail label="Relacionar Tickets" value={metrics?.operations.linkTickets || 0} />
-                <OpDetail label="Definir requerente" value={metrics?.operations.setRequester || 0} />
-                <OpDetail label="Atribuir usuário" value={metrics?.operations.setAssigned || 0} />
+                <OpDetail label="Followup" value={metrics?.operations?.createFollowup || 0} />
+                <OpDetail label="Followup c/ cabeçalho" value={metrics?.operations?.createFollowupWithHeader || 0} />
+                <OpDetail label="Criar Ticket" value={metrics?.operations?.createTicket || 0} />
+                <OpDetail label="Relacionar Tickets" value={metrics?.operations?.linkTickets || 0} />
+                <OpDetail label="Definir requerente" value={metrics?.operations?.setRequester || 0} />
+                <OpDetail label="Atribuir usuário" value={metrics?.operations?.setAssigned || 0} />
              </div>
           </div>
 
