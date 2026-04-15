@@ -19,6 +19,8 @@ export default function LaudosGeradosPage() {
   const [laudos, setLaudos] = useState<Laudo[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"todos" | "meus">("todos");
+  const [currentUsername, setCurrentUsername] = useState("");
 
   useEffect(() => {
     const fetchLaudos = async () => {
@@ -39,14 +41,20 @@ export default function LaudosGeradosPage() {
       }
     };
 
+    const storedUser = localStorage.getItem("username");
+    if (storedUser) setCurrentUsername(storedUser);
+
     fetchLaudos();
   }, []);
 
-  const filtered = laudos.filter(l => 
-    l.lojaNome?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    l.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    l.tecnicoResponsavel?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filtered = laudos.filter(l => {
+    const matchSearch = l.lojaNome?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      l.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      l.tecnicoResponsavel?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchTab = activeTab === "todos" || (activeTab === "meus" && l.username === currentUsername);
+    return matchSearch && matchTab;
+  });
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">
@@ -74,9 +82,12 @@ export default function LaudosGeradosPage() {
         <div className="max-w-[1000px] w-full mx-auto">
           <div className="mb-12 flex items-center justify-between">
             <h2 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800]">Laudos Emitidos</h2>
-            <div className="flex gap-3">
-              <button className="bg-white text-[#9C27B0] border border-gray-200 px-6 py-4 rounded-xl text-[14px] lg:font-medium font-bold uppercase tracking-widest shadow-sm flex items-center gap-2 hover:bg-gray-50 transition-all">
-                <Filter className="w-4 h-4" /> Filtrar
+            <div className="flex bg-gray-100 p-1 rounded-xl">
+              <button onClick={() => setActiveTab("todos")} className={`px-6 py-3 rounded-lg text-xs lg:font-medium font-bold uppercase tracking-widest transition-all ${activeTab === 'todos' ? 'bg-white shadow-sm text-[#0E3D8A]' : 'text-gray-500 hover:text-gray-700'}`}>
+                Todos
+              </button>
+              <button onClick={() => setActiveTab("meus")} className={`px-6 py-3 rounded-lg text-xs lg:font-medium font-bold uppercase tracking-widest transition-all ${activeTab === 'meus' ? 'bg-white shadow-sm text-[#0E3D8A]' : 'text-gray-500 hover:text-gray-700'}`}>
+                Meus Laudos
               </button>
             </div>
           </div>

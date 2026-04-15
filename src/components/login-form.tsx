@@ -53,21 +53,13 @@ export function LoginForm() {
         }
       }
 
-      // Fluxo de navegação
-      if (goAdmin) {
-        if (data?.isAdmin === true) {
-          console.log("Admin login success, redirecting to /admin");
-          // Usar window.location.href para garantir que o middleware receba o cookie fresco
-          window.location.href = "/admin";
-        } else {
-          console.warn("User is not admin, redirecting to /infoFormulario");
-          setErrorMsg("Seu perfil não tem acesso ao painel administrador.");
-          setLoading(false);
-          router.push("/infoFormulario");
-        }
+      // Fluxo de navegação automático
+      if (data?.isAdmin === true) {
+        console.log("Admin login success, redirecting to /admin/usuarios");
+        // Quando for admin, vai direto pra página de usuários
+        window.location.href = "/admin/usuarios";
       } else {
         console.log("Normal user login success, redirecting to /infoFormulario");
-        // Usar window.location.href para garantir que o middleware receba o cookie fresco
         window.location.href = "/infoFormulario";
       }
     } catch (err) {
@@ -115,22 +107,6 @@ export function LoginForm() {
               autoComplete="current-password"
               className="input-custom"
             />
-          </div>
-
-          <div className="flex items-center gap-3">
-            <input
-              id="adminPanel"
-              type="checkbox"
-              checked={goAdmin}
-              onChange={(e) => setGoAdmin(e.target.checked)}
-              className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
-            />
-            <Label 
-              htmlFor="adminPanel" 
-              className="text-[14px] font-[500] text-foreground/80 cursor-pointer"
-            >
-              Ir direto ao painel administrador
-            </Label>
           </div>
 
           {errorMsg && (

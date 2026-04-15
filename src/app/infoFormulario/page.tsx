@@ -153,16 +153,16 @@ export default function InfoFormularioPage() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                      <div className="space-y-3">
-                        <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Número do Chamado</Label>
-                        <Input value={numeroChamado} onChange={e => setNumeroChamado(e.target.value)} placeholder="Somente números" className="h-16 rounded-2xl bg-gray-50 border-none lg:sm:font-medium font-bold" />
+                        <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Número do Chamado</Label>
+                        <Input value={numeroChamado} onChange={e => setNumeroChamado(e.target.value)} placeholder="Somente números" className="h-16 rounded-2xl bg-gray-50 border-none font-medium text-gray-600" />
                      </div>
                      <div className="space-y-3">
-                        <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Nome do Técnico</Label>
-                        <Input value={nomeTecnico} onChange={e => setNomeTecnico(e.target.value)} className="h-16 rounded-2xl bg-gray-50 border-none lg:sm:font-medium font-bold" />
+                        <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Nome do Técnico</Label>
+                        <Input value={nomeTecnico} onChange={e => setNomeTecnico(e.target.value)} className="h-16 rounded-2xl bg-gray-50 border-none font-medium text-gray-600" />
                      </div>
                       <div className="space-y-3">
-                        <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Equipamento</Label>
-                        <select value={equipamento} onChange={e => setEquipamento(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 lg:sm:font-medium font-bold appearance-none">
+                        <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Equipamento</Label>
+                        <select value={equipamento} onChange={e => setEquipamento(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-medium text-gray-600 appearance-none">
                            <option value="">Selecione...</option>
                            {equipamentos.map(e => (
                              <option key={e.id} value={e.nome}>{e.nome}{e.tipo ? ` - ${e.tipo}` : ''}</option>
@@ -170,29 +170,29 @@ export default function InfoFormularioPage() {
                         </select>
                       </div>
                      <div className="space-y-3">
-                        <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Loja</Label>
-                        <select value={loja} onChange={e => setLoja(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 lg:sm:font-medium font-bold appearance-none">
+                        <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Loja</Label>
+                        <select value={loja} onChange={e => setLoja(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-medium text-gray-600 appearance-none">
                            <option value="">Selecione...</option>
                            {lojas.map(l => <option key={l.id} value={l.nome}>{l.nome}</option>)}
                         </select>
                      </div>
                      <div className="space-y-3">
-                        <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Tombo</Label>
-                        <Input value={tombo} onChange={e => setTombo(e.target.value)} placeholder="Somente números" className="h-16 rounded-2xl bg-gray-50 border-none lg:sm:font-medium font-bold" />
+                        <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Tombo</Label>
+                        <Input value={tombo} onChange={e => setTombo(e.target.value)} placeholder="Somente números" className="h-16 rounded-2xl bg-gray-50 border-none font-medium text-gray-600" />
                      </div>
                      <div className="space-y-3">
-                        <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Modelo</Label>
-                        <select value={modelo} onChange={e => setModelo(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 lg:sm:font-medium font-bold appearance-none">
+                        <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Modelo</Label>
+                        <select value={modelo} onChange={e => setModelo(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-medium text-gray-600 appearance-none">
                            <option value="">Selecione...</option>
                            <option value="Padrão">Padrão</option><option value="Específico">Específico</option>
                         </select>
                      </div>
                      <div className="space-y-3">
-                        <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Setor</Label>
-                        <Input value={setor} onChange={e => setSetor(e.target.value)} className="h-16 rounded-2xl bg-gray-50 border-none lg:sm:font-medium font-bold" />
+                        <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Setor</Label>
+                        <Input value={setor} onChange={e => setSetor(e.target.value)} className="h-16 rounded-2xl bg-gray-50 border-none font-medium text-gray-600" />
                      </div>
                      <div className="space-y-3">
-                        <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Data Atual do Sistema</Label>
+                        <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Data Atual do Sistema</Label>
                         <Input value={dataSistema} disabled className="h-16 rounded-2xl bg-gray-100 border-none lg:sm:font-medium font-black text-gray-400" />
                      </div>
                   </div>
@@ -200,7 +200,7 @@ export default function InfoFormularioPage() {
 
                {/* 2. SEÇÃO IMAGEM (CONFORME IMAGEM) */}
                <div className="space-y-6 pt-10 border-t border-gray-100">
-                  <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Imagem do Equipamento</Label>
+                  <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Imagem do Equipamento</Label>
                   <div className="flex flex-col md:flex-row items-center gap-6 p-8 rounded-[32px] bg-gray-100 border-2 border-dashed border-gray-200 relative group">
                      {imagem ? (
                         <div className="flex flex-col items-center gap-4">
@@ -221,36 +221,36 @@ export default function InfoFormularioPage() {
                {/* 3. TESTES E DIAGNÓSTICO (CONFORME IMAGEM) */}
                <div className="space-y-10 pt-10 border-t border-gray-100">
                   <div className="space-y-3">
-                     <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Testes realizados</Label>
-                     <textarea value={testesRealizados} onChange={e => setTestesRealizados(e.target.value)} className="w-full min-h-[140px] rounded-2xl bg-gray-50 border-none p-6 lg:sm:font-medium font-bold" placeholder="Descreva os testes executados" />
+                     <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Testes realizados</Label>
+                     <textarea value={testesRealizados} onChange={e => setTestesRealizados(e.target.value)} className="w-full min-h-[140px] rounded-2xl bg-gray-50 border-none p-6 font-medium text-gray-600" placeholder="Descreva os testes executados" />
                   </div>
                   <div className="space-y-3">
-                     <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Diagnóstico do equipamento</Label>
-                     <textarea value={diagnostico} onChange={e => setDiagnostico(e.target.value)} className="w-full min-h-[140px] rounded-2xl bg-gray-50 border-none p-6 lg:sm:font-medium font-bold" placeholder="Descreva o diagnóstico" />
+                     <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Diagnóstico do equipamento</Label>
+                     <textarea value={diagnostico} onChange={e => setDiagnostico(e.target.value)} className="w-full min-h-[140px] rounded-2xl bg-gray-50 border-none p-6 font-medium text-gray-600" placeholder="Descreva o diagnóstico" />
                   </div>
                </div>
 
                {/* 4. ESTADO E NECESSIDADE (CONFORME IMAGEM) */}
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-10 border-t border-gray-100">
                   <div className="space-y-3">
-                     <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">Estado do equipamento</Label>
-                     <select value={estadoEquipamento} onChange={e => setEstadoEquipamento(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 lg:sm:font-medium font-bold appearance-none">
+                     <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Estado do equipamento</Label>
+                     <select value={estadoEquipamento} onChange={e => setEstadoEquipamento(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-medium text-gray-600 appearance-none">
                         <option value="">Selecione...</option>
-                        <option value="Bom">Bom</option><option value="Regular">Regular</option><option value="Ruim">Ruim</option>
+                        <option value="Funcionando">Funcionando</option><option value="Não funcionando">Não funcionando</option>
                      </select>
                   </div>
                   <div className="space-y-3">
-                     <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400">O equipamento necessita</Label>
-                     <select value={necessidade} onChange={e => setNecessidade(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 lg:sm:font-medium font-bold appearance-none">
+                     <Label className="text-[#4B5563] text-[13px] font-medium uppercase">O equipamento necessita</Label>
+                     <select value={necessidade} onChange={e => setNecessidade(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-medium text-gray-600 appearance-none">
                         <option value="">Selecione...</option>
-                        <option value="Reparo">Reparo</option><option value="Substituição">Substituição</option><option value="Limpeza">Limpeza</option>
+                        <option value="Ser substituído">Ser substituído</option><option value="Enviado p/ conserto">Enviado p/ conserto</option><option value="Ser descartado">Ser descartado</option>
                      </select>
                   </div>
                </div>
 
                {/* 5. ASSINATURA (CONFORME IMAGEM) */}
                <div className="space-y-8 pt-10 border-t border-gray-100">
-                  <Label className="text-[#6B7280] text-[13px] lg:font-medium font-black uppercase text-gray-400 text-center block">Assinatura</Label>
+                  <Label className="text-[#4B5563] text-[13px] font-medium uppercase text-center block">Assinatura</Label>
                   <div className="border border-dashed border-gray-300 rounded-[32px] overflow-hidden bg-gray-50"><SignatureCanvas ref={sigPadRef} canvasProps={{ className: "w-full h-64" }} /></div>
                   <button onClick={() => sigPadRef.current?.clear()} className="w-full text-xs lg:font-medium font-black uppercase text-gray-400 hover:text-red-500 transition-colors">Limpar Assinatura</button>
                </div>

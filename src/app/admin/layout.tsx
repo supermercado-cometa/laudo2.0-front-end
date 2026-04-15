@@ -73,7 +73,7 @@ export default function AdminLayout({
     <div className={`min-h-screen bg-[#F5F7FB] flex flex-col items-center ${isHome ? 'lg:justify-center' : ''}`}>
       {isHome ? (
         /* LAYOUT CENTRALIZADO (HOME) - GUIA DESKTOP */
-        <div className="w-full max-w-[1400px] px-0 lg:px-8 pt-0 pb-0 lg:pb-12 flex flex-col animate-in fade-in zoom-in-95 duration-700">
+        <div className="w-full max-w-[1400px] px-0 lg:px-8 pt-4 lg:pt-16 pb-0 lg:pb-12 flex flex-col animate-in fade-in zoom-in-95 duration-700">
           <AdminHeader />
           <main className="w-full px-6 lg:px-0 flex flex-col items-start font-['Roboto']">
             {children}
