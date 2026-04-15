@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { FileText, Search, Download, Filter, ChevronLeft, Loader2, Eye, Printer, Calendar } from "lucide-react";
+import { FileText, Search, Download, ChevronLeft, Loader2, Eye, Printer, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SubPageHeader } from "@/components/subpage-header";
 import { API_BASE_URL } from "@/lib/api-config";
@@ -61,7 +61,7 @@ export default function LaudosGeradosPage() {
       <SubPageHeader title={`Laudos\nGerados`} icon={FileText} type="checklists" />
 
       {/* Lado Esquerdo */}
-      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#0E3D8A] to-[#1E5BB5] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
+      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
         <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all">
           <ChevronLeft className="w-5 h-5" /> Voltar
         </button>

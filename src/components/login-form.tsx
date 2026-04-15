@@ -2,13 +2,10 @@
 
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export function LoginForm() {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [goAdmin, setGoAdmin] = useState(false);
   
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
@@ -55,9 +52,8 @@ export function LoginForm() {
 
       // Fluxo de navegação automático
       if (data?.isAdmin === true) {
-        console.log("Admin login success, redirecting to /admin/usuarios");
-        // Quando for admin, vai direto pra página de usuários
-        window.location.href = "/admin/usuarios";
+        console.log("Admin login success, redirecting to /admin");
+        window.location.href = "/admin";
       } else {
         console.log("Normal user login success, redirecting to /infoFormulario");
         window.location.href = "/infoFormulario";

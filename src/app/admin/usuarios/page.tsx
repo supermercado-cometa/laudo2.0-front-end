@@ -15,7 +15,8 @@ export default function UsuariosPage() {
 
   // Estados para o Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ username: "" });
+  const [editingUser, setEditingUser] = useState<UsuarioType | null>(null);
+  const [formData, setFormData] = useState({ username: "", canManageUsers: false });
 
   const fetchUsuarios = useCallback(async () => {
     try {
@@ -39,8 +40,14 @@ export default function UsuariosPage() {
     fetchUsuarios();
   }, [fetchUsuarios]);
 
-  const handleOpenModal = () => {
-    setFormData({ username: "" });
+  const handleOpenModal = (user?: UsuarioType) => {
+    if (user) {
+      setEditingUser(user);
+      setFormData({ username: user.username, canManageUsers: user.canManageUsers ?? false });
+    } else {
+      setEditingUser(null);
+      setFormData({ username: "", canManageUsers: false });
+    }
     setIsModalOpen(true);
   };
 
@@ -61,7 +68,8 @@ export default function UsuariosPage() {
         },
         body: JSON.stringify({
           username: formData.username.trim().toLowerCase(),
-          isAdmin: true
+          isAdmin: true,
+          canManageUsers: formData.canManageUsers
         })
       });
 
@@ -99,7 +107,7 @@ export default function UsuariosPage() {
       <SubPageHeader title={`Admin\nUsuários`} icon={Users} type="checklists" />
 
       {/* Lado Esquerdo */}
-      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-b from-[#0E3D8A] to-[#1E5BB5] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen">
+      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-b from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen">
         <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all">
           <ChevronLeft className="w-5 h-5" /> Voltar
         </button>
@@ -120,7 +128,7 @@ export default function UsuariosPage() {
         <div className="max-w-[800px] w-full mx-auto">
           <div className="mb-12 flex items-center justify-between">
             <h2 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800]">Administradores</h2>
-            <button onClick={handleOpenModal} className="bg-[#0E3D8A] text-white px-8 py-4 rounded-xl text-[14px] lg:font-medium font-bold uppercase tracking-widest shadow-xl flex items-center gap-2 hover:bg-[#0A2D66] transition-all">
+            <button onClick={() => handleOpenModal()} className="bg-[#0E3D8A] text-white px-8 py-4 rounded-xl text-[14px] lg:font-medium font-bold uppercase tracking-widest shadow-xl flex items-center gap-2 hover:bg-[#0A2D66] transition-all">
               <Plus className="w-5 h-5" /> Novo Admin
             </button>
           </div>
@@ -146,11 +154,14 @@ export default function UsuariosPage() {
                       <h3 className="text-[#1A1A2E] text-[16px] lg:font-medium font-[700] mb-1">{usuario.username}</h3>
                       <div className="flex items-center gap-4 text-[#6B7280] text-[12px] font-medium uppercase tracking-widest">
                         <span>Acesso: {usuario.isAdmin ? 'Admin' : 'Restrito'}</span>
+                        <span className="text-gray-300">|</span>
+                        <span>Autonomia: {usuario.canManageUsers ? 'Global' : 'Apenas Leitura/Laudos'}</span>
                       </div>
                     </div>
                   </div>
                   <div className="flex gap-2">
                      <button onClick={() => handleDelete(usuario.id)} className="w-10 h-10 rounded-lg bg-red-50 text-red-500 flex items-center justify-center transition-all hover:bg-red-100"><Trash2 className="w-4 h-4" /></button>
+                     <button onClick={() => handleOpenModal(usuario)} className="w-10 h-10 rounded-lg bg-blue-50 text-[#0E3D8A] flex items-center justify-center"><Edit3 className="w-4 h-4" /></button>
                   </div>
                 </div>
               ))}
@@ -164,16 +175,33 @@ export default function UsuariosPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-6">
           <div className="bg-white rounded-[32px] p-10 max-w-lg w-full shadow-2xl animate-in zoom-in duration-300">
              <div className="flex justify-between items-center mb-8">
-                <h3 className="text-[#1A1A2E] text-2xl lg:font-medium font-black uppercase">Adicionar Admin</h3>
+                <h3 className="text-[#1A1A2E] text-2xl lg:font-medium font-black uppercase">{editingUser ? 'Perfil do Usuário' : 'Adicionar Admin'}</h3>
                 <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-red-500"><X /></button>
              </div>
              <div className="space-y-6">
                 <div className="space-y-2">
                   <label className="text-[11px] lg:font-medium font-black uppercase text-gray-400">Username (LDAP)</label>
-                  <input type="text" placeholder="Ex: victor.peixoto" value={formData.username} onChange={e => setFormData({...formData, username: e.target.value})} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-bold text-lg" />
+                  <input type="text" placeholder="Ex: victor.peixoto" value={formData.username} disabled={!!editingUser} onChange={e => setFormData({...formData, username: e.target.value})} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-bold text-lg disabled:opacity-60" />
                 </div>
+                
+                <div className="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl">
+                  <input
+                    id="canManageUsers"
+                    type="checkbox"
+                    checked={formData.canManageUsers}
+                    onChange={(e) => setFormData({...formData, canManageUsers: e.target.checked})}
+                    className="w-5 h-5 rounded border-border text-[#0E3D8A] focus:ring-[#0E3D8A]"
+                  />
+                  <div className="flex flex-col">
+                    <label htmlFor="canManageUsers" className="text-[14px] font-bold text-[#1A1A2E] cursor-pointer">
+                      Dar autonomia para gerenciar (Criar/Excluir) usuários
+                    </label>
+                    <span className="text-[12px] text-gray-500 font-medium">Marcando essa opção, o usuário poderá decidir quem tem acesso ao painel admin.</span>
+                  </div>
+                </div>
+
                 <button onClick={handleSave} className="w-full h-18 bg-[#0E3D8A] py-5 text-white rounded-2xl text-[15px] lg:font-medium font-[800] tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl">
-                   <Save className="w-5 h-5" /> Autorizar Usuário
+                   <Save className="w-5 h-5" /> {editingUser ? 'Salvar Perfil' : 'Autorizar Usuário'}
                 </button>
              </div>
           </div>

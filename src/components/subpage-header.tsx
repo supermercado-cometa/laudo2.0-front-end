@@ -14,7 +14,7 @@ interface SubPageHeaderProps {
 export const SubPageHeader = ({ title, icon: Icon, hideBack = false }: SubPageHeaderProps) => {
   const router = useRouter();
 
-  const gradientClass = "from-[#0E3D8A] to-[#1E5BB5]";
+  const gradientClass = "from-[#003B99] to-[#0066FF]";
 
   return (
     <div className="lg:hidden flex flex-col">

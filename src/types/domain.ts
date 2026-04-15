@@ -51,5 +51,6 @@ export type UsuarioType = {
   id: number;
   username: string;
   isAdmin: boolean;
+  canManageUsers?: boolean;
   createdAt?: string;
 };

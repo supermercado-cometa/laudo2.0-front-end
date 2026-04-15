@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { AdminHeader } from "@/components/admin-header";
 import { BottomNav } from "@/components/bottom-nav";
 import { API_BASE_URL } from "@/lib/api-config";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function AdminLayout({
   children,
@@ -75,17 +76,35 @@ export default function AdminLayout({
         /* LAYOUT CENTRALIZADO (HOME) - GUIA DESKTOP */
         <div className="w-full max-w-[1400px] px-0 lg:px-8 pt-4 lg:pt-16 pb-0 lg:pb-12 flex flex-col animate-in fade-in zoom-in-95 duration-700">
           <AdminHeader />
-          <main className="w-full px-6 lg:px-0 flex flex-col items-start font-['Roboto']">
-            {children}
-          </main>
+          <AnimatePresence mode="wait">
+            <motion.main 
+              key={pathname}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3 }}
+              className="w-full px-6 lg:px-0 flex flex-col items-start font-['Roboto']"
+            >
+              {children}
+            </motion.main>
+          </AnimatePresence>
         </div>
       ) : (
         /* LAYOUT FULL SCREEN (SUBPÁGINAS) */
         <div className="w-full flex-1 flex flex-col">
           <AdminHeader />
-          <main className="w-full flex-1">
-            {children}
-          </main>
+          <AnimatePresence mode="wait">
+            <motion.main 
+              key={pathname}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="w-full flex-1 flex"
+            >
+              {children}
+            </motion.main>
+          </AnimatePresence>
         </div>
       )}
 
