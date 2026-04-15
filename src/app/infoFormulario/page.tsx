@@ -133,8 +133,19 @@ export default function InfoFormularioPage() {
           <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-xl"><ShieldCheck className="text-white w-10 h-10" /></div>
           <div className="w-[80px] h-[4px] bg-[#FECC00] mb-8 rounded-full" />
           <h1 className="text-white text-[48px] lg:font-medium font-[800] uppercase tracking-tight mb-8 leading-[1.1]">{`Laudo\nTécnico`}</h1>
-          <p className="text-white/70 text-lg font-medium">Preenchimento obrigatório para conformidade técnica GLPI e histórico de ativos.</p>
+          <p className="text-white/70 text-lg font-medium mb-12">Preenchimento obrigatório para conformidade técnica GLPI e histórico de ativos.</p>
+          
+          <div className="flex flex-col gap-3">
+             <Button onClick={() => router.push("/laudos-cometa")} variant="outline" className="h-14 border-white/20 text-white rounded-xl uppercase font-bold tracking-widest hover:bg-white/10 justify-start px-8">Ver Todos os Laudos</Button>
+             <Button onClick={() => router.push("/laudos-cometa?view=meus")} variant="outline" className="h-14 border-white/20 text-white rounded-xl uppercase font-bold tracking-widest hover:bg-white/10 justify-start px-8">Ver Meus Laudos</Button>
+          </div>
         </div>
+      </div>
+
+      {/* Mobile Nav Overlay (Só no mobile) */}
+      <div className="lg:hidden fixed bottom-6 left-6 right-6 z-50 flex gap-2">
+         <Button onClick={() => router.push("/laudos-cometa?view=meus")} className="flex-1 h-14 bg-white/90 backdrop-blur-md text-[#003B99] rounded-2xl shadow-2xl font-black uppercase text-[10px] tracking-widest border border-blue-100 italic">Meus Laudos</Button>
+         <Button onClick={() => router.push("/laudos-cometa")} className="flex-1 h-14 bg-[#003B99] text-white rounded-2xl shadow-2xl font-black uppercase text-[10px] tracking-widest">Ver Todos</Button>
       </div>
 
       {/* Lado Direito (Formulário Integral) */}
