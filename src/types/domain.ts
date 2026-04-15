@@ -46,3 +46,10 @@ export type InfoLaudo = {
   createdAt: string;
   createdByUsername?: string | null;
 };
+
+export type UsuarioType = {
+  id: number;
+  username: string;
+  isAdmin: boolean;
+  createdAt?: string;
+};

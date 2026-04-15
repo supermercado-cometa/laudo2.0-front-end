@@ -10,7 +10,8 @@ import {
   FileText, 
   Activity, 
   ShieldCheck, 
-  ClipboardCheck 
+  ClipboardCheck,
+  Users
 } from "lucide-react";
 import { ModuleCard } from "@/components/module-card";
 
@@ -59,6 +60,13 @@ export default function AdminHomePage() {
       colorClass: "text-[#FF5252]",
       bgColorClass: "bg-[#FF52521F]", // 12% Opacidade
       path: "/admin/glpi-monitor",
+    },
+    {
+      title: "Usuários (Admins)",
+      icon: Users,
+      colorClass: "text-[#E91E63]",
+      bgColorClass: "bg-[#E91E631F]", // 12% Opacidade
+      path: "/admin/usuarios",
     },
     {
       title: "Auditoria",
