@@ -10,12 +10,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface GlpiMetrics {
-  sessions: number;
-  cacheHits: number;
-  cacheMisses: number;
-  retries401: number;
-  waitingForLock: number;
-  cacheSize: number;
+  initSessions: number;
+  sessionCacheHits: number;
+  sessionCacheMisses: number;
+  pendingInitWaits: number;
+  sessionCacheSize: number;
+  retries401: {
+    followup: number;
+    followupHeader: number;
+    createTicket: number;
+    linkTickets: number;
+    setTicketRequester: number;
+    setTicketAssigned: number;
+  };
   operations: {
     createFollowup: number;
     createFollowupWithHeader: number;
@@ -138,12 +145,21 @@ export default function GlpiMonitorPage() {
 
           {/* Grid de Métricas Principais */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-             <MetricCard icon={User} label="Sessões iniciadas" value={metrics?.sessions || 0} color="blue" />
-             <MetricCard icon={Zap} label="Hits de cache" value={metrics?.cacheHits || 0} color="green" />
-             <MetricCard icon={ShieldAlert} label="Misses de cache" value={metrics?.cacheMisses || 0} color="orange" />
-             <MetricCard icon={Clock} label="Espera concorrente" value={metrics?.waitingForLock || 0} color="purple" />
-             <MetricCard icon={Database} label="Tamanho do cache" value={metrics?.cacheSize || 0} color="gray" />
-             <MetricCard icon={ShieldAlert} label="Retries 401" value={metrics?.retries401 || 0} color="red" />
+             <MetricCard icon={User} label="Sessões iniciadas" value={metrics?.initSessions || 0} color="blue" />
+             <MetricCard icon={Zap} label="Hits de cache" value={metrics?.sessionCacheHits || 0} color="green" />
+             <MetricCard icon={ShieldAlert} label="Misses de cache" value={metrics?.sessionCacheMisses || 0} color="orange" />
+             <MetricCard icon={Clock} label="Espera concorrente" value={metrics?.pendingInitWaits || 0} color="purple" />
+             <MetricCard icon={Database} label="Tamanho do cache" value={metrics?.sessionCacheSize || 0} color="gray" />
+             <MetricCard 
+                icon={ShieldAlert} 
+                label="Retries 401" 
+                value={
+                  metrics?.retries401 
+                  ? Object.values(metrics.retries401).reduce((a, b) => a + b, 0) 
+                  : 0
+                } 
+                color="red" 
+             />
           </div>
 
           {/* Detalhes de Operações */}
