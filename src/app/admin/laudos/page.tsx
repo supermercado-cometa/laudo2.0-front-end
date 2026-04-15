@@ -230,16 +230,16 @@ export default function LaudosGeradosPage() {
                          </div>
 
                          {/* AÇÕES INDIVIDUAIS */}
-                         <div className="flex items-center gap-4 mt-8 pt-6 border-t border-gray-50">
-                            <Button className="flex-1 h-14 bg-[#003B99] hover:bg-[#0A2D66] rounded-xl uppercase tracking-widest text-[11px] font-black gap-2 shadow-lg shadow-[#003B99]/20">
-                               <Printer className="w-4 h-4" /> Imprimir
+                         <div className="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-50">
+                            <Button className="h-10 px-6 bg-[#003B99] hover:bg-[#0A2D66] rounded-lg uppercase tracking-wider text-[11px] font-bold gap-2 shadow-md shadow-[#003B99]/10">
+                               <Printer className="w-3.5 h-3.5" /> Imprimir
                             </Button>
                             <Button 
                               variant="ghost" 
-                              onClick={(e) => { e.stopPropagation(); handleDeleteLaudo(item.id); }}
-                              className="w-14 h-14 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all"
+                              onClick={(e) => { e.stopPropagation(); handleDeleteLaudo(item.id); } }
+                              className="w-10 h-10 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 transition-all p-0"
                             >
-                               <Trash2 className="w-6 h-6" />
+                               <Trash2 className="w-5 h-5" />
                             </Button>
                          </div>
                       </div>
