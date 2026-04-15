@@ -54,7 +54,7 @@ export default function LojaDetalhesPage() {
       <SubPageHeader title={`Checklists\n${lojaInfo?.nome || 'Monitoramento'}`} icon={ClipboardList} type="checklists" />
 
       {/* Lado Esquerdo (Hero) */}
-      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
+      <div className="hidden lg:flex lg:w-[35%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
         <button onClick={() => router.push("/admin/lojas")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all group">
           <ChevronLeft className="w-5 h-5" />
           Voltar para Lojas
@@ -72,7 +72,7 @@ export default function LojaDetalhesPage() {
       </div>
 
       {/* Lado Direito */}
-      <div className="flex-1 lg:w-[60%] flex flex-col p-6 lg:p-24 overflow-y-auto">
+      <div className="flex-1 lg:w-[65%] flex flex-col p-6 lg:p-24 overflow-y-auto">
         <div className="max-w-[800px] w-full mx-auto">
           <div className="mb-12">
             <h2 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800] tracking-tighter mb-4">Relatórios da Unidade</h2>

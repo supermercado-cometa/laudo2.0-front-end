@@ -107,7 +107,7 @@ export default function UsuariosPage() {
       <SubPageHeader title={`Admin\nUsuários`} icon={Users} type="checklists" />
 
       {/* Lado Esquerdo */}
-      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-b from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen">
+      <div className="hidden lg:flex lg:w-[35%] bg-gradient-to-b from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen">
         <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all">
           <ChevronLeft className="w-5 h-5" /> Voltar
         </button>
@@ -124,7 +124,7 @@ export default function UsuariosPage() {
       </div>
 
       {/* Lado Direito */}
-      <div className="flex-1 lg:w-[60%] flex flex-col p-6 lg:p-24 overflow-y-auto">
+      <div className="flex-1 lg:w-[65%] flex flex-col p-6 lg:p-24 overflow-y-auto">
         <div className="max-w-[800px] w-full mx-auto">
           <div className="mb-12 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <h2 className="text-[#1A1A2E] text-[28px] lg:text-[32px] lg:font-medium font-[800]">Administradores</h2>

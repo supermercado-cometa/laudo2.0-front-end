@@ -114,7 +114,7 @@ export default function InfoFormularioPage() {
       <SubPageHeader title={`Laudo\nTécnico`} icon={ClipboardCheck} hideBack={!isAdmin} />
 
       {/* Lado Esquerdo (Hero) */}
-      <div className="hidden lg:flex lg:w-[40%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
+      <div className="hidden lg:flex lg:w-[35%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
         {isAdmin && (
           <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all">
             <ChevronLeft className="w-5 h-5" /> Voltar
@@ -129,7 +129,7 @@ export default function InfoFormularioPage() {
       </div>
 
       {/* Lado Direito (Formulário Integral) */}
-      <div className="flex-1 lg:w-[60%] p-4 lg:p-20 overflow-y-auto">
+      <div className="flex-1 lg:w-[65%] p-4 lg:p-20 overflow-y-auto">
         <div className="max-w-[800px] w-full mx-auto pb-20">
           <AnimatePresence>
             {showSuccess && (
