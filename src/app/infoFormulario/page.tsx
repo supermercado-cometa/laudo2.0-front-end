@@ -110,7 +110,7 @@ export default function InfoFormularioPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">
+    <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">
       <SubPageHeader title={`Laudo\nTécnico`} icon={ClipboardCheck} hideBack={!isAdmin} />
 
       {/* Lado Esquerdo (Hero) */}
@@ -129,7 +129,7 @@ export default function InfoFormularioPage() {
       </div>
 
       {/* Lado Direito (Formulário Integral) */}
-      <div className="flex-1 lg:w-[65%] p-4 lg:p-20 overflow-y-auto">
+      <div className="flex-1 lg:w-[35%] p-4 lg:p-20 overflow-y-auto">
         <div className="max-w-[800px] w-full mx-auto pb-20">
           <AnimatePresence>
             {showSuccess && (

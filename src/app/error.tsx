@@ -14,7 +14,7 @@ export default function Error({
   }, [error])
  
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#F3F6F9] text-center">
+    <div className="w-full min-h-screen flex flex-col items-center justify-center p-6 bg-[#F3F6F9] text-center">
       <h2 className="text-4xl font-black text-red-600 mb-4">Erro Crítico</h2>
       <p className="text-gray-600 mb-8">Ocorreu um erro inesperado ao carregar esta página.</p>
       <button

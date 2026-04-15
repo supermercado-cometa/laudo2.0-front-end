@@ -50,7 +50,7 @@ export default function LojaDetalhesPage() {
   }, [params.id]);
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">
+    <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">
       <SubPageHeader title={`Checklists\n${lojaInfo?.nome || 'Monitoramento'}`} icon={ClipboardList} type="checklists" />
 
       {/* Lado Esquerdo (Hero) */}

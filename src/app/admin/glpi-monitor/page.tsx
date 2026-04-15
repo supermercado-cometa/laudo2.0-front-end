@@ -27,7 +27,7 @@ export default function GlpiMonitorPage() {
   }, []); // API_BASE_URL é constante, não precisa estar aqui
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">
+    <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">
       <SubPageHeader title={`Monitoramento\nGLPI`} icon={Activity} type="checklists" />
 
       {/* Lado Esquerdo */}
@@ -48,7 +48,7 @@ export default function GlpiMonitorPage() {
       </div>
 
       {/* Lado Direito */}
-      <div className="flex-1 lg:w-[65%] flex flex-col p-6 lg:p-24 overflow-y-auto">
+      <div className="flex-1 lg:w-[35%] flex flex-col p-6 lg:p-24 overflow-y-auto">
         <div className="max-w-[1000px] w-full mx-auto">
           <div className="mb-12 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <h2 className="text-[#1A1A2E] text-[28px] lg:text-[32px] lg:font-medium font-[800]">Status de Integração</h2>
