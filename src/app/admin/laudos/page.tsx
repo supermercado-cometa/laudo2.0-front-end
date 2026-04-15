@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { FileText, Search, ChevronLeft, Loader2, Printer, Calendar, Trash2, CheckCircle2, Circle, XCircle, Download } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { FileText, Search, ChevronLeft, Loader2, Printer, Calendar, Trash2, CheckCircle2, Circle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SubPageHeader } from "@/components/subpage-header";
 import { API_BASE_URL } from "@/lib/api-config";
@@ -35,7 +35,7 @@ export default function LaudosGeradosPage() {
   const [dataFim, setDataFim] = useState("");
   const [tomboFilter, setTomboFilter] = useState("");
 
-  const fetchLaudos = async () => {
+  const fetchLaudos = useCallback(async () => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem("token");
@@ -60,11 +60,11 @@ export default function LaudosGeradosPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [tecnicoFilter, chamadoFilter, dataInicio, dataFim, tomboFilter]);
 
   useEffect(() => {
     fetchLaudos();
-  }, []);
+  }, [fetchLaudos]);
 
   const handleToggleSelect = (id: number) => {
     setSelectedIds(prev => 
