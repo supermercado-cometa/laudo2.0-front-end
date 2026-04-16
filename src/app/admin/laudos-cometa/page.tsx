@@ -67,6 +67,86 @@ function LaudosCometaContent() {
     fetchLaudos();
   }, [fetchLaudos, router]);
 
+  const handlePrint = (laudo: any) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const html = `
+      <html>
+        <head>
+          <title>Laudo Técnico - #${laudo.numeroChamado}</title>
+          <style>
+            body { font-family: 'Arial', sans-serif; padding: 40px; color: #1a1a2e; }
+            h1 { text-align: center; color: #003B99; text-transform: uppercase; border-bottom: 2px solid #FECC00; padding-bottom: 10px; margin-bottom: 40px; }
+            .section { margin-bottom: 30px; }
+            .section-title { font-size: 14px; text-transform: uppercase; color: #6B7280; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
+            .row { display: flex; flex-wrap: wrap; margin-bottom: 10px; }
+            .col { flex: 1; min-width: 200px; margin-bottom: 10px; }
+            .label { font-size: 10px; text-transform: uppercase; color: #9CA3AF; display: block; margin-bottom: 4px; }
+            .val { font-size: 14px; font-weight: bold; }
+            .text-block { background: #f9fafb; padding: 15px; border-radius: 8px; font-size: 14px; white-space: pre-wrap; }
+            .signature-box { margin-top: 50px; text-align: center; }
+            .signature-img { max-height: 100px; margin-bottom: 10px; border-bottom: 1px solid #000; padding-bottom: 10px; }
+            .stamp { color: #003B99; font-size: 10px; margin-top: 50px; text-align: center; }
+          </style>
+        </head>
+        <body>
+          <h1>Laudo Técnico de Equipamento</h1>
+          <div class="section">
+            <h2 class="section-title">Informações Gerais</h2>
+            <div class="row">
+              <div class="col"><span class="label">Nº Chamado</span><span class="val">${laudo.numeroChamado || "N/A"}</span></div>
+              <div class="col"><span class="label">Técnico</span><span class="val">${laudo.tecnico || "N/A"}</span></div>
+              <div class="col"><span class="label">Data de Emissão</span><span class="val">${laudo.data || "N/A"}</span></div>
+            </div>
+            <div class="row">
+              <div class="col"><span class="label">Loja</span><span class="val">${laudo.loja || "N/A"}</span></div>
+              <div class="col"><span class="label">Setor</span><span class="val">${laudo.setor || "N/A"}</span></div>
+            </div>
+          </div>
+          <div class="section">
+            <h2 class="section-title">Dados do Equipamento</h2>
+            <div class="row">
+              <div class="col"><span class="label">Equipamento</span><span class="val">${laudo.equipamento || "N/A"}</span></div>
+              <div class="col"><span class="label">Modelo</span><span class="val">${laudo.modelo || "N/A"}</span></div>
+              <div class="col"><span class="label">Patrimônio / Tombo</span><span class="val">${laudo.tombo || "N/A"}</span></div>
+            </div>
+          </div>
+          <div class="section">
+            <h2 class="section-title">Análise Técnica</h2>
+            <div class="row">
+              <div class="col"><span class="label">Estado</span><span class="val">${laudo.estadoEquipamento || "N/A"}</span></div>
+              <div class="col"><span class="label">Necessidade</span><span class="val">${laudo.necessidade || "N/A"}</span></div>
+            </div>
+            <div style="margin-bottom: 20px;">
+              <span class="label">Testes Realizados</span>
+              <div class="text-block">${laudo.testesRealizados || "N/A"}</div>
+            </div>
+            <div>
+              <span class="label">Diagnóstico / Conclusão</span>
+              <div class="text-block">${laudo.diagnostico || "N/A"}</div>
+            </div>
+          </div>
+          <div class="signature-box">
+             ${laudo.signature ? `<img src="${laudo.signature}" class="signature-img" />` : '<div style="height: 100px; border-bottom: 1px solid #000; margin-bottom: 10px; width: 300px; margin-left: auto; margin-right: auto;"></div>'}
+             <div>${laudo.tecnico || "Técnico Responsável"}</div>
+             <div class="label">Assinatura Eletrônica</div>
+          </div>
+          <div class="stamp">Documento gerado pelo sistema de Laudos Cometa.<br>Verificado e Autenticado.</div>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(html);
+    printWindow.document.close();
+    
+    setTimeout(() => {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }, 500);
+  };
+
   return (
     <AdminPageLayout
       title={isMineOnly ? `Meus\nLaudos` : `Histórico\nDe Laudos`}
@@ -162,7 +242,7 @@ function LaudosCometaContent() {
                     </div>
 
                     <div className="flex flex-col justify-center items-end gap-3 shrink-0">
-                      <Button className="h-12 px-8 bg-[#003B99] hover:bg-[#0A2D66] rounded-xl uppercase tracking-wider text-[11px] gap-2 shadow-xl shadow-[#003B99]/10 active:scale-95 transition-all">
+                      <Button onClick={() => handlePrint(item)} className="h-12 px-8 bg-[#003B99] hover:bg-[#0A2D66] rounded-xl uppercase tracking-wider text-[11px] gap-2 shadow-xl shadow-[#003B99]/10 active:scale-95 transition-all">
                         <Printer className="w-4 h-4" /> Imprimir PDF
                       </Button>
                     </div>
