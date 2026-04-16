@@ -57,7 +57,7 @@ export const gerarLaudoPDF = (laudo: any, emitidoPor: string) => {
               {
                 stack: [
                   { text: `${laudo.setor} - ${laudo.loja}`, color: '#c00000', bold: true, alignment: 'center', margin: [0, 5, 0, 5], fontSize: 12 },
-                  { text: `Emitido por: ${emitidoPor} em ${dtAtual}`, alignment: 'center', fontSize: 10, margin: [0, 0, 0, 5] }
+                  { text: `Emitido por: ${laudo.tecnico || laudo.createdByUsername || 'Sistema'} em ${dtAtual}`, alignment: 'center', fontSize: 10, margin: [0, 0, 0, 5] }
                 ],
                 margin: [0, 5, 0, 0],
                 borderColor: ['#dddddd', '#dddddd', '#dddddd', '#dddddd']

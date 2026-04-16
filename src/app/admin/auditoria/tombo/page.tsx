@@ -32,7 +32,13 @@ export default function AuditoriaTomboPage() {
       setResultado(null);
       const token = localStorage.getItem("token");
       const res = await fetch(`${API_BASE_URL}/auditoria/tombo/${tombo}`, {
-        headers: { Authorization: token ? `Bearer ${token}` : "" }
+        method: "GET",
+        headers: { 
+          Authorization: token ? `Bearer ${token}` : "",
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache"
+        },
+        cache: "no-store"
       });
       
       if (res.ok) {

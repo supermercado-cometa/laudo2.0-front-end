@@ -54,7 +54,13 @@ export default function LaudosGeradosPage() {
       if (tomboFilter) params.append("tombo", tomboFilter);
 
       const res = await fetch(`${API_BASE_URL}/info-laudos?${params.toString()}`, {
-        headers: { Authorization: token ? `Bearer ${token}` : "" }
+        method: "GET",
+        headers: { 
+          Authorization: token ? `Bearer ${token}` : "",
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache"
+        },
+        cache: "no-store"
       });
       
       if (res.ok) {
