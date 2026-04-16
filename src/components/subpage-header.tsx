@@ -9,9 +9,15 @@ interface SubPageHeaderProps {
   icon: LucideIcon;
   type?: "checklists" | "templates";
   hideBack?: boolean;
+  backUrl?: string;
 }
 
-export const SubPageHeader = ({ title, icon: Icon, hideBack = false }: SubPageHeaderProps) => {
+export const SubPageHeader = ({ 
+  title, 
+  icon: Icon, 
+  hideBack = false, 
+  backUrl = "/admin" 
+}: SubPageHeaderProps) => {
   const router = useRouter();
 
   const gradientClass = "from-[#003B99] to-[#0066FF]";
@@ -28,7 +34,7 @@ export const SubPageHeader = ({ title, icon: Icon, hideBack = false }: SubPageHe
         <div className="absolute top-6 left-6 right-6 flex justify-between items-center">
           {!hideBack ? (
             <button 
-              onClick={() => router.push("/admin")}
+              onClick={() => router.push(backUrl)}
               className="w-10 h-10 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/10 active:scale-90 transition-transform"
             >
               <ChevronLeft className="w-5 h-5 text-white" />

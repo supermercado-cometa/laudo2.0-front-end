@@ -50,14 +50,9 @@ export function LoginForm() {
         }
       }
 
-      // Fluxo de navegação automático
-      if (data?.isAdmin === true) {
-        console.log("Admin login success, redirecting to /admin");
-        window.location.href = "/admin";
-      } else {
-        console.log("Normal user login success, redirecting to /infoFormulario");
-        window.location.href = "/infoFormulario";
-      }
+      // Fluxo de navegação unificado para /admin
+      console.log(`Login success, redirecting to /admin. Admin: ${data?.isAdmin === true}`);
+      window.location.href = "/admin";
     } catch (err) {
       console.error("Login error detail:", err);
       setErrorMsg("Erro de rede ou servidor indisponível");

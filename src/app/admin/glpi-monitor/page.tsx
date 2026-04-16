@@ -157,14 +157,14 @@ export default function GlpiMonitorPage() {
           
           {/* Grid de Métricas Técnicas */}
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-6 mb-8 lg:mb-12">
-             <MetricCard icon={User} label="Sessões" value={metrics?.initSessions || 0} color="blue" />
-             <MetricCard icon={Zap} label="Hits Cache" value={metrics?.sessionCacheHits || 0} color="green" />
-             <MetricCard icon={ShieldAlert} label="Misses" value={metrics?.sessionCacheMisses || 0} color="orange" />
-             <MetricCard icon={Clock} label="Lock Waits" value={metrics?.pendingInitWaits || 0} color="purple" />
-             <MetricCard icon={Database} label="Cache Size" value={metrics?.sessionCacheSize || 0} color="gray" />
+             <MetricCard icon={User} label="Sessões iniciadas" value={metrics?.initSessions || 0} color="blue" />
+             <MetricCard icon={Zap} label="Hits de cache" value={metrics?.sessionCacheHits || 0} color="green" />
+             <MetricCard icon={ShieldAlert} label="Misses de cache" value={metrics?.sessionCacheMisses || 0} color="orange" />
+             <MetricCard icon={Clock} label="Espera por sessão concorrente" value={metrics?.pendingInitWaits || 0} color="purple" />
+             <MetricCard icon={Database} label="Tamanho do cache" value={metrics?.sessionCacheSize || 0} color="gray" />
              <MetricCard 
                 icon={ShieldAlert} 
-                label="Total Retries" 
+                label="Retries 401" 
                 value={
                   metrics?.retries401 
                   ? Object.values(metrics.retries401).reduce((a, b) => a + b, 0) 
@@ -178,12 +178,12 @@ export default function GlpiMonitorPage() {
           <div className="bg-white rounded-[24px] lg:rounded-[40px] p-6 lg:p-10 shadow-sm border border-gray-100">
              <h3 className="text-[#1A1A2E] text-[14px] lg:text-xl font-black uppercase mb-6 lg:mb-8 border-b border-gray-50 pb-4">Detalhamento</h3>
              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-x-12 lg:gap-y-6">
-                <OpDetail label="Followup Normal" value={metrics?.operations?.createFollowup || 0} />
-                <OpDetail label="Followup c/ Header" value={metrics?.operations?.createFollowupWithHeader || 0} />
-                <OpDetail label="Ticket Gerado" value={metrics?.operations?.createTicket || 0} />
-                <OpDetail label="Links entre Tickets" value={metrics?.operations?.linkTickets || 0} />
-                <OpDetail label="Requerente Definido" value={metrics?.operations?.setRequester || 0} />
-                <OpDetail label="Associação Técnico" value={metrics?.operations?.setAssigned || 0} />
+                <OpDetail label="Followup" value={metrics?.operations?.createFollowup || 0} />
+                <OpDetail label="Followup c/ Cabeçalho" value={metrics?.operations?.createFollowupWithHeader || 0} />
+                <OpDetail label="Criar Ticket" value={metrics?.operations?.createTicket || 0} />
+                <OpDetail label="Relacionar Tickets" value={metrics?.operations?.linkTickets || 0} />
+                <OpDetail label="Definir Requerente" value={metrics?.operations?.setRequester || 0} />
+                <OpDetail label="Atribuir Usuário" value={metrics?.operations?.setAssigned || 0} />
              </div>
           </div>
 

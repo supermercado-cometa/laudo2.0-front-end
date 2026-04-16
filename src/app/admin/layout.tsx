@@ -40,11 +40,7 @@ export default function AdminLayout({
           }
 
           const data = await res.json();
-          if (!data?.user?.isAdmin) {
-            router.replace("/infoFormulario");
-            return;
-          }
-
+          // Não redirecionamos mais o não-admin, pois ele agora tem seu próprio dashboard no /admin
           setAuthorized(true);
         } catch {
           setAuthorized(true);
@@ -71,7 +67,7 @@ export default function AdminLayout({
        Ajuste de Centralização Absoluta (justify-center) 
        Garante que o conteúdo flutue no centro da tela em monitores grandes.
     */
-    <div className={`min-h-screen bg-[#F5F7FB] flex flex-col ${isHome ? 'items-center lg:justify-center' : ''}`}>
+    <div className={`min-h-screen bg-[#F5F7FB] flex flex-col ${isHome ? 'items-center' : ''}`}>
       {isHome ? (
         /* LAYOUT CENTRALIZADO (HOME) - GUIA DESKTOP */
         <div className="w-full max-w-[1400px] px-0 lg:px-8 pt-4 lg:pt-16 pb-0 lg:pb-12 flex flex-col animate-in fade-in zoom-in-95 duration-700">

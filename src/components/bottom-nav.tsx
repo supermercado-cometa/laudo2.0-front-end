@@ -42,7 +42,7 @@ export const BottomNav = () => {
     { title: "Lojas", icon: Store, path: "/admin/lojas", color: "text-green-500" },
     { title: "Setores", icon: Briefcase, path: "/admin/setores", color: "text-teal-500" },
     { title: "Auditoria", icon: ShieldCheck, path: "/admin/auditoria/tombo", color: "text-indigo-500" },
-    { title: "Laudo Técnico", icon: ClipboardCheck, path: "/infoFormulario", color: "text-orange-500" },
+    { title: "Laudo Técnico", icon: ClipboardCheck, path: "/admin/laudo-tecnico", color: "text-orange-500" },
   ];
 
   const handleTabClick = (tab: NavItem) => {

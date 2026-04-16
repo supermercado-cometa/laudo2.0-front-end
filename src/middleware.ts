@@ -34,12 +34,12 @@ export async function middleware(req: NextRequest) {
       return response;
     }
 
-    // Rota /admin: verifica se é admin
-    if (pathname.startsWith("/admin")) {
+    // Rota /admin: qualquer logado pode entrar, o controle de cards é no client-side
+    // Se quiser bloquear alguma sub-rota real (ex: /admin/usuarios) pode adicionar aqui.
+    if (pathname.startsWith("/admin/usuarios") || pathname.startsWith("/admin/config")) {
       const data = await res.json();
       if (!data?.user?.isAdmin) {
-        console.warn(`[Middleware] Acesso admin negado: ${data?.user?.username}`);
-        return NextResponse.redirect(new URL("/infoFormulario", req.url));
+        return NextResponse.redirect(new URL("/admin", req.url));
       }
     }
   } catch (err) {
@@ -53,5 +53,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/infoFormulario", "/admin", "/admin/:path*"],
+  matcher: ["/admin", "/admin/:path*"],
 };

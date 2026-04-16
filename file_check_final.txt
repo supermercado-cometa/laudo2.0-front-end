@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -32,6 +32,7 @@ export default function InfoFormularioPage() {
   const [lojas, setLojas] = useState<LojaType[]>([]);
   const [equipamentos, setEquipamentos] = useState<{id: number, nome: string, tipo?: string}[]>([]);
   const [setores, setSetores] = useState<{id: number, nome: string}[]>([]);
+  const [modelos, setModelos] = useState<{id: number, nome: string}[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -44,7 +45,7 @@ export default function InfoFormularioPage() {
     const token = localStorage.getItem("token");
     if (!token) { router.replace("/"); return; }
     
-    // Verificar se é admin pelo auth/me (mais seguro que localStorage)
+    // Verificar se Ã© admin pelo auth/me (mais seguro que localStorage)
     fetch(`${API_BASE_URL}/auth/me`, {
        headers: { Authorization: `Bearer ${token}` }
     })
@@ -52,15 +53,29 @@ export default function InfoFormularioPage() {
     .then(data => setIsAdmin(data?.user?.isAdmin === true))
     .catch(() => setIsAdmin(false));
 
-    fetch(`${API_BASE_URL}/lojas`)
+    fetch(`${API_BASE_URL}/lojas`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => res.ok ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) setLojas(data);
         else setLojas([]);
       })
       .catch(() => setLojas([]));
+    
+    fetch(`${API_BASE_URL}/modelos`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.ok ? res.json() : [])
+      .then(data => {
+        if (Array.isArray(data)) setModelos(data);
+        else setModelos([]);
+      })
+      .catch(() => setModelos([]));
 
-    fetch(`${API_BASE_URL}/equipamentos`)
+    fetch(`${API_BASE_URL}/equipamentos`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => res.ok ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) setEquipamentos(data);
@@ -68,7 +83,9 @@ export default function InfoFormularioPage() {
       })
       .catch(() => setEquipamentos([]));
 
-    fetch(`${API_BASE_URL}/setores`)
+    fetch(`${API_BASE_URL}/setores`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => res.ok ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) setSetores(data);
@@ -145,77 +162,28 @@ export default function InfoFormularioPage() {
 
   return (
     <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">
-      <SubPageHeader title={`Laudo\nTécnico`} icon={ClipboardCheck} hideBack={!isAdmin} />
+      <SubPageHeader title={`Laudo\nTÃ©cnico`} icon={ClipboardCheck} backUrl="/admin" />
 
       {/* Lado Esquerdo (Hero) */}
       <div className="hidden lg:flex lg:w-[35%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
-        {isAdmin && (
-          <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all">
-            <ChevronLeft className="w-5 h-5" /> Voltar
-          </button>
-        )}
+        <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all">
+          <ChevronLeft className="w-5 h-5" /> Voltar
+        </button>
         <div className="relative z-10 max-w-sm">
           <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-xl"><ShieldCheck className="text-white w-10 h-10" /></div>
           <div className="w-[80px] h-[4px] bg-[#FECC00] mb-8 rounded-full" />
-          <h1 className="text-white text-[48px] lg:font-medium font-[800] uppercase tracking-tight mb-8 leading-[1.1]">{`Laudo\nTécnico`}</h1>
-          <p className="text-white/70 text-lg font-medium mb-12">Preenchimento obrigatório para conformidade técnica GLPI e histórico de ativos.</p>
+          <h1 className="text-white text-[48px] lg:font-medium font-[800] uppercase tracking-tight mb-8 leading-[1.1]">{`Laudo\nTÃ©cnico`}</h1>
+          <p className="text-white/70 text-lg font-medium mb-12">Preenchimento obrigatÃ³rio para conformidade tÃ©cnica GLPI e histÃ³rico de ativos.</p>
           
         </div>
       </div>
 
-      {/* Mobile Nav Overlay (Só no mobile) */}
-      <div className="lg:hidden fixed bottom-6 left-6 right-6 z-50 flex gap-2">
-         <Button onClick={() => router.push("/laudos-cometa?view=meus")} className="flex-1 h-14 bg-white/90 backdrop-blur-md text-[#003B99] rounded-2xl shadow-2xl font-black uppercase text-[10px] tracking-widest border border-blue-100 italic">Meus Laudos</Button>
-         <Button onClick={() => router.push("/laudos-cometa")} className="flex-1 h-14 bg-[#003B99] text-white rounded-2xl shadow-2xl font-black uppercase text-[10px] tracking-widest">Ver Todos</Button>
-      </div>
 
-      {/* Lado Direito (Formulário Integral) */}
+
+      {/* Lado Direito (FormulÃ¡rio Integral) */}
       <div className="flex-1 lg:w-[35%] p-4 lg:p-20 overflow-y-auto">
         <div className="max-w-[800px] w-full mx-auto pb-20">
-          {/* HEADER PARA NÃO-ADMINS (COPIADO DO ADMIN-HEADER) */}
-          {!isAdmin && (
-            <div className="mb-8">
-              {/* VERSÃO DESKTOP */}
-              <div className="hidden lg:flex w-full bg-white rounded-[24px] px-8 py-6 items-center justify-between shadow-[0_8px_18px_rgba(0,0,0,0.04)]">
-                <div className="flex items-center gap-5">
-                  <div className="w-[64px] h-[64px] rounded-full bg-[#003B991F] flex items-center justify-center text-[#003B99] text-[26px] font-bold">
-                    {userName ? userName.charAt(0).toUpperCase() : "U"}
-                  </div>
-                  <div>
-                    <p className="text-[#9E9E9E] text-[16px] font-[500] leading-none mb-1">{greeting}</p>
-                    <h1 className="text-[#1A1C1E] text-[24px] lg:font-[500] font-[700] tracking-tight">{userName || "Usuário"}</h1>
-                  </div>
-                </div>
 
-                <button 
-                  onClick={handleLogout}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#DC262612] border border-[#DC262633] text-red-600 lg:font-medium font-bold hover:bg-red-600 hover:text-white transition-all group"
-                >
-                  Sair
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* VERSÃO MOBILE */}
-              <div className="flex lg:hidden w-full bg-white px-6 py-6 rounded-2xl shadow-[0_5px_15px_rgba(0,0,0,0.05)] items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-[50px] h-[50px] rounded-full bg-[#003B991A] flex items-center justify-center">
-                    <span className="text-[#003B99] text-xl font-bold">{userName ? userName.charAt(0).toUpperCase() : "U"}</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-gray-400 text-sm font-medium">{greeting}</span>
-                    <h1 className="text-[#003B99] text-lg font-bold leading-tight">{userName || "Usuário"}</h1>
-                  </div>
-                </div>
-                <button 
-                  onClick={handleLogout}
-                  className="w-10 h-10 rounded-xl bg-[#DC262614] flex items-center justify-center text-[#DC2626]"
-                >
-                  <LogOut className="w-[18px] h-[18px]" />
-                </button>
-              </div>
-            </div>
-          )}
 
           <AnimatePresence>
             {showSuccess && (
@@ -230,25 +198,22 @@ export default function InfoFormularioPage() {
             )}
           </AnimatePresence>
 
-          <div className="flex flex-col sm:flex-row gap-4 mb-8">
-             <Button onClick={() => router.push("/laudos-cometa")} variant="outline" className="flex-1 h-14 border-[#003B99] text-[#003B99] hover:bg-blue-50 rounded-2xl uppercase lg:font-medium font-black tracking-widest text-xs">Ver Todos os Laudos</Button>
-             <Button onClick={() => router.push("/laudos-cometa?view=meus")} variant="outline" className="flex-1 h-14 border-[#003B99] text-[#003B99] hover:bg-blue-50 rounded-2xl uppercase lg:font-medium font-black tracking-widest text-xs">Ver Meus Laudos</Button>
-          </div>
+
 
           <Card className="bg-white rounded-[32px] shadow-sm border-none">
             <CardContent className="p-8 lg:p-12 space-y-12">
                
-               {/* 1. SEÇÃO DE DADOS (CONFORME IMAGEM) */}
+               {/* 1. SEÃ‡ÃƒO DE DADOS (CONFORME IMAGEM) */}
                <div className="space-y-10">
-                  <div className="border-l-4 border-[#003B99] pl-4"><h3 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800] tracking-tighter uppercase leading-none">Informações do Laudo</h3></div>
+                  <div className="border-l-4 border-[#003B99] pl-4"><h3 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800] tracking-tighter uppercase leading-none">InformaÃ§Ãµes do Laudo</h3></div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                      <div className="space-y-3">
-                        <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Número do Chamado</Label>
-                        <Input value={numeroChamado} onChange={e => setNumeroChamado(e.target.value)} placeholder="Somente números" className="h-16 rounded-2xl bg-gray-50 border-none font-medium text-gray-600" />
+                        <Label className="text-[#4B5563] text-[13px] font-medium uppercase">NÃºmero do Chamado</Label>
+                        <Input value={numeroChamado} onChange={e => setNumeroChamado(e.target.value)} placeholder="Somente nÃºmeros" className="h-16 rounded-2xl bg-gray-50 border-none font-medium text-gray-600" />
                      </div>
                      <div className="space-y-3">
-                        <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Nome do Técnico</Label>
+                        <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Nome do TÃ©cnico</Label>
                         <Input value={nomeTecnico} onChange={e => setNomeTecnico(e.target.value)} className="h-16 rounded-2xl bg-gray-50 border-none font-medium text-gray-600" />
                      </div>
                       <div className="space-y-3">
@@ -269,13 +234,13 @@ export default function InfoFormularioPage() {
                      </div>
                      <div className="space-y-3">
                         <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Tombo</Label>
-                        <Input value={tombo} onChange={e => setTombo(e.target.value)} placeholder="Somente números" className="h-16 rounded-2xl bg-gray-50 border-none font-medium text-gray-600" />
+                        <Input value={tombo} onChange={e => setTombo(e.target.value)} placeholder="Somente nÃºmeros" className="h-16 rounded-2xl bg-gray-50 border-none font-medium text-gray-600" />
                      </div>
                      <div className="space-y-3">
                         <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Modelo</Label>
                         <select value={modelo} onChange={e => setModelo(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-medium text-gray-600 appearance-none">
                            <option value="">Selecione...</option>
-                           <option value="Padrão">Padrão</option><option value="Específico">Específico</option>
+                           {modelos.map(m => <option key={m.id} value={m.nome}>{m.nome}</option>)}
                         </select>
                      </div>
                      <div className="space-y-3">
@@ -287,20 +252,20 @@ export default function InfoFormularioPage() {
                      </div>
                      <div className="space-y-3">
                         <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Data Atual do Sistema</Label>
-                        <Input value={dataSistema} disabled className="h-16 rounded-2xl bg-gray-100 border-none lg:sm:font-medium font-black text-gray-400" />
+                        <Input value={dataSistema} disabled className="h-16 rounded-2xl bg-gray-100 border-none lg:sm:font-medium font-bold text-gray-400" />
                      </div>
                   </div>
                </div>
 
-               {/* 2. SEÇÃO IMAGEM (CONFORME IMAGEM) */}
+               {/* 2. SEÃ‡ÃƒO IMAGEM (CONFORME IMAGEM) */}
                <div className="space-y-6 pt-10 border-t border-gray-100">
                   <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Imagem do Equipamento</Label>
                   <div className="flex flex-col md:flex-row items-center gap-6 p-8 rounded-[32px] bg-gray-100 border-2 border-dashed border-gray-200 relative group">
                      {imagem ? (
                         <div className="flex flex-col items-center gap-4">
                            <ImageIcon className="w-12 h-12 text-[#003B99]" />
-                           <span className="text-gray-600 lg:font-medium font-black text-xs uppercase tracking-widest">{imagem.name}</span>
-                           <Button variant="ghost" className="text-red-500 lg:font-medium font-black uppercase text-[10px]" onClick={() => setImagem(null)}><Trash2 className="w-4 h-4 mr-2" /> Limpar Imagem</Button>
+                           <span className="text-gray-600 lg:font-medium font-bold text-xs uppercase tracking-widest">{imagem.name}</span>
+                           <Button variant="ghost" className="text-red-500 lg:font-medium font-bold uppercase text-[10px]" onClick={() => setImagem(null)}><Trash2 className="w-4 h-4 mr-2" /> Limpar Imagem</Button>
                         </div>
                      ) : (
                         <>
@@ -312,15 +277,15 @@ export default function InfoFormularioPage() {
                   </div>
                </div>
 
-               {/* 3. TESTES E DIAGNÓSTICO (CONFORME IMAGEM) */}
+               {/* 3. TESTES E DIAGNÃ“STICO (CONFORME IMAGEM) */}
                <div className="space-y-10 pt-10 border-t border-gray-100">
                   <div className="space-y-3">
                      <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Testes realizados</Label>
                      <textarea value={testesRealizados} onChange={e => setTestesRealizados(e.target.value)} className="w-full min-h-[140px] rounded-2xl bg-gray-50 border-none p-6 font-medium text-gray-600" placeholder="Descreva os testes executados" />
                   </div>
                   <div className="space-y-3">
-                     <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Diagnóstico do equipamento</Label>
-                     <textarea value={diagnostico} onChange={e => setDiagnostico(e.target.value)} className="w-full min-h-[140px] rounded-2xl bg-gray-50 border-none p-6 font-medium text-gray-600" placeholder="Descreva o diagnóstico" />
+                     <Label className="text-[#4B5563] text-[13px] font-medium uppercase">DiagnÃ³stico do equipamento</Label>
+                     <textarea value={diagnostico} onChange={e => setDiagnostico(e.target.value)} className="w-full min-h-[140px] rounded-2xl bg-gray-50 border-none p-6 font-medium text-gray-600" placeholder="Descreva o diagnÃ³stico" />
                   </div>
                </div>
 
@@ -330,14 +295,14 @@ export default function InfoFormularioPage() {
                      <Label className="text-[#4B5563] text-[13px] font-medium uppercase">Estado do equipamento</Label>
                      <select value={estadoEquipamento} onChange={e => setEstadoEquipamento(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-medium text-gray-600 appearance-none">
                         <option value="">Selecione...</option>
-                        <option value="Funcionando">Funcionando</option><option value="Não funcionando">Não funcionando</option>
+                        <option value="Funcionando">Funcionando</option><option value="NÃ£o funcionando">NÃ£o funcionando</option>
                      </select>
                   </div>
                   <div className="space-y-3">
                      <Label className="text-[#4B5563] text-[13px] font-medium uppercase">O equipamento necessita</Label>
                      <select value={necessidade} onChange={e => setNecessidade(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border-none px-6 font-medium text-gray-600 appearance-none">
                         <option value="">Selecione...</option>
-                        <option value="Ser substituído">Ser substituído</option><option value="Enviado p/ conserto">Enviado p/ conserto</option><option value="Ser descartado">Ser descartado</option>
+                        <option value="Ser substituÃ­do">Ser substituÃ­do</option><option value="Enviado p/ conserto">Enviado p/ conserto</option><option value="Ser descartado">Ser descartado</option>
                      </select>
                   </div>
                </div>
@@ -346,10 +311,10 @@ export default function InfoFormularioPage() {
                <div className="space-y-8 pt-10 border-t border-gray-100">
                   <Label className="text-[#4B5563] text-[13px] font-medium uppercase text-center block">Assinatura</Label>
                   <div className="border border-dashed border-gray-300 rounded-[32px] overflow-hidden bg-gray-50"><SignatureCanvas ref={sigPadRef} canvasProps={{ className: "w-full h-64" }} /></div>
-                  <button onClick={() => sigPadRef.current?.clear()} className="w-full text-xs lg:font-medium font-black uppercase text-gray-400 hover:text-red-500 transition-colors">Limpar Assinatura</button>
+                  <button onClick={() => sigPadRef.current?.clear()} className="w-full text-xs lg:font-medium font-bold uppercase text-gray-400 hover:text-red-500 transition-colors">Limpar Assinatura</button>
                </div>
 
-               {/* BOTÃO FINALIZAR */}
+               {/* BOTÃƒO FINALIZAR */}
                <div className="pt-6">
                   <Button disabled={isSubmitting} className="w-full h-20 bg-[#003B99] text-white rounded-2xl text-[16px] lg:font-medium font-[800] tracking-widest uppercase shadow-xl hover:bg-[#0A2D66]" onClick={handleSubmit}>
                      {isSubmitting ? <Loader2 className="animate-spin" /> : "Finalizar e Enviar para GLPI"}
