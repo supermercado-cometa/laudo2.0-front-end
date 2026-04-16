@@ -38,6 +38,8 @@ export default function InfoFormularioPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [userName, setUserName] = useState("");
   const [greeting, setGreeting] = useState("Bom dia");
+  const [savedSignature, setSavedSignature] = useState<string | null>(null);
+  const [isRedrawing, setIsRedrawing] = useState(false);
   const sigPadRef = useRef<SignatureCanvas>(null);
 
   useEffect(() => {
@@ -45,12 +47,17 @@ export default function InfoFormularioPage() {
     const token = localStorage.getItem("token");
     if (!token) { router.replace("/"); return; }
 
-    // Verificar se é admin pelo auth/me (mais seguro que localStorage)
+    // Verificar se é admin e buscar assinatura salva
     fetch(`${API_BASE_URL}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
-      .then(data => setIsAdmin(data?.user?.isAdmin === true))
+      .then(data => {
+        setIsAdmin(data?.user?.isAdmin === true);
+        if (data?.user?.signature) {
+          setSavedSignature(data.user.signature);
+        }
+      })
       .catch(() => setIsAdmin(false));
 
     fetch(`${API_BASE_URL}/lojas`, {
@@ -128,7 +135,27 @@ export default function InfoFormularioPage() {
     try {
       setIsSubmitting(true);
       const token = localStorage.getItem("token");
-      const signature = sigPadRef.current?.isEmpty() ? null : sigPadRef.current?.toDataURL();
+      
+      let signature = savedSignature;
+      
+      // Se estiver redesenhando ou não tiver assinatura salva, pega do canvas
+      if (isRedrawing || !savedSignature) {
+        signature = sigPadRef.current?.isEmpty() ? null : sigPadRef.current?.toDataURL() || null;
+        
+        // Salva a nova assinatura no perfil do usuário para os próximos laudos
+        if (signature) {
+          await fetch(`${API_BASE_URL}/auth/save-signature`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token ? `Bearer ${token}` : ""
+            },
+            body: JSON.stringify({ signature })
+          });
+          setSavedSignature(signature);
+          setIsRedrawing(false);
+        }
+      }
 
       const payload = {
         numeroChamado, nomeTecnico, equipamento, loja, tombo, modelo, setor,
@@ -157,7 +184,9 @@ export default function InfoFormularioPage() {
     setNumeroChamado(""); setEquipamento(""); setLoja(""); setTombo("");
     setModelo(""); setSetor(""); setTestesRealizados(""); setDiagnostico("");
     setEstadoEquipamento(""); setNecessidade(""); setImagem(null);
-    sigPadRef.current?.clear(); setShowSuccess(false);
+    sigPadRef.current?.clear(); 
+    setShowSuccess(false);
+    setIsRedrawing(false);
   };
 
   return (
@@ -310,8 +339,32 @@ export default function InfoFormularioPage() {
               {/* 5. ASSINATURA (CONFORME IMAGEM) */}
               <div className="space-y-8 pt-10 border-t border-gray-100">
                 <Label className="text-[#4B5563] text-[13px] font-medium uppercase text-center block">Assinatura</Label>
-                <div className="border border-dashed border-gray-300 rounded-[32px] overflow-hidden bg-gray-50"><SignatureCanvas ref={sigPadRef} canvasProps={{ className: "w-full h-64" }} /></div>
-                <button onClick={() => sigPadRef.current?.clear()} className="w-full text-xs lg:font-medium font-bold uppercase text-gray-400 hover:text-red-500 transition-colors">Limpar Assinatura</button>
+                
+                {savedSignature && !isRedrawing ? (
+                  <div className="flex flex-col items-center space-y-4">
+                    <div className="border border-dashed border-gray-300 rounded-[32px] overflow-hidden bg-white p-4 flex justify-center items-center w-full min-h-[150px]">
+                      <img src={savedSignature} alt="Assinatura Salva" className="max-h-[120px] object-contain" />
+                    </div>
+                    <button 
+                      onClick={() => setIsRedrawing(true)} 
+                      className="text-xs lg:font-medium font-bold uppercase text-[#003B99] hover:text-[#0A2D66] transition-colors"
+                    >
+                      Alterar Assinatura
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="border border-dashed border-gray-300 rounded-[32px] overflow-hidden bg-gray-50">
+                      <SignatureCanvas ref={sigPadRef} canvasProps={{ className: "w-full h-64" }} />
+                    </div>
+                    <div className="flex justify-between px-2">
+                      <button onClick={() => sigPadRef.current?.clear()} className="text-xs lg:font-medium font-bold uppercase text-gray-400 hover:text-red-500 transition-colors">Limpar</button>
+                      {savedSignature && (
+                        <button onClick={() => setIsRedrawing(false)} className="text-xs lg:font-medium font-bold uppercase text-gray-400 hover:text-[#003B99] transition-colors">Cancelar</button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* BOTÃO FINALIZAR */}
