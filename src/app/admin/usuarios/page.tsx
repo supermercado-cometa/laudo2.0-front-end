@@ -139,7 +139,7 @@ export default function UsuariosPage() {
         ) : (
           <div className="space-y-4">
             {filteredUsuarios.map((usuario) => (
-              <div key={usuario.id} className="w-full bg-white p-6 rounded-[24px] lg:rounded-[32px] flex items-center gap-6 shadow-sm group border border-transparent hover:border-[#003B99]/10 transition-all">
+              <div key={usuario.id} className="w-full bg-white p-6 rounded-[24px] lg:rounded-[32px] flex flex-col sm:flex-row sm:items-center gap-6 shadow-sm group border border-transparent hover:border-[#003B99]/10 transition-all">
                 <div className="flex-1 text-left flex items-center gap-4 lg:gap-8">
                   <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center group-hover:bg-[#003B99] transition-all overflow-hidden shrink-0">
                     <Users className="text-[#003B99] group-hover:text-white w-7 h-7" />
@@ -153,7 +153,7 @@ export default function UsuariosPage() {
                     </div>
                   </div>
                 </div>
-                 <div className="flex gap-2">
+                 <div className="flex gap-2 justify-end pt-4 sm:pt-0 border-t sm:border-t-0 border-gray-50 w-full sm:w-auto">
                     <button 
                      onClick={() => handleOpenModal(usuario)} 
                      className="w-10 h-10 rounded-xl bg-blue-50 text-[#1A4CAB] flex items-center justify-center hover:bg-[#1A4CAB] hover:text-white transition-all shadow-sm active:scale-90"

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Search, Loader2, ShieldCheck, Monitor, Store, MapPin, Hash, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { Loader2, ShieldCheck, Monitor, Store, Hash } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api-config";
 import { AdminPageLayout } from "@/components/admin-page-layout";
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,7 @@ export default function AuditoriaTomboPage() {
       } else {
         setError("Equipamento não localizado na base de laudos.");
       }
-    } catch (err) {
+    } catch (_err) {
       setError("Erro ao consultar base de dados.");
     } finally {
       setIsLoading(false);

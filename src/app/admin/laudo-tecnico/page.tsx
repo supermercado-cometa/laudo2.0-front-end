@@ -125,8 +125,12 @@ export default function InfoFormularioPage() {
         body: JSON.stringify(payload)
       });
 
-      if (res.ok) setShowSuccess(true);
-      else alert("Erro ao enviar. Verifique os campos.");
+      if (res.ok) {
+        setShowSuccess(true);
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        alert(`Erro ao enviar: ${errorData.error || "Verifique a conexão com o servidor."}`);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -299,6 +303,7 @@ export default function InfoFormularioPage() {
             {savedSignature && !isRedrawing ? (
               <div className="flex flex-col items-center space-y-6">
                 <div className="border border-dashed border-gray-300 rounded-[32px] overflow-hidden bg-white p-6 flex justify-center items-center w-full min-h-[200px] shadow-inner">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={savedSignature} alt="Assinatura Digital Salva" className="max-h-[160px] object-contain" />
                 </div>
                 <Button 

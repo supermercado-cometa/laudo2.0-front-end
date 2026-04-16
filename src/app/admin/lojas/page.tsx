@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { Store, Search, Loader2, Trash2, Edit3, Plus, X, Save } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api-config";
 import { AdminPageLayout } from "@/components/admin-page-layout";
 
@@ -11,6 +12,7 @@ interface Loja {
 }
 
 export default function LojasPage() {
+  const router = useRouter();
   const [lojas, setLojas] = useState<Loja[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -137,14 +139,17 @@ export default function LojasPage() {
           <div className="grid grid-cols-1 gap-4">
             {filtered.map((item) => (
               <div key={item.id} className="w-full bg-white p-6 rounded-[24px] lg:rounded-[32px] flex items-center justify-between gap-6 shadow-sm group border border-transparent hover:border-[#003B99]/10 transition-all">
-                <div className="flex items-center gap-4 lg:gap-8 min-w-0">
+                <div 
+                  className="flex items-center gap-4 lg:gap-8 min-w-0 cursor-pointer flex-1"
+                  onClick={() => router.push(`/admin/lojas/${item.id}`)}
+                >
                   <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center group-hover:bg-[#003B99] transition-all overflow-hidden shrink-0 shadow-inner">
                     <Store className="text-[#003B99] group-hover:text-white w-7 h-7" />
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-[#1A1A2E] text-[16px] lg:text-[18px] uppercase tracking-tight truncate leading-tight mb-1">{item.nome}</h3>
                     <div className="flex items-center gap-2">
-                       <span className="text-[10px] text-gray-300 uppercase tracking-widest border-t border-gray-50 pt-1">Status: Ativo</span>
+                       <span className="text-[10px] text-gray-300 uppercase tracking-widest border-t border-gray-50 pt-1">Ver auditorias da unidade</span>
                     </div>
                   </div>
                 </div>
