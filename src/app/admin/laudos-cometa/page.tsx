@@ -48,11 +48,7 @@ function LaudosCometaContent() {
 
       const res = await fetch(`${API_BASE_URL}/info-laudos?${params.toString()}`, {
         method: "GET",
-        headers: { 
-          Authorization: token ? `Bearer ${token}` : "",
-          "Cache-Control": "no-cache",
-          "Pragma": "no-cache"
-        },
+        headers: { Authorization: token ? `Bearer ${token}` : "" },
         cache: "no-store"
       });
 
