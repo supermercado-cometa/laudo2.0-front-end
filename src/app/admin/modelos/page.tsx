@@ -8,7 +8,7 @@ import { AdminPageLayout } from "@/components/admin-page-layout";
 interface Modelo {
   id: number;
   nome: string;
-  setor?: string;
+  equipamentoId: number;
 }
 
 export default function ModelosPage() {
@@ -16,10 +16,13 @@ export default function ModelosPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
+  const [equipamentos, setEquipamentos] = useState<{id: number, nome: string}[]>([]);
+  const [filtroEquipamento, setFiltroEquipamento] = useState<string>("");
+
   // Estados para o Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [formData, setFormData] = useState({ nome: "" });
+  const [formData, setFormData] = useState({ nome: "", equipamentoId: "" });
 
   const fetchModelos = useCallback(async () => {
     try {
@@ -38,24 +41,37 @@ export default function ModelosPage() {
     }
   }, []);
 
+  const fetchEquipamentos = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_BASE_URL}/equipamentos`, {
+        headers: { Authorization: token ? `Bearer ${token}` : "" }
+      });
+      if (res.ok) setEquipamentos(await res.json());
+    } catch (error) {
+      console.error("Erro ao carregar equipamentos:", error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchModelos();
-  }, [fetchModelos]);
+    fetchEquipamentos();
+  }, [fetchModelos, fetchEquipamentos]);
 
   const handleOpenModal = (item?: Modelo) => {
     if (item) {
       setEditingId(item.id);
-      setFormData({ nome: item.nome });
+      setFormData({ nome: item.nome, equipamentoId: String(item.equipamentoId || "") });
     } else {
       setEditingId(null);
-      setFormData({ nome: "" });
+      setFormData({ nome: "", equipamentoId: "" });
     }
     setIsModalOpen(true);
   };
 
   const handleSave = async () => {
-    if (!formData.nome) {
-      alert("Por favor, preencha o nome do modelo.");
+    if (!formData.nome || !formData.equipamentoId) {
+      alert("Por favor, preencha o nome do modelo e selecione o equipamento.");
       return;
     }
     try {
@@ -69,7 +85,10 @@ export default function ModelosPage() {
           "Content-Type": "application/json",
           Authorization: token ? `Bearer ${token}` : "" 
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          nome: formData.nome,
+          equipamentoId: Number(formData.equipamentoId)
+        })
       });
 
       if (res.ok) {
@@ -95,7 +114,11 @@ export default function ModelosPage() {
     }
   };
 
-  const filtered = modelos.filter(m => m.nome.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filtered = modelos.filter(m => {
+    const matchesSearch = m.nome.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesEq = filtroEquipamento ? m.equipamentoId === Number(filtroEquipamento) : true;
+    return matchesSearch && matchesEq;
+  });
 
   return (
     <AdminPageLayout
@@ -117,16 +140,30 @@ export default function ModelosPage() {
           </button>
         </div>
 
-        {/* Busca Premium */}
-        <div className="relative mb-8 group">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 transition-colors group-focus-within:text-[#1A4CAB]" />
-          <input 
-            type="text" 
-            placeholder="Pesquisar modelos de laudo..." 
-            className="w-full h-12 pl-14 pr-6 rounded-xl bg-gray-50 border-none shadow-sm focus:ring-2 focus:ring-[#1A4CAB]/10 outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" 
-            value={searchTerm} 
-            onChange={(e) => setSearchTerm(e.target.value)} 
-          />
+        {/* Busca e Filtro Premium */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="relative group flex-1">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 transition-colors group-focus-within:text-[#1A4CAB]" />
+            <input 
+              type="text" 
+              placeholder="Pesquisar modelos de laudo..." 
+              className="w-full h-12 pl-14 pr-6 rounded-xl bg-gray-50 border-none shadow-sm focus:ring-2 focus:ring-[#1A4CAB]/10 outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" 
+              value={searchTerm} 
+              onChange={(e) => setSearchTerm(e.target.value)} 
+            />
+          </div>
+          <div className="md:w-64 shrink-0">
+            <select 
+              value={filtroEquipamento} 
+              onChange={e => setFiltroEquipamento(e.target.value)} 
+              className="w-full h-12 rounded-xl bg-gray-50 border-none px-6 text-[#1A1A2E] appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]/10 shadow-sm transition-all"
+            >
+              <option value="">Todos os Equipamentos</option>
+              {equipamentos.map(eq => (
+                <option key={eq.id} value={eq.id}>{eq.nome}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {isLoading ? (
@@ -145,7 +182,7 @@ export default function ModelosPage() {
                   <div className="min-w-0">
                     <h3 className="text-[#1A1A2E] text-[16px] lg:text-[18px] uppercase tracking-tight truncate leading-tight mb-1">{item.nome}</h3>
                     <div className="flex items-center gap-2">
-                       <span className="text-[10px] text-gray-300 uppercase tracking-widest border-t border-gray-50 pt-1">Status: Ativo</span>
+                       <span className="text-[10px] text-gray-300 uppercase tracking-widest border-t border-gray-50 pt-1">Equipamento: {equipamentos.find(eq => eq.id === item.equipamentoId)?.nome || "N/A"}</span>
                     </div>
                   </div>
                 </div>
@@ -196,9 +233,22 @@ export default function ModelosPage() {
                      type="text" 
                      placeholder="Ex: Checklist de Padronização" 
                      value={formData.nome} 
-                     onChange={e => setFormData({ nome: e.target.value })} 
+                     onChange={e => setFormData({ ...formData, nome: e.target.value })} 
                      className="w-full h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] px-6 text-lg outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" 
                    />
+                 </div>
+                 <div className="space-y-3">
+                   <label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Vincular a Equipamento</label>
+                   <select 
+                     value={formData.equipamentoId} 
+                     onChange={e => setFormData({ ...formData, equipamentoId: e.target.value })} 
+                     className="w-full h-12 rounded-xl bg-gray-50 border-none px-6 text-lg text-[#1A1A2E] appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]"
+                   >
+                     <option value="">Selecione o equipamento...</option>
+                     {equipamentos.map(eq => (
+                       <option key={eq.id} value={eq.id}>{eq.nome}</option>
+                     ))}
+                   </select>
                  </div>
                                 <div className="pt-4">
                    <button 

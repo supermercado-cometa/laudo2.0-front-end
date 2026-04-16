@@ -155,16 +155,33 @@ export default function GlpiMonitorPage() {
 
           <h3 className="text-[#1A1A2E] text-[14px] lg:text-xl uppercase mb-6 lg:mb-8">Performance Bridge GLPI</h3>
           
-          {/* Grid de Métricas Técnicas */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-6 mb-8 lg:mb-12">
-             <MetricCard icon={User} label="Sessões iniciadas" value={metrics?.initSessions || 0} color="blue" />
-             <MetricCard icon={Zap} label="Hits de cache" value={metrics?.sessionCacheHits || 0} color="green" />
-             <MetricCard icon={ShieldAlert} label="Misses de cache" value={metrics?.sessionCacheMisses || 0} color="orange" />
-             <MetricCard icon={Clock} label="Espera por sessão concorrente" value={metrics?.pendingInitWaits || 0} color="purple" />
-             <MetricCard icon={Database} label="Tamanho do cache" value={metrics?.sessionCacheSize || 0} color="gray" />
+           {/* Grid de Métricas Técnicas */}
+           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-8 lg:mb-12">
+              <MetricCard icon={User} label="Sessões iniciadas" value={metrics?.initSessions || 0} color="blue" />
+              <MetricCard icon={Zap} label="Hits de cache" value={metrics?.sessionCacheHits || 0} color="green" />
+              <MetricCard icon={ShieldAlert} label="Misses de cache" value={metrics?.sessionCacheMisses || 0} color="orange" />
+              <MetricCard icon={Clock} label="Espera (Concorrência)" value={metrics?.pendingInitWaits || 0} color="purple" />
+           </div>
+
+           {/* Monitor de Cache & Alerts */}
+           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 lg:mb-12">
+             <div className="bg-white rounded-[24px] lg:rounded-[32px] p-6 lg:p-8 shadow-sm border border-gray-100 flex flex-col justify-center">
+               <div className="flex items-center justify-between mb-4">
+                 <h4 className="text-[#1A1A2E] text-[12px] uppercase tracking-widest text-gray-500 font-bold flex items-center gap-2"><Database className="w-4 h-4 text-[#0066FF]" /> Uso de Cache de Sessão</h4>
+                 <span className="text-[20px] lg:text-[28px] text-[#1A1A2E] leading-none">{metrics?.sessionCacheSize || 0} <span className="text-[12px] text-gray-400">ativos</span></span>
+               </div>
+               <div className="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
+                 <div 
+                   className="h-full bg-gradient-to-r from-[#003B99] to-[#0066FF] transition-all duration-500" 
+                   style={{ width: `${Math.min(((metrics?.sessionCacheSize || 0) / 50) * 100, 100)}%` }}
+                 />
+               </div>
+               <p className="text-[10px] text-gray-400 mt-3 uppercase tracking-wider text-right">Limite de exibição visual ~50</p>
+             </div>
+
              <MetricCard 
                 icon={ShieldAlert} 
-                label="Retries 401" 
+                label="Total de Retries 401 (Falhas de Auth Repetidas)" 
                 value={
                   metrics?.retries401 
                   ? Object.values(metrics.retries401).reduce((a, b) => a + b, 0) 
@@ -172,16 +189,21 @@ export default function GlpiMonitorPage() {
                 } 
                 color="red" 
              />
-          </div>
+           </div>
+
+           {/* Dashboard de Operações Destacado */}
+           <h3 className="text-[#1A1A2E] text-[14px] lg:text-xl uppercase mb-6 lg:mb-8">Dashboard de Operações</h3>
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-8 lg:mb-12">
+              <MetricCard icon={Activity} label="Criar Followup" value={metrics?.operations?.createFollowup || 0} color="blue" small />
+              <MetricCard icon={Activity} label="Criar Ticket" value={metrics?.operations?.createTicket || 0} color="green" small />
+              <MetricCard icon={Activity} label="Linkar Tickets" value={metrics?.operations?.linkTickets || 0} color="purple" small />
+           </div>
 
           {/* Detalhes de Operações */}
           <div className="bg-white rounded-[24px] lg:rounded-[40px] p-6 lg:p-10 shadow-sm border border-gray-100">
-             <h3 className="text-[#1A1A2E] text-[14px] lg:text-xl uppercase mb-6 lg:mb-8 border-b border-gray-50 pb-4">Detalhamento</h3>
+             <h3 className="text-[#1A1A2E] text-[14px] lg:text-xl uppercase mb-6 lg:mb-8 border-b border-gray-50 pb-4">Detalhamento de Fluxos Secundários</h3>
              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-x-12 lg:gap-y-6">
-                <OpDetail label="Followup" value={metrics?.operations?.createFollowup || 0} />
                 <OpDetail label="Followup c/ Cabeçalho" value={metrics?.operations?.createFollowupWithHeader || 0} />
-                <OpDetail label="Criar Ticket" value={metrics?.operations?.createTicket || 0} />
-                <OpDetail label="Relacionar Tickets" value={metrics?.operations?.linkTickets || 0} />
                 <OpDetail label="Definir Requerente" value={metrics?.operations?.setRequester || 0} />
                 <OpDetail label="Atribuir Usuário" value={metrics?.operations?.setAssigned || 0} />
              </div>

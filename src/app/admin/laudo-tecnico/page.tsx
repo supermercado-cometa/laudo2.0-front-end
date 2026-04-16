@@ -212,9 +212,18 @@ export default function InfoFormularioPage() {
               </div>
               <div className="space-y-3">
                 <Label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Modelo</Label>
-                <select value={modelo} onChange={e => setModelo(e.target.value)} className="w-full h-12 rounded-xl bg-gray-50 border-none px-6 text-[#1A1A2E] appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]">
-                  <option value="">Selecione o modelo...</option>
-                  {modelos.map(m => <option key={m.id} value={m.nome}>{m.nome}</option>)}
+                <select value={modelo} onChange={e => setModelo(e.target.value)} disabled={!equipamento} className="w-full h-12 rounded-xl bg-gray-50 border-none px-6 text-[#1A1A2E] appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]">
+                  <option value="">{equipamento ? "Selecione o modelo..." : "Selecione primeiro o equipamento..."}</option>
+                  {modelos
+                    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                    .filter((m: any) => {
+                      if (!equipamento) return true;
+                      const eq = equipamentos.find(e => e.nome === equipamento);
+                      return eq ? m.equipamentoId === eq.id : true;
+                    })
+                    .map(m => (
+                      <option key={m.id} value={m.nome}>{m.nome}</option>
+                    ))}
                 </select>
               </div>
               <div className="space-y-3">

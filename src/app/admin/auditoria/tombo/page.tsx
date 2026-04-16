@@ -15,6 +15,7 @@ interface AuditoriaResumo {
   loja: string;
   setor: string;
   totalLaudos: number;
+  chamadosAtrelados?: string[];
 }
 
 export default function AuditoriaTomboPage() {
@@ -39,7 +40,7 @@ export default function AuditoriaTomboPage() {
       } else {
         setError("Equipamento não localizado na base de laudos.");
       }
-    } catch (_err) {
+    } catch {
       setError("Erro ao consultar base de dados.");
     } finally {
       setIsLoading(false);
@@ -117,9 +118,23 @@ export default function AuditoriaTomboPage() {
                          <span className="text-gray-400 uppercase text-[10px] tracking-widest">Setor / Área</span>
                          <span className="text-[#1A1A2E]">{resultado.setor}</span>
                        </div>
-                       <div className="flex justify-between items-center text-sm">
+                       <div className="flex justify-between items-center text-sm border-b border-gray-100 pb-4">
                          <span className="text-gray-400 uppercase text-[10px] tracking-widest">Status de Auditoria</span>
                          <span className="text-[#003B99] text-[10px] uppercase tracking-widest">Mapeado via CRM</span>
+                       </div>
+                       <div className="flex justify-between items-start text-sm pt-2">
+                         <span className="text-gray-400 uppercase text-[10px] tracking-widest">Chamados Atrelados</span>
+                         <div className="flex flex-col gap-1 items-end">
+                           {resultado.chamadosAtrelados && resultado.chamadosAtrelados.length > 0 ? (
+                             resultado.chamadosAtrelados.map((num, i) => (
+                               <span key={i} className="px-3 py-1 bg-blue-100 text-[#0066FF] rounded-md text-[10px] uppercase font-bold tracking-widest cursor-pointer hover:bg-blue-200 transition-colors">
+                                 #GLPI-{num}
+                               </span>
+                             ))
+                           ) : (
+                             <span className="text-gray-300 text-[10px] uppercase tracking-widest">Nenhum</span>
+                           )}
+                         </div>
                        </div>
                     </div>
                  </div>
