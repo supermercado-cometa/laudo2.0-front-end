@@ -39,7 +39,7 @@ export default function AdminLayout({
             return;
           }
 
-          const data = await res.json();
+          await res.json();
           // Não redirecionamos mais o não-admin, pois ele agora tem seu próprio dashboard no /admin
           setAuthorized(true);
         } catch {

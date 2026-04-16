@@ -43,9 +43,13 @@ export async function middleware(req: NextRequest) {
       }
     }
   } catch (err) {
-    // Se a API cair ou der timeout, não vamos expulsar o usuário imediatamente.
-    // Deixamos ele passar para que a validação client-side das páginas decida.
-    console.error("[Middleware] Timeout ou Erro de Rede na API:", err);
+    // Se a API cair ou der timeout, não vamos expulsar o usuário imediatamente nem poluir o log desnecessariamente.
+    // O controle final de acesso será feito pelo client-side das páginas.
+    if (err instanceof Error && (err.message.includes("fetch failed") || err.name === "TimeoutError")) {
+      // Silencioso para erros de rede conhecidos
+    } else {
+      console.error("[Middleware] Erro inesperado:", err);
+    }
     return NextResponse.next();
   }
 
