@@ -120,11 +120,11 @@ export default function LaudosGeradosPage() {
 
   return (
     <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">
-      <SubPageHeader title={`Laudos\nGerados`} icon={FileText} type="checklists" />
+      <SubPageHeader title={`Laudos\nGerados`} icon={FileText} />
 
       {/* Lado Esquerdo (Fixo 35%) */}
       <div className="hidden lg:flex lg:w-[35%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
-        <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all">
+        <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white hover:bg-white/20 transition-all">
           <ChevronLeft className="w-5 h-5" /> Voltar
         </button>
         <div className="relative z-10 max-w-sm">
@@ -132,10 +132,10 @@ export default function LaudosGeradosPage() {
             <FileText className="text-white w-10 h-10" />
           </div>
           <div className="w-[80px] h-[4px] bg-[#FECC00] mb-8 rounded-full shadow-lg" />
-          <h1 className="text-white text-[48px] lg:font-medium font-[800] leading-[1.1] uppercase tracking-tight mb-8">
+          <h1 className="text-white text-[48px] leading-[1.1] uppercase tracking-tight mb-8">
             Histórico de Laudos
           </h1>
-          <p className="text-white/70 text-lg font-medium">Consulte, filtre e exporte todos os laudos técnicos emitidos pela equipe.</p>
+          <p className="text-white/70 text-lg">Consulte, filtre e exporte todos os laudos técnicos emitidos pela equipe.</p>
         </div>
       </div>
 
@@ -143,33 +143,33 @@ export default function LaudosGeradosPage() {
       <div className="flex-1 lg:w-[65%] flex flex-col p-4 lg:p-20 overflow-y-auto">
         <div className="max-w-[1000px] w-full mx-auto pb-20">
           <div className="mb-12">
-             <h2 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800] tracking-tighter mb-8 uppercase">Laudos Gerados</h2>
+             <h2 className="text-[#1A1A2E] text-[32px] tracking-tighter mb-8 uppercase">Laudos Gerados</h2>
              
              {/* Painel de Filtros */}
              <div className="bg-white rounded-[32px] p-8 shadow-sm space-y-8 mb-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                    <div className="space-y-2">
-                      <Label className="text-xs font-bold uppercase text-gray-400">Técnico</Label>
-                      <Input value={tecnicoFilter} onChange={e => setTecnicoFilter(e.target.value)} placeholder="Nome do técnico" className="h-14 bg-gray-50 border-none rounded-xl" />
+                      <Label className="text-xs uppercase text-gray-400">Técnico</Label>
+                      <Input value={tecnicoFilter} onChange={e => setTecnicoFilter(e.target.value)} placeholder="Nome do técnico" className="h-14 bg-gray-50 border-none rounded-xl shadow-none" />
                    </div>
                    <div className="space-y-2">
-                      <Label className="text-xs font-bold uppercase text-gray-400">Chamado</Label>
-                      <Input value={chamadoFilter} onChange={e => setChamadoFilter(e.target.value)} placeholder="Número do chamado" className="h-14 bg-gray-50 border-none rounded-xl" />
+                      <Label className="text-xs uppercase text-gray-400">Chamado</Label>
+                      <Input value={chamadoFilter} onChange={e => setChamadoFilter(e.target.value)} placeholder="Número do chamado" className="h-14 bg-gray-50 border-none rounded-xl shadow-none" />
                    </div>
                    <div className="space-y-2">
-                      <Label className="text-xs font-bold uppercase text-gray-400">Tombo</Label>
-                      <Input value={tomboFilter} onChange={e => setTomboFilter(e.target.value)} placeholder="Número do tombo" className="h-14 bg-gray-50 border-none rounded-xl" />
+                      <Label className="text-xs uppercase text-gray-400">Tombo</Label>
+                      <Input value={tomboFilter} onChange={e => setTomboFilter(e.target.value)} placeholder="Número do tombo" className="h-14 bg-gray-50 border-none rounded-xl shadow-none" />
                    </div>
                    <div className="space-y-2">
-                      <Label className="text-xs font-bold uppercase text-gray-400">Data Inicial</Label>
-                      <Input type="date" value={dataInicio} onChange={e => setDataInicio(e.target.value)} className="h-14 bg-gray-50 border-none rounded-xl" />
+                      <Label className="text-xs uppercase text-gray-400">Data Inicial</Label>
+                      <Input type="date" value={dataInicio} onChange={e => setDataInicio(e.target.value)} className="h-14 bg-gray-50 border-none rounded-xl shadow-none" />
                    </div>
                    <div className="space-y-2">
-                      <Label className="text-xs font-bold uppercase text-gray-400">Data Final</Label>
-                      <Input type="date" value={dataFim} onChange={e => setDataFim(e.target.value)} className="h-14 bg-gray-50 border-none rounded-xl" />
+                      <Label className="text-xs uppercase text-gray-400">Data Final</Label>
+                      <Input type="date" value={dataFim} onChange={e => setDataFim(e.target.value)} className="h-14 bg-gray-50 border-none rounded-xl shadow-none" />
                    </div>
                    <div className="flex items-end">
-                      <Button onClick={fetchLaudos} className="w-full h-14 bg-[#003B99] rounded-xl uppercase tracking-widest lg:font-medium font-black gap-2">
+                      <Button onClick={fetchLaudos} className="w-full h-14 bg-[#003B99] rounded-xl uppercase tracking-widest gap-2 shadow-lg shadow-[#003B99]/20 hover:bg-[#0A2D66]">
                         <Search className="w-5 h-5" /> Pesquisar
                       </Button>
                    </div>
@@ -177,9 +177,9 @@ export default function LaudosGeradosPage() {
 
                 {/* Ações em Massa */}
                 <div className="flex flex-wrap items-center gap-4 pt-6 border-t border-gray-100">
-                   <Button variant="outline" onClick={handleSelectAll} className="h-12 rounded-xl text-xs font-bold uppercase tracking-widest">Marcar todos</Button>
-                   <Button variant="outline" onClick={handleDeselectAll} className="h-12 rounded-xl text-xs font-bold uppercase tracking-widest">Desmarcar</Button>
-                   <Button onClick={handleDeleteSelected} disabled={selectedIds.length === 0} variant="destructive" className="h-12 rounded-xl text-xs font-bold uppercase tracking-widest gap-2">
+                   <Button variant="outline" onClick={handleSelectAll} className="h-12 rounded-xl text-xs uppercase tracking-widest border-gray-100 hover:bg-gray-50">Marcar todos</Button>
+                   <Button variant="outline" onClick={handleDeselectAll} className="h-12 rounded-xl text-xs uppercase tracking-widest border-gray-100 hover:bg-gray-50">Desmarcar</Button>
+                   <Button onClick={handleDeleteSelected} disabled={selectedIds.length === 0} variant="destructive" className="h-12 rounded-xl text-xs uppercase tracking-widest gap-2 shadow-lg shadow-red-500/10">
                       <Trash2 className="w-4 h-4" /> Excluir selecionados ({selectedIds.length})
                    </Button>
                 </div>
@@ -189,18 +189,18 @@ export default function LaudosGeradosPage() {
              {isLoading ? (
                <div className="flex flex-col items-center justify-center p-20 space-y-4">
                   <Loader2 className="w-12 h-12 text-[#003B99] animate-spin" />
-                  <p className="text-gray-400 font-medium uppercase text-xs tracking-widest">Carregando históricos...</p>
+                  <p className="text-gray-400 uppercase text-xs tracking-widest">Carregando históricos...</p>
                </div>
              ) : (
                <div className="grid grid-cols-1 gap-6">
                   {laudos.length === 0 ? (
                     <div className="p-20 bg-white rounded-[32px] text-center border-2 border-dashed border-gray-200">
                        <FileText className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-                       <p className="text-gray-400 font-medium">Nenhum laudo encontrado com estes filtros.</p>
+                       <p className="text-gray-400 uppercase text-xs tracking-widest italic font-normal">Nenhum laudo encontrado com estes filtros.</p>
                     </div>
                   ) : (
                     laudos.map((item) => (
-                      <div key={item.id} onClick={() => handleToggleSelect(item.id)} className={`relative bg-white rounded-[32px] p-8 shadow-sm border-2 transition-all cursor-pointer group ${selectedIds.includes(item.id) ? 'border-[#003B99]' : 'border-transparent hover:border-gray-200'}`}>
+                      <div key={item.id} onClick={() => handleToggleSelect(item.id)} className={`relative bg-white rounded-[32px] p-8 shadow-sm border-2 transition-all cursor-pointer group ${selectedIds.includes(item.id) ? 'border-[#003B99]' : 'border-transparent hover:border-gray-200 shadow-xl shadow-black/5'}`}>
                          {/* Checkmark Indicador */}
                          <div className="absolute top-8 right-8">
                             {selectedIds.includes(item.id) ? (
@@ -214,16 +214,16 @@ export default function LaudosGeradosPage() {
                             <div className="space-y-4">
                                <div className="flex items-center gap-2">
                                   <span className="w-2 h-2 rounded-full bg-[#003B99]" />
-                                  <p className="text-[#1A1A2E] text-[18px] lg:font-medium font-black uppercase">Chamado: {item.numeroChamado}</p>
+                                  <p className="text-[#1A1A2E] text-[18px] uppercase tracking-tight">Chamado: {item.numeroChamado}</p>
                                </div>
-                               <p className="text-gray-500 font-medium uppercase text-xs tracking-widest">Técnico: <span className="text-[#1A1A2E]">{item.tecnico}</span></p>
-                               <p className="text-gray-500 font-medium uppercase text-xs tracking-widest">Equipamento: <span className="text-[#1A1A2E]">{item.equipamento} {item.modelo !== "Sem Modelo" && `- ${item.modelo}`}</span></p>
+                               <p className="text-gray-500 uppercase text-xs tracking-widest">Técnico: <span className="text-[#1A1A2E]">{item.tecnico}</span></p>
+                               <p className="text-gray-500 uppercase text-xs tracking-widest">Equipamento: <span className="text-[#1A1A2E]">{item.equipamento} {item.modelo !== "Sem Modelo" && `- ${item.modelo}`}</span></p>
                             </div>
 
                             <div className="space-y-4">
-                               <p className="text-gray-500 font-medium uppercase text-xs tracking-widest">Loja: <span className="text-[#1A1A2E]">{item.loja}</span> | Setor: <span className="text-[#1A1A2E]">{item.setor}</span></p>
-                               <p className="text-gray-500 font-medium uppercase text-xs tracking-widest">Tombo: <span className="text-[#1A1A2E]">{item.tombo}</span></p>
-                               <div className="flex items-center gap-2 text-gray-400 font-medium uppercase text-[10px] tracking-tighter">
+                               <p className="text-gray-500 uppercase text-xs tracking-widest">Loja: <span className="text-[#1A1A2E]">{item.loja}</span> | Setor: <span className="text-[#1A1A2E]">{item.setor}</span></p>
+                               <p className="text-gray-500 uppercase text-xs tracking-widest">Tombo: <span className="text-[#1A1A2E]">{item.tombo}</span></p>
+                               <div className="flex items-center gap-2 text-gray-400 uppercase text-[10px] tracking-tighter">
                                   <Calendar className="w-3.5 h-3.5" /> Data: {item.data}
                                </div>
                             </div>
@@ -231,13 +231,13 @@ export default function LaudosGeradosPage() {
 
                          {/* AÇÕES INDIVIDUAIS */}
                          <div className="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-50">
-                            <Button className="h-10 px-6 bg-[#003B99] hover:bg-[#0A2D66] rounded-lg uppercase tracking-wider text-[11px] font-bold gap-2 shadow-md shadow-[#003B99]/10">
+                            <Button className="h-10 px-6 bg-[#003B99] hover:bg-[#0A2D66] rounded-lg uppercase tracking-wider text-[11px] gap-2 shadow-md shadow-[#003B99]/10">
                                <Printer className="w-3.5 h-3.5" /> Imprimir
                             </Button>
                             <Button 
-                              variant="ghost" 
-                              onClick={(e) => { e.stopPropagation(); handleDeleteLaudo(item.id); } }
-                              className="w-10 h-10 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 transition-all p-0"
+                               variant="ghost" 
+                               onClick={(e) => { e.stopPropagation(); handleDeleteLaudo(item.id); } }
+                               className="w-10 h-10 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 transition-all p-0"
                             >
                                <Trash2 className="w-5 h-5" />
                             </Button>

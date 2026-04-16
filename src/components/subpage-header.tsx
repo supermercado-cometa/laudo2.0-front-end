@@ -49,7 +49,7 @@ export const SubPageHeader = ({
 
         {/* Title Content MOBILE: 28px 800 */}
         <div className="relative z-10 space-y-4">
-          <h1 className="text-white text-[28px] font-[800] leading-[1.1] whitespace-pre-line tracking-tight">
+          <h1 className="text-white text-[28px] leading-[1.1] whitespace-pre-line tracking-tight">
             {title}
           </h1>
           <div className="w-10 h-[3px] bg-[#FECC00] rounded-full"></div>

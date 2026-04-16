@@ -55,7 +55,7 @@ export default function LojaDetalhesPage() {
 
       {/* Lado Esquerdo (Hero) */}
       <div className="hidden lg:flex lg:w-[35%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
-        <button onClick={() => router.push("/admin/lojas")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white lg:font-medium font-bold hover:bg-white/20 transition-all group">
+        <button onClick={() => router.push("/admin/lojas")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white hover:bg-white/20 transition-all group">
           <ChevronLeft className="w-5 h-5" />
           Voltar para Lojas
         </button>
@@ -64,10 +64,10 @@ export default function LojaDetalhesPage() {
             <ClipboardList className="text-white w-10 h-10" />
           </div>
           <div className="w-[80px] h-[4px] bg-[#FECC00] mb-8 rounded-full shadow-lg" />
-          <h1 className="text-white text-[48px] lg:font-medium font-[800] leading-[1.1] uppercase whitespace-pre-line tracking-tight mb-8">
+          <h1 className="text-white text-[48px] leading-[1.1] uppercase whitespace-pre-line tracking-tight mb-8">
             {lojaInfo?.nome || "Carregando..."}
           </h1>
-          <p className="text-white/70 text-lg font-medium">{lojaInfo?.filial} - {lojaInfo?.cidade}</p>
+          <p className="text-white/70 text-lg">{lojaInfo?.filial} - {lojaInfo?.cidade}</p>
         </div>
       </div>
 
@@ -75,7 +75,7 @@ export default function LojaDetalhesPage() {
       <div className="flex-1 lg:w-[65%] flex flex-col p-6 lg:p-24 overflow-y-auto">
         <div className="max-w-[800px] w-full mx-auto">
           <div className="mb-12">
-            <h2 className="text-[#1A1A2E] text-[32px] lg:font-medium font-[800] tracking-tighter mb-4">Relatórios da Unidade</h2>
+            <h2 className="text-[#1A1A2E] text-[32px] tracking-tighter mb-4">Relatórios da Unidade</h2>
             <p className="text-[#6B7280] text-[16px]">Histórico de auditorias realizadas nesta filial.</p>
           </div>
 
@@ -91,8 +91,8 @@ export default function LojaDetalhesPage() {
                           {check.status === 'Finalizado' ? <CheckCircle2 className="w-6 h-6" /> : <Clock className="w-6 h-6" />}
                        </div>
                        <div>
-                          <h3 className="text-[#1A1A2E] text-[16px] lg:font-medium font-[700] uppercase mb-1">{check.titulo}</h3>
-                          <p className="text-[#6B7280] text-[12px] uppercase lg:font-medium font-bold tracking-wider">{check.tecnico} • {new Date(check.data).toLocaleDateString()}</p>
+                          <h3 className="text-[#1A1A2E] text-[16px] uppercase mb-1">{check.titulo}</h3>
+                          <p className="text-[#6B7280] text-[12px] uppercase tracking-wider">{check.tecnico} • {new Date(check.data).toLocaleDateString()}</p>
                        </div>
                     </div>
                     <ChevronRight className="text-gray-300 group-hover:text-[#003B99] translate-x-0 group-hover:translate-x-2 transition-all" />
@@ -101,7 +101,7 @@ export default function LojaDetalhesPage() {
               ) : (
                 <div className="text-center p-20 bg-gray-50 rounded-[32px] border-2 border-dashed border-gray-200">
                    <AlertTriangle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                   <p className="text-gray-400 lg:font-medium font-bold uppercase text-[12px] tracking-widest">Nenhuma auditoria encontrada para esta loja.</p>
+                   <p className="text-gray-400 uppercase text-[12px] tracking-widest">Nenhuma auditoria encontrada para esta loja.</p>
                 </div>
               )}
             </div>

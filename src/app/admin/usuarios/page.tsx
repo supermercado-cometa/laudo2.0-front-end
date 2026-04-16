@@ -108,12 +108,12 @@ export default function UsuariosPage() {
     >
       <div className="mb-12">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
-          <h2 className="text-[#1A1A2E] text-[24px] lg:text-[32px] font-black uppercase tracking-tighter leading-none">
+          <h2 className="text-[#1A1A2E] text-[24px] lg:text-[32px] uppercase tracking-tighter leading-none">
             Administradores
           </h2>
           <button 
             onClick={() => handleOpenModal()} 
-            className="w-full sm:w-auto bg-[#1A4CAB] text-white px-8 h-12 rounded-xl text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-[#003B99]/10 flex items-center justify-center gap-2 hover:bg-[#003B99] active:scale-95 transition-all"
+            className="w-full sm:w-auto bg-[#1A4CAB] text-white px-8 h-12 rounded-xl text-[11px] uppercase tracking-widest shadow-lg shadow-[#003B99]/10 flex items-center justify-center gap-2 hover:bg-[#003B99] active:scale-95 transition-all"
           >
             <Plus className="w-5 h-5" /> Adicionar Acesso
           </button>
@@ -125,7 +125,7 @@ export default function UsuariosPage() {
           <input 
             type="text" 
             placeholder="Pesquisar por username (ex: joao.silva)..." 
-            className="w-full h-12 pl-14 pr-6 rounded-xl bg-gray-50 border-none shadow-sm focus:ring-2 focus:ring-[#1A4CAB]/10 outline-none transition-all font-semibold text-[#1A1A2E] placeholder:text-gray-300" 
+            className="w-full h-12 pl-14 pr-6 rounded-xl bg-gray-50 border-none shadow-sm focus:ring-2 focus:ring-[#1A4CAB]/10 outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" 
             value={searchTerm} 
             onChange={(e) => setSearchTerm(e.target.value)} 
           />
@@ -134,7 +134,7 @@ export default function UsuariosPage() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center p-20 animate-pulse">
             <Loader2 className="w-12 h-12 text-[#003B99] animate-spin" />
-            <p className="mt-4 text-gray-400 font-bold text-[10px] uppercase tracking-widest text-center">Sincronizando banco de usuários...</p>
+            <p className="mt-4 text-gray-400 text-[10px] uppercase tracking-widest text-center">Sincronizando banco de usuários...</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -145,8 +145,8 @@ export default function UsuariosPage() {
                     <Users className="text-[#003B99] group-hover:text-white w-7 h-7" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-[#1A1A2E] text-[16px] lg:text-[18px] font-bold mb-1 truncate">{usuario.username}</h3>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[#6B7280] text-[10px] lg:text-[11px] font-black uppercase tracking-widest pt-1 border-t border-gray-50 group-hover:border-[#003B99]/10 transition-colors">
+                    <h3 className="text-[#1A1A2E] text-[16px] lg:text-[18px] mb-1 truncate">{usuario.username}</h3>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[#6B7280] text-[10px] lg:text-[11px] uppercase tracking-widest pt-1 border-t border-gray-50 group-hover:border-[#003B99]/10 transition-colors">
                       <span className={usuario.isAdmin ? "text-[#003B99]" : ""}>Role: {usuario.isAdmin ? 'Admin' : 'Default'}</span>
                       <span className="hidden sm:inline w-1 h-1 rounded-full bg-gray-300" />
                       <span className={usuario.canManageUsers ? "text-green-600" : ""}>Gestão: {usuario.canManageUsers ? 'AUTONOMIA TOTAL' : 'APENAS LEITURA'}</span>
@@ -179,17 +179,17 @@ export default function UsuariosPage() {
           <div className="bg-white rounded-[32px] p-8 lg:p-12 max-w-lg w-full shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] animate-in zoom-in duration-300">
              <div className="flex justify-between items-start mb-10">
                 <div>
-                  <h3 className="text-[#1A1A2E] text-3xl font-black uppercase tracking-tighter leading-none mb-2">
+                  <h3 className="text-[#1A1A2E] text-3xl uppercase tracking-tighter leading-none mb-2">
                     {editingUser ? 'Ajustar Perfil' : 'Novo Acesso'}
                   </h3>
-                  <p className="text-gray-400 font-medium text-sm">Defina as permissões deste administrador.</p>
+                  <p className="text-gray-400 text-sm">Defina as permissões deste administrador.</p>
                 </div>
                 <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all"><X className="w-6 h-6" /></button>
              </div>
 
              <div className="space-y-8">
                  <div className="space-y-3">
-                   <label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider flex items-center gap-2">
+                   <label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider flex items-center gap-2">
                      Username da Rede (LDAP)
                      <span className="text-red-400">*</span>
                    </label>
@@ -199,7 +199,7 @@ export default function UsuariosPage() {
                      value={formData.username} 
                      disabled={!!editingUser} 
                      onChange={e => setFormData({...formData, username: e.target.value})} 
-                     className="w-full h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] px-6 font-bold text-lg outline-none transition-all disabled:opacity-50 text-[#1A1A2E] placeholder:text-gray-300" 
+                     className="w-full h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] px-6 text-lg outline-none transition-all disabled:opacity-50 text-[#1A1A2E] placeholder:text-gray-300" 
                    />
                  </div>
                                 <div className="bg-[#1A4CAB]/5 p-6 rounded-[24px] border border-[#1A4CAB]/10">
@@ -214,10 +214,10 @@ export default function UsuariosPage() {
                        />
                      </div>
                      <div className="flex flex-col gap-1">
-                       <label htmlFor="canManageUsers" className="text-[14px] font-black text-[#1A1A2E] cursor-pointer leading-tight uppercase">
+                       <label htmlFor="canManageUsers" className="text-[14px] text-[#1A1A2E] cursor-pointer leading-tight uppercase">
                          Autonomia de Gestão
                        </label>
-                       <span className="text-[11px] text-[#6B7280] font-bold leading-relaxed uppercase">
+                       <span className="text-[11px] text-[#6B7280] leading-relaxed uppercase">
                          Permite cadastrar administradores e alterar configurações.
                        </span>
                      </div>
@@ -227,7 +227,7 @@ export default function UsuariosPage() {
                  <div className="pt-4">
                    <button 
                      onClick={handleSave} 
-                     className="w-full h-12 bg-[#1A4CAB] text-white rounded-xl text-[11px] font-bold tracking-widest uppercase flex items-center justify-center gap-3 shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99] active:scale-95 transition-all"
+                     className="w-full h-12 bg-[#1A4CAB] text-white rounded-xl text-[11px] tracking-widest uppercase flex items-center justify-center gap-3 shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99] active:scale-95 transition-all"
                    >
                      <Save className="w-5 h-5" /> {editingUser ? 'Atualizar Dados' : 'Autorizar Agora'}
                    </button>

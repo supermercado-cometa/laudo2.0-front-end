@@ -78,12 +78,12 @@ function LaudosCometaContent() {
     >
       <div className="mb-12">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
-          <h2 className="text-[#1A1A2E] text-[24px] lg:text-[32px] font-black tracking-tighter uppercase whitespace-pre-line leading-none">
+          <h2 className="text-[#1A1A2E] text-[24px] lg:text-[32px] tracking-tighter uppercase whitespace-pre-line leading-none">
             {isMineOnly ? "Meus Registros" : "Laudos Gerados"}
           </h2>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => router.push("/admin/laudo-tecnico")} className="h-12 rounded-xl text-[11px] font-bold uppercase tracking-widest border-[#1A4CAB] text-[#1A4CAB] hover:bg-[#1A4CAB]/5">Novo Laudo</Button>
-            <Button onClick={() => router.push(isMineOnly ? "/admin/laudos-cometa" : "/admin/laudos-cometa?view=meus")} className="h-12 rounded-xl text-[11px] font-bold uppercase tracking-widest bg-[#1A4CAB] text-white hover:bg-[#003B99] border-none shadow-lg shadow-[#1A4CAB]/20">
+            <Button variant="outline" onClick={() => router.push("/admin/laudo-tecnico")} className="h-12 rounded-xl text-[11px] uppercase tracking-widest border-[#1A4CAB] text-[#1A4CAB] hover:bg-[#1A4CAB]/5">Novo Laudo</Button>
+            <Button onClick={() => router.push(isMineOnly ? "/admin/laudos-cometa" : "/admin/laudos-cometa?view=meus")} className="h-12 rounded-xl text-[11px] uppercase tracking-widest bg-[#1A4CAB] text-white hover:bg-[#003B99] border-none shadow-lg shadow-[#1A4CAB]/20">
               {isMineOnly ? "Ver Todos" : "Ver Meus"}
             </Button>
           </div>
@@ -94,21 +94,21 @@ function LaudosCometaContent() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {!isMineOnly && (
               <div className="space-y-2">
-                <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Técnico</Label>
-                <Input value={tecnicoFilter} onChange={e => setTecnicoFilter(e.target.value)} placeholder="Nome do técnico" className="h-12 bg-gray-50 border-none rounded-xl text-sm font-semibold text-[#1A1A2E] focus:bg-white focus:ring-2 focus:ring-[#1A4CAB]/10" />
+                <Label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Técnico</Label>
+                <Input value={tecnicoFilter} onChange={e => setTecnicoFilter(e.target.value)} placeholder="Nome do técnico" className="h-12 bg-gray-50 border-none rounded-xl text-sm text-[#1A1A2E] focus:bg-white focus:ring-2 focus:ring-[#1A4CAB]/10" />
               </div>
             )}
             <div className="space-y-2">
-              <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Chamado</Label>
-              <Input value={chamadoFilter} onChange={e => setChamadoFilter(e.target.value)} placeholder="Nº do Chamado" className="h-12 bg-gray-50 border-none rounded-xl text-sm font-semibold text-[#1A1A2E] focus:bg-white focus:ring-2 focus:ring-[#1A4CAB]/10" />
+              <Label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Chamado</Label>
+              <Input value={chamadoFilter} onChange={e => setChamadoFilter(e.target.value)} placeholder="Nº do Chamado" className="h-12 bg-gray-50 border-none rounded-xl text-sm text-[#1A1A2E] focus:bg-white focus:ring-2 focus:ring-[#1A4CAB]/10" />
             </div>
             <div className="space-y-2">
-              <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Tombo</Label>
-              <Input value={tomboFilter} onChange={e => setTomboFilter(e.target.value)} placeholder="Nº de Tombo" className="h-12 bg-gray-50 border-none rounded-xl text-sm font-semibold text-[#1A1A2E] focus:bg-white focus:ring-2 focus:ring-[#1A4CAB]/10" />
+              <Label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Tombo</Label>
+              <Input value={tomboFilter} onChange={e => setTomboFilter(e.target.value)} placeholder="Nº de Tombo" className="h-12 bg-gray-50 border-none rounded-xl text-sm text-[#1A1A2E] focus:bg-white focus:ring-2 focus:ring-[#1A4CAB]/10" />
             </div>
           </div>
           <div className="flex justify-end pt-2">
-            <Button onClick={fetchLaudos} className="h-12 px-10 bg-[#1A4CAB] rounded-xl uppercase tracking-widest font-bold gap-2 text-[11px] shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99]">
+            <Button onClick={fetchLaudos} className="h-12 px-10 bg-[#1A4CAB] rounded-xl uppercase tracking-widest gap-2 text-[11px] shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99]">
               <Search className="w-4 h-4" /> Atualizar Busca
             </Button>
           </div>
@@ -118,14 +118,14 @@ function LaudosCometaContent() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center p-20 space-y-4">
             <Loader2 className="w-12 h-12 text-[#003B99] animate-spin" />
-            <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest">Sincronizando laudos...</p>
+            <p className="text-gray-400 uppercase text-[10px] tracking-widest">Sincronizando laudos...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6">
             {laudos.length === 0 ? (
               <div className="p-20 bg-white rounded-[24px] lg:rounded-[32px] text-center border-2 border-dashed border-gray-100 flex flex-col items-center">
                 <FileText className="w-16 h-16 text-gray-100 mb-6" />
-                <p className="text-gray-400 font-bold uppercase text-[12px] tracking-widest">Nenhum registro encontrado.</p>
+                <p className="text-gray-400 uppercase text-[12px] tracking-widest">Nenhum registro encontrado.</p>
               </div>
             ) : (
               laudos.map((item) => (
@@ -134,35 +134,35 @@ function LaudosCometaContent() {
                     <div className="space-y-6 flex-1">
                       <div className="flex items-center gap-4">
                         <div className="w-3 h-3 rounded-full bg-[#FECC00] shadow-[0_0_10px_rgba(254,204,0,0.5)]" />
-                        <p className="text-[#1A1A2E] text-[18px] lg:text-[20px] font-black uppercase leading-tight tracking-tighter">Chamado: {item.numeroChamado}</p>
+                        <p className="text-[#1A1A2E] text-[18px] lg:text-[20px] uppercase leading-tight tracking-tighter">Chamado: {item.numeroChamado}</p>
                       </div>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-12">
                         <div className="flex flex-col gap-1">
-                          <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Especialista</span>
-                          <span className="text-[#1A1A2E] text-[15px] font-bold">{item.tecnico}</span>
+                          <span className="text-[10px] text-gray-300 uppercase tracking-widest">Especialista</span>
+                          <span className="text-[#1A1A2E] text-[15px]">{item.tecnico}</span>
                         </div>
                         <div className="flex flex-col gap-1">
-                          <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Equipamento</span>
-                          <span className="text-[#1A1A2E] text-[15px] font-bold truncate">{item.equipamento}</span>
+                          <span className="text-[10px] text-gray-300 uppercase tracking-widest">Equipamento</span>
+                          <span className="text-[#1A1A2E] text-[15px] truncate">{item.equipamento}</span>
                         </div>
                         <div className="flex flex-col gap-1">
-                          <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Loja / Setor</span>
-                          <span className="text-[#6B7280] text-[14px] font-semibold">{item.loja} | {item.setor}</span>
+                          <span className="text-[10px] text-gray-300 uppercase tracking-widest">Loja / Setor</span>
+                          <span className="text-[#6B7280] text-[14px]">{item.loja} | {item.setor}</span>
                         </div>
                         <div className="flex flex-col gap-1">
-                          <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Identificação</span>
-                          <span className="text-[#6B7280] text-[14px] font-semibold">{item.tombo} ({item.modelo})</span>
+                          <span className="text-[10px] text-gray-300 uppercase tracking-widest">Identificação</span>
+                          <span className="text-[#6B7280] text-[14px]">{item.tombo} ({item.modelo})</span>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 text-gray-400 font-bold uppercase text-[10px] pt-4 border-t border-gray-50">
+                      <div className="flex items-center gap-2 text-gray-400 uppercase text-[10px] pt-4 border-t border-gray-50">
                         <Calendar className="w-3.5 h-3.5 text-[#003B99]" /> Emitido em: {item.data}
                       </div>
                     </div>
 
                     <div className="flex flex-col justify-center items-end gap-3 shrink-0">
-                      <Button className="h-12 px-8 bg-[#003B99] hover:bg-[#0A2D66] rounded-xl uppercase tracking-wider text-[11px] font-black gap-2 shadow-xl shadow-[#003B99]/10 active:scale-95 transition-all">
+                      <Button className="h-12 px-8 bg-[#003B99] hover:bg-[#0A2D66] rounded-xl uppercase tracking-wider text-[11px] gap-2 shadow-xl shadow-[#003B99]/10 active:scale-95 transition-all">
                         <Printer className="w-4 h-4" /> Imprimir PDF
                       </Button>
                     </div>
@@ -183,11 +183,15 @@ export default function LaudosCometaPage() {
       <div className="w-full h-screen flex items-center justify-center bg-[#F3F6F9]">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-12 h-12 text-[#003B99] animate-spin" />
-          <p className="text-gray-400 font-bold uppercase text-xs tracking-widest">Iniciando Histórico...</p>
+          <p className="text-gray-400 uppercase text-xs tracking-widest">Iniciando Histórico...</p>
         </div>
       </div>
     }>
-      <LaudosCometaContent />
+      <SuspenseContent />
     </Suspense>
   );
+}
+
+function SuspenseContent() {
+  return <LaudosCometaContent />;
 }

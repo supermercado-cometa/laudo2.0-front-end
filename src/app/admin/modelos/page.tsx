@@ -1,19 +1,18 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { FileText, Search, Plus, Loader2, Trash2, Edit3, X, Save, ShieldCheck } from "lucide-react";
+import { FileText, Search, Loader2, Trash2, Edit3, Plus, X, Save } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api-config";
 import { AdminPageLayout } from "@/components/admin-page-layout";
 
-interface Template {
+interface Modelo {
   id: number;
   nome: string;
   setor?: string;
-  createdAt?: string;
 }
 
 export default function ModelosPage() {
-  const [templates, setTemplates] = useState<Template[]>([]);
+  const [modelos, setModelos] = useState<Modelo[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -22,26 +21,28 @@ export default function ModelosPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState({ nome: "" });
 
-  const fetchTemplates = useCallback(async () => {
+  const fetchModelos = useCallback(async () => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem("token");
       const res = await fetch(`${API_BASE_URL}/modelos`, {
         headers: { Authorization: token ? `Bearer ${token}` : "" }
       });
-      if (res.ok) setTemplates(await res.json());
+      if (res.ok) {
+        setModelos(await res.json());
+      }
     } catch (error) {
-      console.error("Erro:", error);
+      console.error("Erro ao carregar modelos:", error);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchTemplates();
-  }, [fetchTemplates]);
+    fetchModelos();
+  }, [fetchModelos]);
 
-  const handleOpenModal = (item?: Template) => {
+  const handleOpenModal = (item?: Modelo) => {
     if (item) {
       setEditingId(item.id);
       setFormData({ nome: item.nome });
@@ -54,7 +55,7 @@ export default function ModelosPage() {
 
   const handleSave = async () => {
     if (!formData.nome) {
-      alert("Por favor, preencha o título do modelo antes de salvar.");
+      alert("Por favor, preencha o nome do modelo.");
       return;
     }
     try {
@@ -73,44 +74,44 @@ export default function ModelosPage() {
 
       if (res.ok) {
         setIsModalOpen(false);
-        fetchTemplates();
+        fetchModelos();
       }
     } catch (err) {
-      console.error("Erro ao salvar:", err);
+      console.error("Erro ao salvar modelo:", err);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Deseja realmente remover este template de auditoria?")) return;
+    if (!confirm("Remover este modelo de laudo?")) return;
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${API_BASE_URL}/modelos/${id}`, {
         method: "DELETE",
         headers: { Authorization: token ? `Bearer ${token}` : "" }
       });
-      if (res.ok) fetchTemplates();
+      if (res.ok) fetchModelos();
     } catch (err) {
       console.error("Erro:", err);
     }
   };
 
-  const filtered = templates.filter(t => t.nome.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filtered = modelos.filter(m => m.nome.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <AdminPageLayout
-      title={`Templates\nde Modelos`}
-      subtitle="Defina os padrões e checklists que servirão de base para a criação dos laudos técnicos nas unidades."
-      icon={ShieldCheck}
+      title={`Templates de\nModelos`}
+      subtitle="Defina os modelos de checklists e auditoria que os técnicos utilizarão durante as inspeções em campo."
+      icon={FileText}
       backUrl="/admin"
     >
       <div className="mb-12">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
-          <h2 className="text-[#1A1A2E] text-[24px] lg:text-[32px] font-black uppercase tracking-tighter leading-none">
-            Emodelos Auditados
+          <h2 className="text-[#1A1A2E] text-[24px] lg:text-[32px] uppercase tracking-tighter leading-none">
+            Modelos Disponíveis
           </h2>
           <button 
             onClick={() => handleOpenModal()} 
-            className="w-full sm:w-auto bg-[#1A4CAB] text-white px-8 h-12 rounded-xl text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-[#003B99]/10 flex items-center justify-center gap-2 hover:bg-[#003B99] active:scale-95 transition-all"
+            className="w-full sm:w-auto bg-[#1A4CAB] text-white px-8 h-12 rounded-xl text-[11px] uppercase tracking-widest shadow-lg shadow-[#003B99]/10 flex items-center justify-center gap-2 hover:bg-[#003B99] active:scale-95 transition-all"
           >
             <Plus className="w-5 h-5" /> Adicionar Modelo
           </button>
@@ -122,7 +123,7 @@ export default function ModelosPage() {
           <input 
             type="text" 
             placeholder="Pesquisar modelos de laudo..." 
-            className="w-full h-12 pl-14 pr-6 rounded-xl bg-gray-50 border-none shadow-sm focus:ring-2 focus:ring-[#1A4CAB]/10 outline-none transition-all font-semibold text-[#1A1A2E] placeholder:text-gray-300" 
+            className="w-full h-12 pl-14 pr-6 rounded-xl bg-gray-50 border-none shadow-sm focus:ring-2 focus:ring-[#1A4CAB]/10 outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" 
             value={searchTerm} 
             onChange={(e) => setSearchTerm(e.target.value)} 
           />
@@ -131,7 +132,7 @@ export default function ModelosPage() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center p-20 animate-pulse">
             <Loader2 className="w-12 h-12 text-[#003B99] animate-spin" />
-            <p className="mt-4 text-gray-400 font-bold text-[10px] uppercase tracking-widest text-center">Cruzando padrões de auditoria...</p>
+            <p className="mt-4 text-gray-400 text-[10px] uppercase tracking-widest text-center">Carregando modelos técnicos...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
@@ -142,11 +143,9 @@ export default function ModelosPage() {
                     <FileText className="text-[#003B99] group-hover:text-white w-7 h-7" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-[#1A1A2E] text-[16px] lg:text-[18px] font-black uppercase tracking-tight truncate leading-tight mb-1">{item.nome}</h3>
+                    <h3 className="text-[#1A1A2E] text-[16px] lg:text-[18px] uppercase tracking-tight truncate leading-tight mb-1">{item.nome}</h3>
                     <div className="flex items-center gap-2">
-                       <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest border-t border-gray-50 pt-1">
-                        Utilizado em: {item.setor || 'Diversos Setores'}
-                       </span>
+                       <span className="text-[10px] text-gray-300 uppercase tracking-widest border-t border-gray-50 pt-1">Status: Ativo</span>
                     </div>
                   </div>
                 </div>
@@ -169,7 +168,7 @@ export default function ModelosPage() {
             
             {filtered.length === 0 && !isLoading && (
                <div className="p-20 text-center bg-gray-50/50 rounded-[32px] border-2 border-dashed border-gray-200">
-                 <p className="text-[#9CA3AF] font-bold uppercase text-[12px] tracking-widest">Nenhum modelo compatível com a busca.</p>
+                 <p className="text-[#9CA3AF] uppercase text-[12px] tracking-widest">Nenhum modelo identificado.</p>
                </div>
             )}
           </div>
@@ -182,31 +181,31 @@ export default function ModelosPage() {
            <div className="bg-white rounded-[32px] p-8 lg:p-12 max-w-lg w-full shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] animate-in zoom-in duration-300">
              <div className="flex justify-between items-start mb-10">
                 <div>
-                  <h3 className="text-[#1A1A2E] text-3xl font-black uppercase tracking-tighter leading-none mb-2">
-                    {editingId ? 'Editar Template' : 'Criar Template'}
+                  <h3 className="text-[#1A1A2E] text-3xl uppercase tracking-tighter leading-none mb-2">
+                    {editingId ? 'Editar Modelo' : 'Novo Modelo'}
                   </h3>
-                  <p className="text-gray-400 font-medium text-sm">Defina o título do modelo de checklist.</p>
+                  <p className="text-gray-400 text-sm">Defina o nome do modelo para os laudos.</p>
                 </div>
                 <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all"><X className="w-6 h-6" /></button>
              </div>
 
              <div className="space-y-8">
                  <div className="space-y-3">
-                   <label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Título do Modelo</label>
+                   <label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Identificação do Modelo</label>
                    <input 
                      type="text" 
                      placeholder="Ex: Checklist de Padronização" 
                      value={formData.nome} 
                      onChange={e => setFormData({ nome: e.target.value })} 
-                     className="w-full h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] px-6 font-bold text-lg outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" 
+                     className="w-full h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] px-6 text-lg outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" 
                    />
                  </div>
                                 <div className="pt-4">
                    <button 
                      onClick={handleSave} 
-                     className="w-full h-12 bg-[#1A4CAB] text-white rounded-xl text-[11px] font-bold tracking-widest uppercase flex items-center justify-center gap-3 shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99] active:scale-95 transition-all"
+                     className="w-full h-12 bg-[#1A4CAB] text-white rounded-xl text-[11px] tracking-widest uppercase flex items-center justify-center gap-3 shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99] active:scale-95 transition-all"
                    >
-                     <Save className="w-5 h-5" /> {editingId ? 'Salvar Edição' : 'Gerar Novo Modelo'}
+                     <Save className="w-5 h-5" /> {editingId ? 'Salvar Edição' : 'Registrar Modelo'}
                    </button>
                  </div>
              </div>

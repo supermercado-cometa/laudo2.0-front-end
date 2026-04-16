@@ -105,12 +105,12 @@ export default function SetoresPage() {
     >
       <div className="mb-12">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
-          <h2 className="text-[#1A1A2E] text-[24px] lg:text-[32px] font-black uppercase tracking-tighter leading-none">
+          <h2 className="text-[#1A1A2E] text-[24px] lg:text-[32px] uppercase tracking-tighter leading-none">
             Setores Ativos
           </h2>
           <button 
             onClick={() => handleOpenModal()} 
-            className="w-full sm:w-auto bg-[#1A4CAB] text-white px-8 h-12 rounded-xl text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-[#003B99]/10 flex items-center justify-center gap-2 hover:bg-[#003B99] active:scale-95 transition-all"
+            className="w-full sm:w-auto bg-[#1A4CAB] text-white px-8 h-12 rounded-xl text-[11px] uppercase tracking-widest shadow-lg shadow-[#003B99]/10 flex items-center justify-center gap-2 hover:bg-[#003B99] active:scale-95 transition-all"
           >
             <Plus className="w-5 h-5" /> Novo Setor
           </button>
@@ -122,7 +122,7 @@ export default function SetoresPage() {
           <input 
             type="text" 
             placeholder="Pesquisar setor (ex: açougue, TI)..." 
-            className="w-full h-12 pl-14 pr-6 rounded-xl bg-gray-50 border-none shadow-sm focus:ring-2 focus:ring-[#1A4CAB]/10 outline-none transition-all font-semibold text-[#1A1A2E] placeholder:text-gray-300" 
+            className="w-full h-12 pl-14 pr-6 rounded-xl bg-gray-50 border-none shadow-sm focus:ring-2 focus:ring-[#1A4CAB]/10 outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" 
             value={searchTerm} 
             onChange={(e) => setSearchTerm(e.target.value)} 
           />
@@ -131,7 +131,7 @@ export default function SetoresPage() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center p-20 animate-pulse">
             <Loader2 className="w-12 h-12 text-[#003B99] animate-spin" />
-            <p className="mt-4 text-gray-400 font-bold text-[10px] uppercase tracking-widest text-center">Mapeando setores da rede...</p>
+            <p className="mt-4 text-gray-400 text-[10px] uppercase tracking-widest text-center">Mapeando setores da rede...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
@@ -142,9 +142,9 @@ export default function SetoresPage() {
                     <Briefcase className="text-[#003B99] group-hover:text-white w-7 h-7" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-[#1A1A2E] text-[16px] lg:text-[18px] font-black uppercase tracking-tight truncate leading-tight mb-1">{item.nome}</h3>
+                    <h3 className="text-[#1A1A2E] text-[16px] lg:text-[18px] uppercase tracking-tight truncate leading-tight mb-1">{item.nome}</h3>
                     <div className="flex items-center gap-2">
-                       <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest border-t border-gray-50 pt-1">Status: Ativo</span>
+                       <span className="text-[10px] text-gray-300 uppercase tracking-widest border-t border-gray-50 pt-1">Status: Ativo</span>
                     </div>
                   </div>
                 </div>
@@ -167,7 +167,7 @@ export default function SetoresPage() {
             
             {filtered.length === 0 && !isLoading && (
                <div className="p-20 text-center bg-gray-50/50 rounded-[32px] border-2 border-dashed border-gray-200">
-                 <p className="text-[#9CA3AF] font-bold uppercase text-[12px] tracking-widest">Nenhum setor identificado.</p>
+                 <p className="text-[#9CA3AF] uppercase text-[12px] tracking-widest">Nenhum setor identificado.</p>
                </div>
             )}
           </div>
@@ -180,29 +180,29 @@ export default function SetoresPage() {
            <div className="bg-white rounded-[32px] p-8 lg:p-12 max-w-lg w-full shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] animate-in zoom-in duration-300">
              <div className="flex justify-between items-start mb-10">
                 <div>
-                  <h3 className="text-[#1A1A2E] text-3xl font-black uppercase tracking-tighter leading-none mb-2">
+                  <h3 className="text-[#1A1A2E] text-3xl uppercase tracking-tighter leading-none mb-2">
                     {editingId ? 'Editar Setor' : 'Novo Setor'}
                   </h3>
-                  <p className="text-gray-400 font-medium text-sm">Identifique o setor para relatórios precisos.</p>
+                  <p className="text-gray-400 text-sm">Identifique o setor para relatórios precisos.</p>
                 </div>
                 <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all"><X className="w-6 h-6" /></button>
              </div>
 
              <div className="space-y-8">
                  <div className="space-y-3">
-                   <label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Identificação do Setor</label>
+                   <label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Identificação do Setor</label>
                    <input 
                      type="text" 
                      placeholder="Ex: Frente de Loja" 
                      value={formData.nome} 
                      onChange={e => setFormData({ nome: e.target.value })} 
-                     className="w-full h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] px-6 font-bold text-lg outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" 
+                     className="w-full h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] px-6 text-lg outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" 
                    />
                  </div>
                                 <div className="pt-4">
                    <button 
                      onClick={handleSave} 
-                     className="w-full h-12 bg-[#1A4CAB] text-white rounded-xl text-[11px] font-bold tracking-widest uppercase flex items-center justify-center gap-3 shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99] active:scale-95 transition-all"
+                     className="w-full h-12 bg-[#1A4CAB] text-white rounded-xl text-[11px] tracking-widest uppercase flex items-center justify-center gap-3 shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99] active:scale-95 transition-all"
                    >
                      <Save className="w-5 h-5" /> {editingId ? 'Salvar Edição' : 'Registrar Setor'}
                    </button>

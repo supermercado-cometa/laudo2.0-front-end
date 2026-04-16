@@ -41,7 +41,7 @@ export const AdminPageLayout = ({
         {/* Botão Voltar Premium - Efeito Glass especificado */}
         <button 
           onClick={() => router.push(backUrl)} 
-          className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 text-white text-[11px] font-bold uppercase tracking-widest hover:bg-white/20 transition-all z-20 group shadow-lg shadow-black/5"
+          className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 text-white text-[11px] uppercase tracking-widest hover:bg-white/20 transition-all z-20 group shadow-lg shadow-black/5"
         >
           <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Voltar
         </button>
@@ -56,13 +56,13 @@ export const AdminPageLayout = ({
           <div className="w-[80px] h-[6px] bg-[#FECC00] mb-8 rounded-full shadow-lg shadow-[#FECC00]/20" />
           
           {/* Título Principal Desktop - Especificação Exata 42px font-black */}
-          <h1 className="text-white text-[42px] font-black leading-[1.1] uppercase tracking-tight mb-8 whitespace-pre-line">
+          <h1 className="text-white text-[42px] leading-[1.1] uppercase tracking-tight mb-8 whitespace-pre-line">
             {title}
           </h1>
           
           {/* Subtítulo informativo */}
           {subtitle && (
-            <p className="text-white/80 text-lg font-medium leading-relaxed max-w-[320px]">
+            <p className="text-white/80 text-lg leading-relaxed max-w-[320px]">
               {subtitle}
             </p>
           )}

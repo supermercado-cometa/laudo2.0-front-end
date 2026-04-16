@@ -44,7 +44,7 @@ export const ModuleCard = ({
       </div>
 
       {/* Nome: Centralizado mobile / Base-Esquerda desktop (16px Semi-bold - GUIA) */}
-      <span className="text-[#1A1C1E] font-bold lg:font-medium text-base lg:text-[16px] relative z-10 group-hover:text-[#003B99] transition-colors w-full text-center lg:text-left">
+      <span className="text-[#1A1C1E] text-base lg:text-[16px] relative z-10 group-hover:text-[#003B99] transition-colors w-full text-center lg:text-left">
         {title}
       </span>
     </button>
