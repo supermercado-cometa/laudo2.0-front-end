@@ -135,10 +135,6 @@ export default function InfoFormularioPage() {
           <h1 className="text-white text-[48px] lg:font-medium font-[800] uppercase tracking-tight mb-8 leading-[1.1]">{`Laudo\nTécnico`}</h1>
           <p className="text-white/70 text-lg font-medium mb-12">Preenchimento obrigatório para conformidade técnica GLPI e histórico de ativos.</p>
           
-          <div className="flex flex-col gap-3">
-             <Button onClick={() => router.push("/laudos-cometa")} variant="outline" className="h-14 border-white/20 text-white rounded-xl uppercase font-bold tracking-widest hover:bg-white/10 justify-start px-8">Ver Todos os Laudos</Button>
-             <Button onClick={() => router.push("/laudos-cometa?view=meus")} variant="outline" className="h-14 border-white/20 text-white rounded-xl uppercase font-bold tracking-widest hover:bg-white/10 justify-start px-8">Ver Meus Laudos</Button>
-          </div>
         </div>
       </div>
 
@@ -163,6 +159,11 @@ export default function InfoFormularioPage() {
               </motion.div>
             )}
           </AnimatePresence>
+
+          <div className="flex flex-col sm:flex-row gap-4 mb-8">
+             <Button onClick={() => router.push("/laudos-cometa")} variant="outline" className="flex-1 h-14 border-[#003B99] text-[#003B99] hover:bg-blue-50 rounded-2xl uppercase lg:font-medium font-black tracking-widest text-xs">Ver Todos os Laudos</Button>
+             <Button onClick={() => router.push("/laudos-cometa?view=meus")} variant="outline" className="flex-1 h-14 border-[#003B99] text-[#003B99] hover:bg-blue-50 rounded-2xl uppercase lg:font-medium font-black tracking-widest text-xs">Ver Meus Laudos</Button>
+          </div>
 
           <Card className="bg-white rounded-[32px] shadow-sm border-none">
             <CardContent className="p-8 lg:p-12 space-y-12">
