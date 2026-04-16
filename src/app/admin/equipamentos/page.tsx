@@ -116,7 +116,7 @@ export default function EquipamentosPage() {
           </h2>
           <button 
             onClick={() => handleOpenModal()} 
-            className="w-full sm:w-auto bg-[#003B99] text-white px-8 h-14 rounded-2xl text-[14px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 hover:bg-[#0A2D66] active:scale-95 transition-all"
+            className="w-full sm:w-auto bg-[#1A4CAB] text-white px-8 h-12 rounded-xl text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-[#003B99]/10 flex items-center justify-center gap-2 hover:bg-[#003B99] active:scale-95 transition-all"
           >
             <Plus className="w-5 h-5" /> Novo Registro
           </button>
@@ -124,11 +124,11 @@ export default function EquipamentosPage() {
 
         {/* Busca Premium */}
         <div className="relative mb-8 group">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6 transition-colors group-focus-within:text-[#003B99]" />
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 transition-colors group-focus-within:text-[#1A4CAB]" />
           <input 
             type="text" 
             placeholder="Pesquisar equipamento ou categoria..." 
-            className="w-full h-16 pl-16 pr-6 rounded-[20px] bg-white border border-gray-100 shadow-sm focus:ring-2 focus:ring-[#003B99]/10 outline-none transition-all font-medium" 
+            className="w-full h-12 pl-14 pr-6 rounded-xl bg-gray-50 border-none shadow-sm focus:ring-2 focus:ring-[#1A4CAB]/10 outline-none transition-all font-semibold text-[#1A1A2E] placeholder:text-gray-300" 
             value={searchTerm} 
             onChange={(e) => setSearchTerm(e.target.value)} 
           />
@@ -154,25 +154,25 @@ export default function EquipamentosPage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                   <button 
-                    onClick={() => handleOpenModal(item)} 
-                    className="w-12 h-12 rounded-xl bg-blue-50 text-[#003B99] flex items-center justify-center hover:bg-[#003B99] hover:text-white transition-all shadow-sm active:scale-90"
-                   >
-                    <Edit3 className="w-5 h-5" />
-                   </button>
-                   <button 
-                    onClick={() => handleDelete(item.id)} 
-                    className="w-12 h-12 rounded-xl bg-red-50 text-red-500 flex items-center justify-center transition-all hover:bg-red-500 hover:text-white shadow-sm active:scale-90"
-                   >
-                    <Trash2 className="w-5 h-5" />
-                   </button>
-                </div>
+                 <div className="flex gap-2">
+                    <button 
+                     onClick={() => handleOpenModal(item)} 
+                     className="w-10 h-10 rounded-xl bg-blue-50 text-[#1A4CAB] flex items-center justify-center hover:bg-[#1A4CAB] hover:text-white transition-all shadow-sm active:scale-90"
+                    >
+                     <Edit3 className="w-5 h-5" />
+                    </button>
+                    <button 
+                     onClick={() => handleDelete(item.id)} 
+                     className="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center transition-all hover:bg-red-500 hover:text-white shadow-sm active:scale-90"
+                    >
+                     <Trash2 className="w-5 h-5" />
+                    </button>
+                 </div>
               </div>
             ))}
             
             {filtered.length === 0 && !isLoading && (
-              <div className="p-20 text-center bg-gray-50/50 rounded-[40px] border-2 border-dashed border-gray-200">
+              <div className="p-20 text-center bg-gray-50/50 rounded-[32px] border-2 border-dashed border-gray-200">
                 <p className="text-gray-400 font-bold uppercase text-[12px] tracking-widest">Nenhum equipamento encontrado na busca.</p>
               </div>
             )}
@@ -183,7 +183,7 @@ export default function EquipamentosPage() {
       {/* MODAL DE CADASTRO/EDIÇÃO PREMIUM */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#003B99]/40 backdrop-blur-md p-6">
-          <div className="bg-white rounded-[40px] p-8 lg:p-12 max-w-lg w-full shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] animate-in zoom-in duration-300">
+          <div className="bg-white rounded-[32px] p-8 lg:p-12 max-w-lg w-full shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] animate-in zoom-in duration-300">
              <div className="flex justify-between items-start mb-10">
                 <div>
                   <h3 className="text-[#1A1A2E] text-3xl font-black uppercase tracking-tighter leading-none mb-2">
@@ -195,23 +195,22 @@ export default function EquipamentosPage() {
              </div>
 
              <div className="space-y-8">
-                <div className="space-y-3">
-                  <label className="text-[11px] font-black uppercase text-gray-400 tracking-wider">Nome Comercial / Técnico</label>
-                  <input type="text" placeholder="Ex: Impressora HP LaserJet" value={formData.nome} onChange={e => setFormData({...formData, nome: e.target.value})} className="w-full h-18 rounded-2xl bg-gray-50 border border-transparent focus:border-[#003B99] focus:bg-white px-6 font-bold text-lg outline-none transition-all" />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-[11px] font-black uppercase text-gray-400 tracking-wider">Tipo ou Categoria</label>
-                  <input type="text" placeholder="Ex: Periférico" value={formData.tipo} onChange={e => setFormData({...formData, tipo: e.target.value})} className="w-full h-18 rounded-2xl bg-gray-50 border border-transparent focus:border-[#003B99] focus:bg-white px-6 font-bold text-lg outline-none transition-all" />
-                </div>
-                
-                <div className="pt-4">
-                  <button 
-                    onClick={handleSave} 
-                    className="w-full h-20 bg-[#003B99] text-white rounded-2xl text-[16px] font-black tracking-widest uppercase flex items-center justify-center gap-3 shadow-2xl hover:bg-[#0A2D66] active:scale-95 transition-all"
-                  >
-                    <Save className="w-6 h-6" /> {editingId ? 'Salvar Alterações' : 'Cadastrar Equipamento'}
-                  </button>
-                </div>
+                 <div className="space-y-3">
+                   <label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Nome Comercial / Técnico</label>
+                   <input type="text" placeholder="Ex: Impressora HP LaserJet" value={formData.nome} onChange={e => setFormData({...formData, nome: e.target.value})} className="w-full h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] px-6 font-bold text-lg outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" />
+                 </div>
+                 <div className="space-y-3">
+                   <label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Tipo ou Categoria</label>
+                   <input type="text" placeholder="Ex: Periférico" value={formData.tipo} onChange={e => setFormData({...formData, tipo: e.target.value})} className="w-full h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] px-6 font-bold text-lg outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" />
+                 </div>
+                                <div className="pt-4">
+                   <button 
+                     onClick={handleSave} 
+                     className="w-full h-12 bg-[#1A4CAB] text-white rounded-xl text-[11px] font-bold tracking-widest uppercase flex items-center justify-center gap-3 shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99] active:scale-95 transition-all"
+                   >
+                     <Save className="w-5 h-5" /> {editingId ? 'Salvar Alterações' : 'Cadastrar Equipamento'}
+                   </button>
+                 </div>
              </div>
           </div>
         </div>

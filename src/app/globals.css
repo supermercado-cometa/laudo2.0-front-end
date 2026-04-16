@@ -35,12 +35,13 @@
 }
 
 :root {
-  /* Cores Principais - Cometa */
-  --royal-blue: #0E3D8A;
-  --gold: #FECC00;
+  /* Identidade Visual Exata - Cometa */
+  --royal-blue: #1A4CAB;      /* Azul Real (Principal) */
+  --deep-blue: #003B99;       /* Azul Profundo (Base Sidebar) */
+  --vibrant-blue: #0066FF;    /* Azul Vibrante (Ponta Gradiente) */
+  --gold: #FECC00;           /* Amarelo Destaque */
+  --background-grey: #F3F6F9; /* Fundo da Página */
   --white: #FFFFFF;
-  --background-grey: #F5F7FA;
-  --border-grey: #DDE2EA;
   
   /* Tipografia */
   --text-dark: #1A1A2E;
@@ -60,10 +61,10 @@
   --foreground: var(--text-dark);
   --muted: var(--background-grey);
   --muted-foreground: var(--text-muted);
-  --border: var(--border-grey);
+  --border: #DDE2EA;
   --input: var(--background-grey);
   --ring: var(--royal-blue);
-  --radius: 8px;
+  --radius: 12px;
 }
 
 @layer base {

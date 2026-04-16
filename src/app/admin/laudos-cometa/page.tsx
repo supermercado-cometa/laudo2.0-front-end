@@ -82,8 +82,8 @@ function LaudosCometaContent() {
             {isMineOnly ? "Meus Registros" : "Laudos Gerados"}
           </h2>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => router.push("/admin/laudo-tecnico")} className="h-12 lg:h-14 rounded-xl text-[10px] lg:text-xs font-black uppercase tracking-widest border-[#003B99] text-[#003B99] hover:bg-[#003B99]/5">Novo Laudo</Button>
-            <Button variant="outline" onClick={() => router.push(isMineOnly ? "/admin/laudos-cometa" : "/admin/laudos-cometa?view=meus")} className="h-12 lg:h-14 rounded-xl text-[10px] lg:text-xs font-black uppercase tracking-widest bg-[#003B99] text-white hover:bg-[#0A2D66] border-none shadow-lg">
+            <Button variant="outline" onClick={() => router.push("/admin/laudo-tecnico")} className="h-12 rounded-xl text-[11px] font-bold uppercase tracking-widest border-[#1A4CAB] text-[#1A4CAB] hover:bg-[#1A4CAB]/5">Novo Laudo</Button>
+            <Button onClick={() => router.push(isMineOnly ? "/admin/laudos-cometa" : "/admin/laudos-cometa?view=meus")} className="h-12 rounded-xl text-[11px] font-bold uppercase tracking-widest bg-[#1A4CAB] text-white hover:bg-[#003B99] border-none shadow-lg shadow-[#1A4CAB]/20">
               {isMineOnly ? "Ver Todos" : "Ver Meus"}
             </Button>
           </div>
@@ -94,21 +94,21 @@ function LaudosCometaContent() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {!isMineOnly && (
               <div className="space-y-2">
-                <Label className="text-[11px] font-black uppercase text-gray-400 tracking-wider">Técnico</Label>
-                <Input value={tecnicoFilter} onChange={e => setTecnicoFilter(e.target.value)} placeholder="Nome do técnico" className="h-14 bg-gray-50 border-gray-100 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-[#003B99]/10" />
+                <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Técnico</Label>
+                <Input value={tecnicoFilter} onChange={e => setTecnicoFilter(e.target.value)} placeholder="Nome do técnico" className="h-12 bg-gray-50 border-none rounded-xl text-sm font-semibold text-[#1A1A2E] focus:bg-white focus:ring-2 focus:ring-[#1A4CAB]/10" />
               </div>
             )}
             <div className="space-y-2">
-              <Label className="text-[11px] font-black uppercase text-gray-400 tracking-wider">Chamado</Label>
-              <Input value={chamadoFilter} onChange={e => setChamadoFilter(e.target.value)} placeholder="Nº do Chamado" className="h-14 bg-gray-50 border-gray-100 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-[#003B99]/10" />
+              <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Chamado</Label>
+              <Input value={chamadoFilter} onChange={e => setChamadoFilter(e.target.value)} placeholder="Nº do Chamado" className="h-12 bg-gray-50 border-none rounded-xl text-sm font-semibold text-[#1A1A2E] focus:bg-white focus:ring-2 focus:ring-[#1A4CAB]/10" />
             </div>
             <div className="space-y-2">
-              <Label className="text-[11px] font-black uppercase text-gray-400 tracking-wider">Tombo</Label>
-              <Input value={tomboFilter} onChange={e => setTomboFilter(e.target.value)} placeholder="Nº de Tombo" className="h-14 bg-gray-50 border-gray-100 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-[#003B99]/10" />
+              <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Tombo</Label>
+              <Input value={tomboFilter} onChange={e => setTomboFilter(e.target.value)} placeholder="Nº de Tombo" className="h-12 bg-gray-50 border-none rounded-xl text-sm font-semibold text-[#1A1A2E] focus:bg-white focus:ring-2 focus:ring-[#1A4CAB]/10" />
             </div>
           </div>
           <div className="flex justify-end pt-2">
-            <Button onClick={fetchLaudos} className="h-14 px-10 bg-[#003B99] rounded-xl uppercase tracking-widest font-black gap-2 text-[12px] shadow-lg hover:bg-[#0A2D66]">
+            <Button onClick={fetchLaudos} className="h-12 px-10 bg-[#1A4CAB] rounded-xl uppercase tracking-widest font-bold gap-2 text-[11px] shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99]">
               <Search className="w-4 h-4" /> Atualizar Busca
             </Button>
           </div>

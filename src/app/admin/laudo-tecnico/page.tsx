@@ -184,16 +184,16 @@ export default function InfoFormularioPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-3">
-                <Label className="text-[#4B5563] text-[13px] font-bold uppercase tracking-wider">Número do Chamado</Label>
-                <Input value={numeroChamado} onChange={e => setNumeroChamado(e.target.value)} placeholder="Somente números" className="h-16 rounded-2xl bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-[#003B99] transition-all font-medium text-gray-700" />
+                <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Número do Chamado</Label>
+                <Input value={numeroChamado} onChange={e => setNumeroChamado(e.target.value)} placeholder="Somente números" className="h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] transition-all font-semibold text-[#1A1A2E] placeholder:text-gray-300" />
               </div>
               <div className="space-y-3">
-                <Label className="text-[#4B5563] text-[13px] font-bold uppercase tracking-wider">Nome do Técnico</Label>
-                <Input value={nomeTecnico} onChange={e => setNomeTecnico(e.target.value)} className="h-16 rounded-2xl bg-gray-100 border-none font-semibold text-gray-500 cursor-not-allowed" disabled />
+                <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Nome do Técnico</Label>
+                <Input value={nomeTecnico} onChange={e => setNomeTecnico(e.target.value)} className="h-12 rounded-xl bg-gray-100 border-none font-bold text-gray-400 cursor-not-allowed" disabled />
               </div>
               <div className="space-y-3">
-                <Label className="text-[#4B5563] text-[13px] font-bold uppercase tracking-wider">Equipamento</Label>
-                <select value={equipamento} onChange={e => setEquipamento(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border border-gray-200 px-6 font-medium text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-[#003B99]">
+                <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Equipamento</Label>
+                <select value={equipamento} onChange={e => setEquipamento(e.target.value)} className="w-full h-12 rounded-xl bg-gray-50 border-none px-6 font-semibold text-[#1A1A2E] appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]">
                   <option value="">Selecione o equipamento...</option>
                   {equipamentos.map(e => (
                     <option key={e.id} value={e.nome}>{e.nome}{e.tipo ? ` - ${e.tipo}` : ''}</option>
@@ -201,33 +201,33 @@ export default function InfoFormularioPage() {
                 </select>
               </div>
               <div className="space-y-3">
-                <Label className="text-[#4B5563] text-[13px] font-bold uppercase tracking-wider">Loja</Label>
-                <select value={loja} onChange={e => setLoja(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border border-gray-200 px-6 font-medium text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-[#003B99]">
+                <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Loja</Label>
+                <select value={loja} onChange={e => setLoja(e.target.value)} className="w-full h-12 rounded-xl bg-gray-50 border-none px-6 font-semibold text-[#1A1A2E] appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]">
                   <option value="">Selecione a loja...</option>
                   {lojas.map(l => <option key={l.id} value={l.nome}>{l.nome}</option>)}
                 </select>
               </div>
               <div className="space-y-3">
-                <Label className="text-[#4B5563] text-[13px] font-bold uppercase tracking-wider">Número de Tombo</Label>
-                <Input value={tombo} onChange={e => setTombo(e.target.value)} placeholder="Número de série/tombo" className="h-16 rounded-2xl bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-[#003B99] transition-all font-medium text-gray-700" />
+                <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Número de Tombo</Label>
+                <Input value={tombo} onChange={e => setTombo(e.target.value)} placeholder="Número de série/tombo" className="h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] transition-all font-semibold text-[#1A1A2E] placeholder:text-gray-300" />
               </div>
               <div className="space-y-3">
-                <Label className="text-[#4B5563] text-[13px] font-bold uppercase tracking-wider">Modelo</Label>
-                <select value={modelo} onChange={e => setModelo(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border border-gray-200 px-6 font-medium text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-[#003B99]">
+                <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Modelo</Label>
+                <select value={modelo} onChange={e => setModelo(e.target.value)} className="w-full h-12 rounded-xl bg-gray-50 border-none px-6 font-semibold text-[#1A1A2E] appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]">
                   <option value="">Selecione o modelo...</option>
                   {modelos.map(m => <option key={m.id} value={m.nome}>{m.nome}</option>)}
                 </select>
               </div>
               <div className="space-y-3">
-                <Label className="text-[#4B5563] text-[13px] font-bold uppercase tracking-wider">Setor</Label>
-                <select value={setor} onChange={e => setSetor(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border border-gray-200 px-6 font-medium text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-[#003B99]">
+                <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Setor</Label>
+                <select value={setor} onChange={e => setSetor(e.target.value)} className="w-full h-12 rounded-xl bg-gray-50 border-none px-6 font-semibold text-[#1A1A2E] appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]">
                   <option value="">Selecione o setor...</option>
                   {setores.map(s => <option key={s.id} value={s.nome}>{s.nome}</option>)}
                 </select>
               </div>
               <div className="space-y-3">
-                <Label className="text-[#4B5563] text-[13px] font-bold uppercase tracking-wider">Data do Sistema</Label>
-                <Input value={dataSistema} disabled className="h-16 rounded-2xl bg-gray-100 border-none font-semibold text-gray-400" />
+                <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Data do Sistema</Label>
+                <Input value={dataSistema} disabled className="h-12 rounded-xl bg-gray-100 border-none font-bold text-gray-400" />
               </div>
             </div>
           </div>
@@ -264,12 +264,12 @@ export default function InfoFormularioPage() {
             </div>
             <div className="grid grid-cols-1 gap-8">
               <div className="space-y-3">
-                <Label className="text-[#4B5563] text-[13px] font-bold uppercase tracking-wider">Testes Realizados</Label>
-                <textarea value={testesRealizados} onChange={e => setTestesRealizados(e.target.value)} className="w-full min-h-[140px] rounded-2xl bg-gray-50 border border-gray-200 p-6 font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#003B99] focus:bg-white transition-all" placeholder="Descreva detalhadamente os testes executados..." />
+                <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Testes Realizados</Label>
+                <textarea value={testesRealizados} onChange={e => setTestesRealizados(e.target.value)} className="w-full min-h-[140px] rounded-xl bg-gray-50 border-none p-6 font-semibold text-[#1A1A2E] focus:outline-none focus:ring-2 focus:ring-[#1A4CAB] focus:bg-white transition-all placeholder:text-gray-300" placeholder="Descreva detalhadamente os testes executados..." />
               </div>
               <div className="space-y-3">
-                <Label className="text-[#4B5563] text-[13px] font-bold uppercase tracking-wider">Diagnóstico Final</Label>
-                <textarea value={diagnostico} onChange={e => setDiagnostico(e.target.value)} className="w-full min-h-[140px] rounded-2xl bg-gray-50 border border-gray-200 p-6 font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#003B99] focus:bg-white transition-all" placeholder="Descreva a conclusão técnica sobre o estado do ativo..." />
+                <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Diagnóstico Final</Label>
+                <textarea value={diagnostico} onChange={e => setDiagnostico(e.target.value)} className="w-full min-h-[140px] rounded-xl bg-gray-50 border-none p-6 font-semibold text-[#1A1A2E] focus:outline-none focus:ring-2 focus:ring-[#1A4CAB] focus:bg-white transition-all placeholder:text-gray-300" placeholder="Descreva a conclusão técnica sobre o estado do ativo..." />
               </div>
             </div>
           </div>
@@ -277,16 +277,16 @@ export default function InfoFormularioPage() {
           {/* Seção 4: Estado e Ação */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-10 border-t border-gray-100">
             <div className="space-y-3">
-              <Label className="text-[#4B5563] text-[13px] font-bold uppercase tracking-wider">Estado do Equipamento</Label>
-              <select value={estadoEquipamento} onChange={e => setEstadoEquipamento(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border border-gray-200 px-6 font-medium text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-[#003B99]">
+              <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">Estado do Equipamento</Label>
+              <select value={estadoEquipamento} onChange={e => setEstadoEquipamento(e.target.value)} className="w-full h-12 rounded-xl bg-gray-50 border-none px-6 font-semibold text-[#1A1A2E] appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]">
                 <option value="">Selecione...</option>
                 <option value="Funcionando">Funcionando</option>
                 <option value="Não funcionando">Não funcionando</option>
               </select>
             </div>
             <div className="space-y-3">
-              <Label className="text-[#4B5563] text-[13px] font-bold uppercase tracking-wider">O Ativo Necessita</Label>
-              <select value={necessidade} onChange={e => setNecessidade(e.target.value)} className="w-full h-16 rounded-2xl bg-gray-50 border border-gray-200 px-6 font-medium text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-[#003B99]">
+              <Label className="text-[#9CA3AF] text-[10px] font-black uppercase tracking-wider">O Ativo Necessita</Label>
+              <select value={necessidade} onChange={e => setNecessidade(e.target.value)} className="w-full h-12 rounded-xl bg-gray-50 border-none px-6 font-semibold text-[#1A1A2E] appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]">
                 <option value="">Selecione a recomendação...</option>
                 <option value="Ser substituído">Ser substituído</option>
                 <option value="Enviado p/ conserto">Enviado p/ conserto</option>
@@ -336,12 +336,12 @@ export default function InfoFormularioPage() {
           <div className="pt-8 w-full">
             <Button 
               disabled={isSubmitting} 
-              className="w-full h-20 bg-[#003B99] text-white rounded-2xl text-[16px] font-black tracking-[0.1em] uppercase shadow-xl hover:bg-[#0A2D66] active:scale-95 transition-all flex items-center justify-center gap-3" 
+              className="w-full h-12 bg-[#1A4CAB] text-white rounded-xl text-[11px] font-bold tracking-[0.2em] uppercase shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99] active:scale-95 transition-all flex items-center justify-center gap-3" 
               onClick={handleSubmit}
             >
               {isSubmitting ? (
                 <div className="flex items-center gap-3">
-                  <Loader2 className="animate-spin w-6 h-6" />
+                  <Loader2 className="animate-spin w-4 h-4" />
                   <span>Processando...</span>
                 </div>
               ) : (

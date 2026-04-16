@@ -24,7 +24,7 @@ export const ModuleCard = ({
     <button
       onClick={onClick}
       className={`
-        w-full bg-white rounded-[24px] lg:rounded-[18px] shadow-[0_5px_15px_rgba(0,0,0,0.05)] lg:shadow-[0_6px_14px_rgba(0,0,0,0.03)]
+        w-full bg-white rounded-xl shadow-[0_5px_15px_rgba(0,0,0,0.05)] lg:shadow-[0_6px_14px_rgba(0,0,0,0.03)]
         aspect-[1/1] lg:aspect-[1.3] flex flex-col items-center lg:items-start justify-center lg:justify-between
         px-6 py-6 lg:px-5 lg:py-[18px]
         hover:shadow-md hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden active:scale-95

@@ -35,26 +35,23 @@ export default function AuditoriaTomboPage() {
           </p>
         </div>
 
-        <div className="bg-white p-8 lg:p-12 rounded-[40px] shadow-sm border border-blue-50 relative overflow-hidden group">
+        <div className="bg-white p-8 lg:p-12 rounded-[32px] shadow-sm border border-blue-50 relative overflow-hidden group">
           {/* Elemento decorativo sutil */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#003B99]/5 rounded-bl-[100px] pointer-events-none group-hover:bg-[#003B99]/10 transition-colors" />
           
           <div className="space-y-10">
             <div className="relative group">
-              <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#003B99]">
-                <Search className="w-8 h-8" />
+              <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#1A4CAB]">
+                <Search className="w-6 h-6" />
               </div>
               <input 
                 type="text" 
                 placeholder="Ex: 123456" 
-                className="w-full h-24 pl-18 pr-8 rounded-3xl bg-gray-50 border-2 border-transparent focus:border-[#003B99]/20 focus:bg-white transition-all font-black text-[32px] lg:text-[42px] text-[#1A1A2E] placeholder:text-gray-200 outline-none shadow-inner"
+                className="w-full h-16 pl-16 pr-8 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-[#1A4CAB]/10 transition-all font-black text-3xl text-[#1A1A2E] placeholder:text-gray-200 outline-none"
                 value={tombo}
                 onChange={(e) => setTombo(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               />
-              <div className="absolute right-6 top-1/2 -translate-y-1/2 hidden lg:block">
-                <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest bg-white px-3 py-1 rounded-full border border-gray-100 shadow-sm">Pressione Enter</span>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -80,20 +77,20 @@ export default function AuditoriaTomboPage() {
 
             <button 
               onClick={handleSearch}
-              className="w-full h-20 bg-[#003B99] text-white rounded-2xl text-[16px] font-black tracking-[0.1em] uppercase shadow-2xl hover:bg-[#0A2D66] transition-all active:scale-[0.97] flex items-center justify-center gap-4 group"
+              className="w-full h-12 bg-[#1A4CAB] text-white rounded-xl text-[11px] font-bold tracking-widest uppercase shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99] transition-all active:scale-[0.97] flex items-center justify-center gap-4 group"
             >
               Iniciar Auditoria de Ativo
-              <ChevronRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+              <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
             </button>
           </div>
         </div>
 
-        <div className="mt-12 p-8 rounded-3xl bg-gray-50 border border-gray-100 flex items-center gap-6">
+        <div className="mt-12 p-8 rounded-[32px] bg-gray-50 border border-gray-100 flex items-center gap-6">
           <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
-             <ShieldCheck className="w-6 h-6 text-[#003B99]" />
+             <ShieldCheck className="w-6 h-6 text-[#1A4CAB]" />
           </div>
-          <p className="text-sm text-gray-500 font-medium leading-relaxed">
-            Certifique-se de que o número de tombo esteja legível no ativo antes de realizar a consulta. Caso o identificador esteja danificado, utilize a busca por <button className="text-[#003B99] font-bold underline decoration-dotted underline-offset-4" onClick={() => router.push("/admin/equipamentos")}>Equipamentos</button>.
+          <p className="text-sm text-[#6B7280] font-medium leading-relaxed">
+            Certifique-se de que o número de tombo esteja legível no ativo antes de realizar a consulta. Caso o identificador esteja danificado, utilize a busca por <button className="text-[#1A4CAB] font-bold underline decoration-dotted underline-offset-4" onClick={() => router.push("/admin/equipamentos")}>Equipamentos</button>.
           </p>
         </div>
       </div>
