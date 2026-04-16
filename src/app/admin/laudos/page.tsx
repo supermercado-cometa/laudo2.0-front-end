@@ -5,6 +5,7 @@ import { FileText, Search, ChevronLeft, Loader2, Printer, Calendar, Trash2, Chec
 import { useRouter } from "next/navigation";
 import { SubPageHeader } from "@/components/subpage-header";
 import { API_BASE_URL } from "@/lib/api-config";
+import { gerarLaudoPDF } from "@/lib/pdf-template";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,6 +21,11 @@ interface Laudo {
   tombo: string;
   data: string;
   createdAt: string;
+  testesRealizados?: string;
+  diagnostico?: string;
+  estadoEquipamento?: string;
+  necessidade?: string;
+  signature?: string;
 }
 
 export default function LaudosGeradosPage() {
@@ -116,6 +122,11 @@ export default function LaudosGeradosPage() {
     } catch (error) {
       console.error("Erro ao excluir massa:", error);
     }
+  };
+
+  const handleImprimir = (laudo: Laudo) => {
+    const nome = localStorage.getItem("fullName") || "Usuário não identificado";
+    gerarLaudoPDF(laudo, nome);
   };
 
   return (
@@ -231,7 +242,10 @@ export default function LaudosGeradosPage() {
 
                          {/* AÇÕES INDIVIDUAIS */}
                          <div className="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-50">
-                            <Button className="h-10 px-6 bg-[#003B99] hover:bg-[#0A2D66] rounded-lg uppercase tracking-wider text-[11px] gap-2 shadow-md shadow-[#003B99]/10">
+                            <Button 
+                               onClick={(e) => { e.stopPropagation(); handleImprimir(item); }} 
+                               className="h-10 px-6 bg-[#003B99] hover:bg-[#0A2D66] rounded-lg uppercase tracking-wider text-[11px] gap-2 shadow-md shadow-[#003B99]/10"
+                            >
                                <Printer className="w-3.5 h-3.5" /> Imprimir
                             </Button>
                             <Button 

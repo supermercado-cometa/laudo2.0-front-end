@@ -67,6 +67,7 @@ function LaudosCometaContent() {
     fetchLaudos();
   }, [fetchLaudos, router]);
 
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const handlePrint = (laudo: any) => {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
