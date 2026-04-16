@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, ClipboardCheck, ChevronLeft, ShieldCheck, Image as ImageIcon, Trash2, Loader2 } from "lucide-react";
+import { CheckCircle2, ClipboardCheck, ChevronLeft, ShieldCheck, Image as ImageIcon, Trash2, Loader2, LogOut } from "lucide-react";
 import SignatureCanvas from "react-signature-canvas";
 import { motion, AnimatePresence } from "framer-motion";
 import { LojaType } from "@/types/domain";
@@ -35,6 +35,8 @@ export default function InfoFormularioPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [greeting, setGreeting] = useState("Bom dia");
   const sigPadRef = useRef<SignatureCanvas>(null);
 
   useEffect(() => {
@@ -75,8 +77,31 @@ export default function InfoFormularioPage() {
       .catch(() => setSetores([]));
       
     const storedName = localStorage.getItem("fullName");
-    if (storedName) setNomeTecnico(storedName);
+    if (storedName) {
+      setUserName(storedName);
+      setNomeTecnico(storedName);
+    }
+
+    const hour = new Date().getHours();
+    if (hour >= 12 && hour < 18) setGreeting("Boa tarde");
+    else if (hour >= 18) setGreeting("Boa noite");
+    else setGreeting("Bom dia");
   }, [router]);
+
+  const handleLogout = async () => {
+    try {
+      await fetch(`${API_BASE_URL}/auth/logout`, { method: "POST" });
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+      localStorage.removeItem("fullName");
+      router.replace("/");
+    } catch {
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+      localStorage.removeItem("fullName");
+      router.replace("/");
+    }
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) setImagem(e.target.files[0]);
@@ -147,6 +172,51 @@ export default function InfoFormularioPage() {
       {/* Lado Direito (Formulário Integral) */}
       <div className="flex-1 lg:w-[35%] p-4 lg:p-20 overflow-y-auto">
         <div className="max-w-[800px] w-full mx-auto pb-20">
+          {/* HEADER PARA NÃO-ADMINS (COPIADO DO ADMIN-HEADER) */}
+          {!isAdmin && (
+            <div className="mb-8">
+              {/* VERSÃO DESKTOP */}
+              <div className="hidden lg:flex w-full bg-white rounded-[24px] px-8 py-6 items-center justify-between shadow-[0_8px_18px_rgba(0,0,0,0.04)]">
+                <div className="flex items-center gap-5">
+                  <div className="w-[64px] h-[64px] rounded-full bg-[#003B991F] flex items-center justify-center text-[#003B99] text-[26px] font-bold">
+                    {userName ? userName.charAt(0).toUpperCase() : "U"}
+                  </div>
+                  <div>
+                    <p className="text-[#9E9E9E] text-[16px] font-[500] leading-none mb-1">{greeting}</p>
+                    <h1 className="text-[#1A1C1E] text-[24px] lg:font-[500] font-[700] tracking-tight">{userName || "Usuário"}</h1>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#DC262612] border border-[#DC262633] text-red-600 lg:font-medium font-bold hover:bg-red-600 hover:text-white transition-all group"
+                >
+                  Sair
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* VERSÃO MOBILE */}
+              <div className="flex lg:hidden w-full bg-white px-6 py-6 rounded-2xl shadow-[0_5px_15px_rgba(0,0,0,0.05)] items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-[50px] h-[50px] rounded-full bg-[#003B991A] flex items-center justify-center">
+                    <span className="text-[#003B99] text-xl font-bold">{userName ? userName.charAt(0).toUpperCase() : "U"}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-gray-400 text-sm font-medium">{greeting}</span>
+                    <h1 className="text-[#003B99] text-lg font-bold leading-tight">{userName || "Usuário"}</h1>
+                  </div>
+                </div>
+                <button 
+                  onClick={handleLogout}
+                  className="w-10 h-10 rounded-xl bg-[#DC262614] flex items-center justify-center text-[#DC2626]"
+                >
+                  <LogOut className="w-[18px] h-[18px]" />
+                </button>
+              </div>
+            </div>
+          )}
+
           <AnimatePresence>
             {showSuccess && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-[#003B99]/90 backdrop-blur-md p-6">
