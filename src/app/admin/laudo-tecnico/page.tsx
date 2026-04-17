@@ -180,6 +180,35 @@ export default function InfoFormularioPage() {
     });
   };
 
+  const compressImage = (file: File | string, maxWidth = 1280, quality = 0.7): Promise<string> => 
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = typeof file === "string" ? file : URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let { width, height } = img;
+        if (width > height) {
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxWidth) {
+            width = (width * maxWidth) / height;
+            height = maxWidth;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+        if (typeof file !== "string") URL.revokeObjectURL(img.src);
+        resolve(dataUrl);
+      };
+      img.onerror = reject;
+    });
+
   const fileToBase64 = (file: File): Promise<string> =>
     new Promise((res, rej) => {
       const r = new FileReader();
@@ -193,22 +222,25 @@ export default function InfoFormularioPage() {
     if (isRedrawing || !savedSignature) {
       const canvasSig = sigPadRef.current?.isEmpty() ? null : sigPadRef.current?.toDataURL() || null;
       if (canvasSig) {
-        signature = canvasSig;
+        // Comprime a assinatura (canvas costuma ser grande)
+        const compressedSig = await compressImage(canvasSig, 800, 0.6);
+        signature = compressedSig;
         const token = localStorage.getItem("token");
         // Salva silenciosamente a assinatura no perfil do usuário
         fetch(`${API_BASE_URL}/auth/save-signature`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ signature: canvasSig })
+          body: JSON.stringify({ signature: compressedSig })
         }).then(r => {
           if (r.ok) {
-            setSavedSignature(canvasSig);
+            setSavedSignature(compressedSig);
             setIsRedrawing(false);
           }
         }).catch(() => {});
       }
     }
-    const photos = await Promise.all(imagens.map(img => fileToBase64(img.file)));
+    // Comprime todas as imagens carregadas para evitar erro 413
+    const photos = await Promise.all(imagens.map(img => compressImage(img.file)));
     return {
       numeroChamado,
       nomeTecnico,
