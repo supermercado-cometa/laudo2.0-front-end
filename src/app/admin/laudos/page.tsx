@@ -378,7 +378,7 @@ export default function LaudosGeradosPage() {
                       <h4 className="text-[14px] uppercase text-[#1A1A2E] font-black tracking-widest">Validação Técnico</h4>
                     </div>
                     <div className="flex flex-col items-center bg-gray-50 p-10 rounded-3xl border border-dashed border-gray-200">
-                      <img src={viewingLaudo.signature} alt="Assinatura" className="max-h-24 mix-multiply" />
+                      <img src={viewingLaudo.signature} alt="Assinatura" className="max-h-24 mix-blend-multiply" />
                       <div className="mt-4 w-32 h-[1px] bg-gray-300" />
                       <p className="text-[10px] uppercase font-black text-gray-400 mt-2 tracking-widest">{viewingLaudo.tecnico}</p>
                     </div>
