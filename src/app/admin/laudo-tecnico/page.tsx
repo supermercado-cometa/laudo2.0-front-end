@@ -113,6 +113,9 @@ export default function InfoFormularioPage() {
   const [glpiTicketId, setGlpiTicketId] = useState<number | null>(null);
   const [savedPayload, setSavedPayload] = useState<Record<string, unknown> | null>(null);
 
+  // Modal de confirmação antes de executar
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
   const [savedSignature, setSavedSignature] = useState<string | null>(null);
   const [isRedrawing, setIsRedrawing] = useState(false);
   const sigPadRef = useRef<SignatureCanvas>(null);
@@ -217,7 +220,14 @@ export default function InfoFormularioPage() {
   };
 
   // ─── FLUXO UNIFICADO ───────────────────────────────────────────────────────
+  // ─── Abre modal de confirmação ─────────────────────────────────────────────
+  const handleClickFinalizar = () => {
+    setShowConfirmModal(true);
+  };
+
+  // ─── Executa o fluxo completo após confirmação ────────────────────────────
   const handleFinalizar = async () => {
+    setShowConfirmModal(false);
     setIsSending(true);
 
     try {
@@ -240,9 +250,8 @@ export default function InfoFormularioPage() {
       }
       await saveRes.json();
 
-      // ② Gerar PDF
-      setStatusMsg("Gerando PDF...");
-      gerarLaudoPDF(payload as any, nomeTecnico);
+      // ② PDF removido do fluxo automático (separado a pedido do técnico)
+      // O PDF será gerado manualmente ou ao final de tudo.
 
       // ③ Integração GLPI
       setStep("glpi"); setStatusMsg("Conectando ao GLPI...");
@@ -257,7 +266,6 @@ export default function InfoFormularioPage() {
       };
 
       if (numeroChamado) {
-        // Follow-up automático usando credenciais do sistema (.env)
         setStatusMsg(`Registrando acompanhamento no chamado #${numeroChamado}...`);
         const fRes = await fetch(`${API_BASE_URL}/glpi/followup`, {
           method: "POST",
@@ -270,17 +278,14 @@ export default function InfoFormularioPage() {
         } else {
           const err = await fRes.json().catch(() => ({}));
           console.warn("GLPI followup falhou:", err.error);
-          // Não bloqueia — salvo localmente já está feito
         }
         setStep("done");
         setShowSuccess(true);
       } else {
-        // Sem chamado → abre modal para criar novo ticket
         setStatusMsg("Abrindo opções GLPI...");
         await carregarLookups();
         setNewTicketTitle(`Laudo Técnico - ${equipamento || "Equipamento"} - ${loja || "Loja"}`);
         setIsRelateModalOpen(true);
-        // Não mostramos success aqui — o modal vai fazer isso
       }
     } catch (err) {
       console.error(err);
@@ -547,19 +552,78 @@ export default function InfoFormularioPage() {
                 <p className="text-center text-[11px] uppercase font-bold text-gray-400 tracking-widest">{statusMsg}</p>
               </div>
             )}
+          {/* Botões de Ação */}
+          <div className="pt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Button
+              variant="outline"
+              disabled={isSending}
+              onClick={async () => {
+                const payload = await buildPayload();
+                gerarLaudoPDF(payload as any, nomeTecnico);
+              }}
+              className="h-16 rounded-[20px] text-[12px] font-black tracking-widest uppercase border-2 border-gray-100 text-gray-400 hover:border-[#003B99]/20 transition-all flex items-center justify-center gap-3"
+            >
+              <FileText className="w-5 h-5" /> Somente PDF
+            </Button>
+
             <Button
               disabled={isSending}
-              onClick={handleFinalizar}
-              className="w-full h-16 bg-[#003B99] text-white rounded-[20px] text-[14px] font-black tracking-widest uppercase shadow-xl hover:bg-[#0E3D8A] active:scale-95 transition-all flex items-center justify-center gap-3"
+              onClick={handleClickFinalizar}
+              className="md:col-span-2 h-16 bg-[#003B99] text-white rounded-[20px] text-[14px] font-black tracking-widest uppercase shadow-xl hover:bg-[#0E3D8A] active:scale-95 transition-all flex items-center justify-center gap-3"
             >
-              {isSending ? <Loader2 className="animate-spin w-6 h-6" /> : <><Zap className="w-5 h-5" /> Finalizar Laudo</>}
+              {isSending ? <Loader2 className="animate-spin w-6 h-6" /> : <><Zap className="w-5 h-5" /> Finalizar Atendimento (Salvar + GLPI)</>}
             </Button>
+          </div>
           </div>
         </div>
       </div>
 
       {/* ═══════════════ MODAIS ═══════════════ */}
       <AnimatePresence>
+        {/* Modal DE CONFIRMAÇÃO (Transparência total) */}
+        {showConfirmModal && (
+          <Overlay>
+            <ModalCard title="Finalizar Atendimento" subtitle="Confirme os passos que o sistema executará automaticamente." icon={Zap}>
+              <div className="space-y-6 mt-6">
+                <div className="bg-gray-50 rounded-3xl p-6 space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-green-100 text-green-600 rounded-lg flex items-center justify-center text-[10px] font-bold">1</div>
+                    <p className="text-xs text-[#1A1A2E] font-medium mt-0.5">Salvar laudo permanentemente no banco de dados.</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-green-100 text-green-600 rounded-lg flex items-center justify-center text-[10px] font-bold">2</div>
+                    <p className="text-xs text-[#1A1A2E] font-medium mt-0.5">Gerar o arquivo PDF para exportação e histórico.</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-[10px] font-bold">3</div>
+                    <div className="space-y-1">
+                      <p className="text-xs text-[#1A1A2E] font-bold mt-0.5 uppercase tracking-tight">Sincronização GLPI:</p>
+                      {numeroChamado ? (
+                        <p className="text-[11px] text-gray-500 leading-relaxed">
+                          O sistema detectou o número <span className="text-[#003B99] font-black">#{numeroChamado}</span>. O laudo será anexado como um <span className="font-bold">Acompanhamento Público</span> (vísivel para o externo).
+                        </p>
+                      ) : (
+                        <p className="text-[11px] text-gray-500 leading-relaxed">
+                          Como não há número de chamado, o sistema abrirá a opção para <span className="font-bold">Criar um Novo Ticket</span> vinculado a este laudo.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Button onClick={() => setShowConfirmModal(false)} variant="ghost" className="h-14 rounded-2xl text-[11px] uppercase font-black tracking-widest text-gray-400">
+                    Revisar
+                  </Button>
+                  <Button onClick={handleFinalizar} className="h-14 bg-[#003B99] rounded-2xl text-[11px] uppercase font-black tracking-widest text-white shadow-lg shadow-[#003B99]/20">
+                    Confirmar e Enviar
+                  </Button>
+                </div>
+              </div>
+            </ModalCard>
+          </Overlay>
+        )}
+
         {/* Modal: criar novo ticket GLPI */}
         {isRelateModalOpen && (
           <Overlay>
@@ -604,16 +668,36 @@ export default function InfoFormularioPage() {
               </div>
               <h2 className="text-4xl font-bold text-[#1A1A2E] mb-3 uppercase tracking-tighter leading-none">Concluído!</h2>
               <p className="text-[#6B7280] text-sm mb-6 leading-relaxed">
-                Laudo salvo, PDF gerado{glpiTicketId ? ` e enviado ao chamado #${glpiTicketId} no GLPI` : ""}.
+                Dados salvos com sucesso{glpiTicketId ? ` e sincronizados com o chamado #${glpiTicketId}` : ""}.
               </p>
-              {glpiTicketId && (
-                <button
-                  onClick={() => window.open(`${GLPI_BASE_URL}${glpiTicketId}`, "_blank")}
-                  className="flex items-center justify-center gap-2 w-full h-12 mb-4 bg-[#FECC00] text-[#1A1A2E] rounded-2xl text-[13px] font-bold uppercase tracking-widest"
+
+              <div className="space-y-3">
+                <Button
+                  onClick={() => {
+                    if (savedPayload) {
+                      gerarLaudoPDF(savedPayload as any, nomeTecnico);
+                    }
+                  }}
+                  className="w-full h-14 bg-white border-2 border-[#003B99] text-[#003B99] rounded-2xl text-[13px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-gray-50"
                 >
-                  <ExternalLink className="w-4 h-4" /> Ver Chamado no GLPI
-                </button>
-              )}
+                  <Printer className="w-5 h-5" /> Gerar e Imprimir PDF
+                </Button>
+
+                {glpiTicketId && (
+                  <button
+                    onClick={() => window.open(`${GLPI_BASE_URL}${glpiTicketId}`, "_blank")}
+                    className="flex items-center justify-center gap-2 w-full h-14 bg-[#003B99] text-white rounded-2xl text-[12px] font-bold uppercase tracking-widest shadow-lg shadow-[#003B99]/20"
+                  >
+                    <ExternalLink className="w-4 h-4" /> Acessar GLPI
+                  </button>
+                )}
+
+                <div className="bg-amber-50 rounded-xl p-3 border border-amber-100">
+                  <p className="text-[10px] text-amber-700 font-bold uppercase tracking-tighter">
+                    Impressora de Rede: <span className="underline">10.1.15.238</span>
+                  </p>
+                </div>
+              </div>
               <Button className="w-full h-14 bg-[#003B99] rounded-2xl text-[14px] font-bold uppercase tracking-widest" onClick={resetFormulario}>
                 Novo Laudo
               </Button>

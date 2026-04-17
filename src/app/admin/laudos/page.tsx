@@ -80,16 +80,22 @@ function PhotoGallery({ jsonPhotos }: { jsonPhotos: string }) {
 
 // ─── Painel de Detalhes / Edição ──────────────────────────────────────────────
 function DetailPanel({
-  laudo, onClose, onDelete, onSave
+  laudo, onClose, onDelete, onSave, allLaudos
 }: {
   laudo: Laudo;
   onClose: () => void;
   onDelete: (id: number) => void;
   onSave: (updated: Laudo) => void;
+  allLaudos: Laudo[];
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [form, setForm] = useState<Laudo>({ ...laudo });
+
+  // Pega laudos que têm o mesmo número de chamado
+  const related = laudo.numeroChamado 
+    ? allLaudos.filter(l => l.numeroChamado === laudo.numeroChamado && l.id !== laudo.id)
+    : [];
 
   useEffect(() => { setForm({ ...laudo }); setIsEditing(false); }, [laudo]);
 
@@ -263,6 +269,34 @@ function DetailPanel({
                 <img src={laudo.signature} alt="Assinatura" className="max-h-24 mix-blend-multiply" />
                 <div className="mt-4 w-32 h-[1px] bg-gray-300" />
                 <p className="text-[10px] uppercase font-black text-gray-400 mt-2 tracking-widest">{laudo.tecnico}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Seção: Histórico do Chamado (Relacionados) */}
+          {related.length > 0 && (
+            <div className="space-y-6">
+              <div className="border-l-4 border-blue-400 pl-4">
+                <h4 className="text-[13px] uppercase text-[#1A1A2E] font-black tracking-widest">Histórico do Chamado #{laudo.numeroChamado}</h4>
+                <p className="text-[10px] text-gray-400 uppercase font-black">Outros laudos vinculados a este mesmo número</p>
+              </div>
+              <div className="space-y-3">
+                {related.map(r => (
+                  <div key={r.id} className="bg-blue-50/50 border border-blue-100 p-4 rounded-2xl flex items-center justify-between group hover:bg-blue-50 transition-all">
+                    <div>
+                      <p className="text-[11px] font-black text-[#003B99] uppercase tracking-tighter">Laudo #{r.id} — {r.equipamento}</p>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase">{r.tecnico} · {r.data}</p>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => { const n = localStorage.getItem("fullName") || ""; gerarLaudoPDF(r, n); }}
+                      className="h-8 rounded-lg text-[9px] uppercase font-black tracking-widest bg-white border border-blue-100 text-[#003B99]"
+                    >
+                      <Printer className="w-3 h-3 mr-1" /> PDF
+                    </Button>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -500,6 +534,7 @@ export default function LaudosGeradosPage() {
             onClose={() => setViewingLaudo(null)}
             onDelete={handleDelete}
             onSave={handleSaveEdit}
+            allLaudos={laudos}
           />
         )}
       </AnimatePresence>
