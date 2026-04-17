@@ -325,13 +325,6 @@ export default function InfoFormularioPage() {
 
         if (fRes.ok) {
           setGlpiTicketId(Number(numeroChamado));
-          
-          // ④ Atualiza o laudo no banco com o status de sincronizado
-          await fetch(`${API_BASE_URL}/info-laudos/${laudoId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-            body: JSON.stringify({ glpiTicketId: Number(numeroChamado), glpiSynced: true })
-          });
         } else {
           const err = await fRes.json().catch(() => ({}));
           console.warn("GLPI followup falhou:", err.error);
@@ -736,16 +729,10 @@ export default function InfoFormularioPage() {
               </div>
               <h2 className="text-4xl font-bold text-[#1A1A2E] mb-3 uppercase tracking-tighter leading-none">Concluído!</h2>
               <p className="text-[#6B7280] text-sm mb-6 leading-relaxed">
-                Dados salvos com sucesso{glpiTicketId ? ` e sincronizados com o chamado #${glpiTicketId}. (Visível para o Externo)` : ""}.
+                Dados salvos com sucesso{glpiTicketId ? ` e sincronizados com o chamado #${glpiTicketId}` : ""}.
               </p>
 
               <div className="space-y-3">
-                {glpiTicketId && (
-                  <div className="flex items-center justify-center gap-2 mb-4 bg-green-50 text-green-700 py-2 rounded-xl border border-green-100">
-                    <CheckCircle2 className="w-3 h-3" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Enviado para o Externo via GLPI</span>
-                  </div>
-                )}
                 <Button
                   onClick={() => {
                     if (savedPayload) {
