@@ -327,6 +327,7 @@ export default function InfoFormularioPage() {
 
         if (fRes.ok) {
           setGlpiTicketId(Number(numeroChamado));
+          console.log("✅ Sincronização GLPI realizada com sucesso:", { ticketId: numeroChamado, status: "Acompanhamento Criado" });
         } else {
           const err = await fRes.json().catch(() => ({}));
           console.warn("GLPI followup falhou:", err.error);
@@ -411,6 +412,7 @@ export default function InfoFormularioPage() {
         return;
       }
       const { ticketId } = await cRes.json();
+      console.log("✅ Novo chamado GLPI criado com sucesso:", { ticketId });
       if (ticketId) {
         setGlpiTicketId(ticketId);
         if (numeroChamado) {
@@ -758,6 +760,12 @@ export default function InfoFormularioPage() {
               </p>
 
               <div className="space-y-3">
+                {glpiTicketId && (
+                  <div className="flex items-center justify-center gap-2 mb-4 bg-green-50 text-green-700 py-2 rounded-xl border border-green-100 animate-bounce">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span className="text-[11px] font-black uppercase tracking-widest">Enviado para o Externo</span>
+                  </div>
+                )}
                 <Button
                   onClick={() => {
                     if (savedPayload) {
