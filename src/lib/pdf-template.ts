@@ -68,38 +68,35 @@ const sectionTitle = (title: string) => ({
 });
 
 export const gerarLaudoPDF = async (laudo: any, emitidoPor: string) => {
-  const dtAtual = new Date()
-    .toLocaleString("pt-BR", { timeZone: "America/Fortaleza" })
-    .substring(0, 16);
+  // Format date without seconds and without the locale comma: "17/04/2026 09:25"
+  const dtAtual = new Date().toLocaleString("pt-BR", {
+    timeZone: "America/Fortaleza",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).replace(",", "");
 
   const logoBase64 = await imageUrlToBase64("/laudos_TI.png");
 
-  // ── Header ──────────────────────────────────────────────────────────────────
+  // ── Header (clean, no background) ─────────────────────────────────────────
   const headerContent: any = {
-    table: {
-      widths: ["*", "auto"],
-      body: [
-        [
-          // Left: logo
-          logoBase64
-            ? { image: logoBase64, width: 110, margin: [0, 6, 0, 6], border: [false, false, false, false] }
-            : { text: "COMETA", bold: true, fontSize: 14, color: "#fff", margin: [0, 12, 0, 12], border: [false, false, false, false] },
-          // Right: title block
-          {
-            stack: [
-              { text: "LAUDO TÉCNICO", style: "headerTitle" },
-              { text: `Nº ${laudo.numeroChamado || "—"}`, style: "headerSub" },
-            ],
-            alignment: "right",
-            margin: [0, 8, 0, 8],
-            border: [false, false, false, false],
-          },
+    columns: [
+      logoBase64
+        ? { image: logoBase64, width: 120, margin: [0, 0, 0, 0] }
+        : { text: "COMETA", bold: true, fontSize: 16, color: BLUE },
+      {
+        stack: [
+          { text: "LAUDO TÉCNICO", style: "headerTitle" },
+          { text: `Chamado Nº ${laudo.numeroChamado || "—"}`, style: "headerSub" },
         ],
-      ],
-    },
-    layout: "noBorders",
-    fillColor: BLUE,
-    margin: [0, 0, 0, 0],
+        alignment: "right",
+      },
+    ],
+    columnGap: 10,
+    margin: [0, 0, 0, 6],
   };
 
   // Yellow accent bar
@@ -114,7 +111,7 @@ export const gerarLaudoPDF = async (laudo: any, emitidoPor: string) => {
       widths: ["*", "*", "*"],
       body: [
         [
-          { text: [`Emitido por\n`, { text: emitidoPor, bold: true, color: TEXT_DARK }], style: "metaCell", border: [false, false, false, false] },
+          { text: [`Emitido por\n`, { text: laudo.tecnico || emitidoPor, bold: true, color: TEXT_DARK }], style: "metaCell", border: [false, false, false, false] },
           { text: [`Data de Emissão\n`, { text: dtAtual, bold: true, color: TEXT_DARK }], style: "metaCell", border: [false, false, false, false] },
           { text: [`Loja / Setor\n`, { text: `${laudo.loja || "—"} · ${laudo.setor || "—"}`, bold: true, color: TEXT_DARK }], style: "metaCell", border: [false, false, false, false] },
         ],
@@ -181,7 +178,7 @@ export const gerarLaudoPDF = async (laudo: any, emitidoPor: string) => {
       { text: `Chamado #${laudo.numeroChamado || "—"} · ${laudo.loja || ""} · ${laudo.setor || ""}`, style: "footerLeft" },
       { text: `Emitido em ${dtAtual}`, style: "footerRight", alignment: "right" },
     ],
-    margin: [40, 10, 40, 0],
+    margin: [40, 16, 40, 0],
   });
 
   // ── Doc Definition ────────────────────────────────────────────────────────────
@@ -201,13 +198,13 @@ export const gerarLaudoPDF = async (laudo: any, emitidoPor: string) => {
       headerTitle: {
         fontSize: 20,
         bold: true,
-        color: "#FFFFFF",
+        color: BLUE,
         letterSpacing: 2,
       },
       headerSub: {
         fontSize: 10,
-        color: YELLOW,
-        bold: true,
+        color: TEXT_MUTED,
+        bold: false,
         margin: [0, 2, 0, 0],
       },
       metaCell: {

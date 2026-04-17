@@ -22,16 +22,17 @@ export default function InfoFormularioPage() {
   const [modelo, setModelo] = useState("");
   const [setor, setSetor] = useState("");
   const [dataSistema, setDataSistema] = useState("");
-  const [imagem, setImagem] = useState<File | null>(null);
   const [testesRealizados, setTestesRealizados] = useState("");
   const [diagnostico, setDiagnostico] = useState("");
   const [estadoEquipamento, setEstadoEquipamento] = useState("");
   const [necessidade, setNecessidade] = useState("");
-
+  const [imagens, setImagens] = useState<{file: File, preview: string}[]>([]);
+  
   const [lojas, setLojas] = useState<LojaType[]>([]);
   const [equipamentos, setEquipamentos] = useState<{ id: number, nome: string, tipo?: string }[]>([]);
   const [setores, setSetores] = useState<{ id: number, nome: string }[]>([]);
   const [modelos, setModelos] = useState<{ id: number, nome: string }[]>([]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [savedSignature, setSavedSignature] = useState<string | null>(null);
@@ -82,7 +83,32 @@ export default function InfoFormularioPage() {
   }, [router]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) setImagem(e.target.files[0]);
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      const newAttachments = newFiles.map(file => ({
+        file,
+        preview: URL.createObjectURL(file)
+      }));
+      setImagens(prev => [...prev, ...newAttachments]);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setImagens(prev => {
+      const updated = [...prev];
+      URL.revokeObjectURL(updated[index].preview);
+      updated.splice(index, 1);
+      return updated;
+    });
+  };
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
   };
 
   const handleSubmit = async () => {
@@ -111,9 +137,24 @@ export default function InfoFormularioPage() {
         }
       }
 
+      // Converter todas as imagens para base64
+      const photosArray = await Promise.all(imagens.map(img => fileToBase64(img.file)));
+      const photos = JSON.stringify(photosArray);
+
       const payload = {
-        numeroChamado, nomeTecnico, equipamento, loja, tombo, modelo, setor,
-        testesRealizados, diagnostico, estadoEquipamento, necessidade, signature
+        numeroChamado, 
+        nomeTecnico, 
+        equipamento, 
+        loja, 
+        tombo, 
+        modelo, 
+        setor,
+        testesRealizados, 
+        diagnostico, 
+        estadoEquipamento, 
+        necessidade, 
+        signature,
+        photos
       };
 
       const res = await fetch(`${API_BASE_URL}/info-laudos`, {
@@ -141,7 +182,7 @@ export default function InfoFormularioPage() {
   const resetFormulario = () => {
     setNumeroChamado(""); setEquipamento(""); setLoja(""); setTombo("");
     setModelo(""); setSetor(""); setTestesRealizados(""); setDiagnostico("");
-    setEstadoEquipamento(""); setNecessidade(""); setImagem(null);
+    setEstadoEquipamento(""); setNecessidade(""); setImagens([]);
     sigPadRef.current?.clear(); 
     setShowSuccess(false);
     setIsRedrawing(false);
@@ -245,23 +286,34 @@ export default function InfoFormularioPage() {
             <div className="border-l-4 border-[#003B99] pl-4">
               <h3 className="text-[#1A1A2E] text-[20px] tracking-tight uppercase">Mídia do Ativo</h3>
             </div>
-            <div className="flex flex-col md:flex-row items-center gap-6 p-10 rounded-[32px] bg-gray-50 border-2 border-dashed border-gray-200 relative group transition-all hover:bg-white hover:border-[#003B99]/30">
-              {imagem ? (
-                <div className="flex flex-col items-center gap-4 w-full text-center">
-                  <CheckCircle2 className="w-12 h-12 text-green-500" />
-                  <span className="text-gray-700 text-sm uppercase">{imagem.name}</span>
-                  <Button variant="ghost" className="text-red-500 hover:bg-red-50 uppercase text-[12px]" onClick={() => setImagem(null)}><Trash2 className="w-4 h-4 mr-2" /> Remover Imagem</Button>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6">
+              {imagens.map((img, idx) => (
+                <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-gray-200 group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={img.preview} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
+                  <button 
+                    onClick={() => removeImage(idx)}
+                    className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
-              ) : (
-                <>
-                  <ImageIcon className="w-12 h-12 text-[#003B99]/30" />
-                  <div className="text-center md:text-left">
-                    <p className="text-[#1A1A2E] text-lg">Anexar foto do equipamento</p>
-                    <span className="text-gray-400 text-sm">Clique ou arraste o arquivo aqui</span>
-                  </div>
-                  <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleImageChange} />
-                </>
-              )}
+              ))}
+              
+              <label className="relative aspect-square rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-white hover:border-[#003B99]/30 transition-all group">
+                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#003B99] group-hover:bg-[#003B99] group-hover:text-white transition-all">
+                  <ImageIcon className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Adicionar</span>
+                <input 
+                  type="file" 
+                  multiple 
+                  accept="image/*" 
+                  capture="environment" 
+                  className="absolute inset-0 opacity-0 cursor-pointer" 
+                  onChange={handleImageChange} 
+                />
+              </label>
             </div>
           </div>
 

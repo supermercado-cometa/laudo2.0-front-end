@@ -39,6 +39,7 @@ export function LoginForm() {
       if (data?.fullName) localStorage.setItem("fullName", data.fullName);
       if (data?.token) localStorage.setItem("token", data.token);
       if (data?.username) localStorage.setItem("username", data.username);
+      localStorage.setItem("isAdmin", data?.isAdmin === true ? "true" : "false");
 
       // Garantir compatibilidade com o middleware: definir cookie auth_token
       if (data?.token) {

@@ -57,8 +57,14 @@ export default function UsuariosPage() {
     
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`${API_BASE_URL}/usuarios`, {
-        method: "POST",
+      const url = editingUser 
+        ? `${API_BASE_URL}/usuarios/${editingUser.id}` 
+        : `${API_BASE_URL}/usuarios`;
+      
+      const method = editingUser ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
         headers: { 
           "Content-Type": "application/json",
           Authorization: token ? `Bearer ${token}` : "" 
@@ -74,7 +80,8 @@ export default function UsuariosPage() {
         setIsModalOpen(false);
         fetchUsuarios();
       } else {
-        alert("Erro ao salvar usuário.");
+        const errorData = await res.json().catch(() => ({}));
+        alert(`Erro ao salvar usuário: ${errorData.error || "Erro desconhecido"}`);
       }
     } catch (err) {
       console.error("Erro ao salvar usuário:", err);

@@ -26,9 +26,15 @@ interface NavItem {
 
 export const BottomNav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
+  React.useEffect(() => {
+    // isAdmin is stored in localStorage at login time
+    const stored = localStorage.getItem("isAdmin");
+    setIsAdmin(stored === "true");
+  }, []);
   const tabs: NavItem[] = [
     { id: "home", label: "Home", icon: Home, path: "/admin" },
     { id: "checklists", label: "Checklists", icon: ListTodo, path: "/admin/laudos" },
@@ -38,13 +44,14 @@ export const BottomNav = () => {
   ];
 
   const allMenus = [
-    { title: "Equipamentos", icon: Monitor, path: "/admin/equipamentos", color: "text-blue-500" },
-    { title: "Lojas", icon: Store, path: "/admin/lojas", color: "text-green-500" },
-    { title: "Setores", icon: Briefcase, path: "/admin/setores", color: "text-teal-500" },
-    { title: "Auditoria", icon: ShieldCheck, path: "/admin/auditoria/tombo", color: "text-indigo-500" },
-    { title: "Laudo Técnico", icon: ClipboardCheck, path: "/admin/laudo-tecnico", color: "text-orange-500" },
+    { title: "Equipamentos", icon: Monitor, path: "/admin/equipamentos", color: "text-blue-500", adminOnly: true },
+    { title: "Lojas", icon: Store, path: "/admin/lojas", color: "text-green-500", adminOnly: true },
+    { title: "Setores", icon: Briefcase, path: "/admin/setores", color: "text-teal-500", adminOnly: true },
+    { title: "Auditoria", icon: ShieldCheck, path: "/admin/auditoria/tombo", color: "text-indigo-500", adminOnly: true },
+    { title: "Laudo Técnico", icon: ClipboardCheck, path: "/admin/laudo-tecnico", color: "text-orange-500", adminOnly: false },
   ];
 
+  const visibleMenus = allMenus.filter(m => isAdmin || !m.adminOnly);
   const handleTabClick = (tab: NavItem) => {
     if (tab.action) {
       tab.action();
@@ -74,7 +81,7 @@ export const BottomNav = () => {
             </div>
 
             <div className="grid grid-cols-3 gap-y-6 gap-x-4 pb-12">
-              {allMenus.map((item, idx) => (
+              {visibleMenus.map((item, idx) => (
                 <button
                   key={idx}
                   onClick={() => {
