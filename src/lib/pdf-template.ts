@@ -26,7 +26,7 @@ async function imageUrlToBase64(url: string): Promise<string | null> {
   }
 }
 
-const BLUE  = "#003B99";
+const BLUE = "#003B99";
 const YELLOW = "#FECC00";
 const LIGHT_GRAY = "#F7F8FC";
 const BORDER_COLOR = "#E2E8F0";
@@ -72,7 +72,7 @@ export const gerarLaudoPDF = async (laudo: any, emitidoPor: string) => {
     .toLocaleString("pt-BR", { timeZone: "America/Fortaleza" })
     .substring(0, 16);
 
-  const logoBase64 = await imageUrlToBase64("/Gemini_Generated.png");
+  const logoBase64 = await imageUrlToBase64("/laudos_TI.png");
 
   // ── Header ──────────────────────────────────────────────────────────────────
   const headerContent: any = {
@@ -175,7 +175,8 @@ export const gerarLaudoPDF = async (laudo: any, emitidoPor: string) => {
   };
 
   // ── Footer ────────────────────────────────────────────────────────────────────
-  const footer = (_currentPage: number, _pageCount: number) => ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const footer = (..._args: unknown[]) => ({
     columns: [
       { text: `Chamado #${laudo.numeroChamado || "—"} · ${laudo.loja || ""} · ${laudo.setor || ""}`, style: "footerLeft" },
       { text: `Emitido em ${dtAtual}`, style: "footerRight", alignment: "right" },

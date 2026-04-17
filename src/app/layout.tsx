@@ -23,8 +23,8 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: "/user-interface.png",
-    apple: "/icon-192x192.png",
+    icon: "/Logo_apk_pwa.png",
+    apple: "/Logo_apk_pwa.png",
   },
 };
 
