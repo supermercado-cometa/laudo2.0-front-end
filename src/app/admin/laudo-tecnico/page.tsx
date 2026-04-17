@@ -256,6 +256,7 @@ export default function InfoFormularioPage() {
         necessidade === "Ser substituído" ? "SUBSTITUIDO" :
         necessidade === "Enviado p/ conserto" ? "ENVIAR_CONSERTO" :
         necessidade === "Ser descartado" ? "DESCARTADO" : necessidade,
+      tecnico: nomeTecnico, // Replicado para compatibilidade legado
       signature,
       photos: JSON.stringify(photos),
     };
@@ -269,6 +270,12 @@ export default function InfoFormularioPage() {
 
   // ─── Executa o fluxo completo após confirmação ────────────────────────────
   const handleFinalizar = async () => {
+    // Validação de campos vitais antes de prosseguir
+    if (!equipamento || !loja || !nomeTecnico || !tombo) {
+      alert("Por favor, preencha Equipamento, Loja, Técnico e Tombo antes de finalizar.");
+      return;
+    }
+
     setShowConfirmModal(false);
     setIsSending(true);
 
