@@ -132,8 +132,9 @@ export default function InfoFormularioPage() {
 
   // --- LÓGICA DE INTEGRAÇÃO GLPI ---
   const handleStartGlpiFlow = () => {
+    // Se não houver número de chamado, envia direto para o banco local sem GLPI
     if (!numeroChamado) {
-      alert("Por favor, informe o número do chamado (SST/GLPI) para continuar.");
+      handleSubmitFinal(false);
       return;
     }
     setIsGlpiModalOpen(true);
@@ -275,8 +276,8 @@ export default function InfoFormularioPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-3">
-                <Label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Número do Chamado (Padrão GLPI)</Label>
-                <Input value={numeroChamado} onChange={e => setNumeroChamado(e.target.value)} placeholder="Ex: 154230" className="h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] transition-all text-[#1A1A2E]" />
+                <Label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Número do Chamado (Opcional)</Label>
+                <Input value={numeroChamado} onChange={e => setNumeroChamado(e.target.value)} placeholder="Ex: 154230 ou deixe vazio" className="h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] transition-all text-[#1A1A2E]" />
               </div>
               <div className="space-y-3">
                 <Label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Nome do Técnico</Label>
