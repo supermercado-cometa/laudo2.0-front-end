@@ -126,9 +126,9 @@ export default function LaudosGeradosPage() {
     }
   };
 
-  const handleImprimir = (laudo: Laudo) => {
+  const handleImprimir = async (laudo: Laudo) => {
     const nome = localStorage.getItem("fullName") || "Usuário não identificado";
-    gerarLaudoPDF(laudo, nome);
+    await gerarLaudoPDF(laudo, nome);
   };
 
   return (

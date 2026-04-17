@@ -11,144 +11,246 @@ if (pdfFontsOk && pdfFontsOk.pdfMake) {
   pdfOk.vfs = pdfFontsOk.vfs || pdfOk.vfs;
 }
 
-export const gerarLaudoPDF = (laudo: any, emitidoPor: string) => {
-  const dtAtual = new Date().toLocaleString("pt-BR", { timeZone: "America/Fortaleza" }).substring(0, 16);
+// Converts a public image URL to base64 for pdfmake embedding
+async function imageUrlToBase64(url: string): Promise<string | null> {
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return null;
+  }
+}
 
-  const formatEstado = (estado?: string) => {
-    if (!estado) return "";
-    if (estado === "NAO_FUNCIONANDO") return "Não funcionando";
-    if (estado === "FUNCIONANDO") return "Funcionando";
-    return estado;
-  };
+const BLUE  = "#003B99";
+const YELLOW = "#FECC00";
+const LIGHT_GRAY = "#F7F8FC";
+const BORDER_COLOR = "#E2E8F0";
+const TEXT_DARK = "#1A1A2E";
+const TEXT_MUTED = "#64748B";
 
-  const formatNecessidade = (nec?: string) => {
-    if (!nec) return "";
-    if (nec === "ENVIAR_CONSERTO") return "Enviado p/ conserto";
-    if (nec === "SUBSTITUIDO") return "Ser substituído";
-    if (nec === "DESCARTADO") return "Ser descartado";
-    return nec;
-  };
+const formatEstado = (estado?: string) => {
+  if (!estado) return "—";
+  if (estado === "NAO_FUNCIONANDO") return "Não funcionando";
+  if (estado === "FUNCIONANDO") return "Funcionando";
+  return estado;
+};
 
-  const docDefinition: any = {
-    pageSize: 'A4',
-    pageMargins: [40, 60, 40, 60],
-    background: function () {
-      return {
-        text: 'REIMPRESSÃO',
-        color: '#ffcccc',
-        opacity: 0.3,
-        bold: true,
-        italics: false,
-        fontSize: 100,
-        absolutePosition: { x: 50, y: 300 },
-        angle: -45
-      };
+const formatNecessidade = (nec?: string) => {
+  if (!nec) return "—";
+  if (nec === "ENVIAR_CONSERTO") return "Enviado p/ conserto";
+  if (nec === "SUBSTITUIDO") return "Ser substituído";
+  if (nec === "DESCARTADO") return "Ser descartado";
+  return nec;
+};
+
+// Row helper: [Label, Value]
+const infoRow = (label: string, value: string) => ({
+  columns: [
+    { text: label.toUpperCase(), style: "rowLabel", width: 140 },
+    { text: value || "—", style: "rowValue" },
+  ],
+  columnGap: 10,
+  margin: [0, 0, 0, 8],
+});
+
+// Section title helper
+const sectionTitle = (title: string) => ({
+  stack: [
+    { text: title.toUpperCase(), style: "sectionTitle" },
+    { canvas: [{ type: "line", x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1, lineColor: BORDER_COLOR }], margin: [0, 4, 0, 10] },
+  ],
+  margin: [0, 18, 0, 0],
+});
+
+export const gerarLaudoPDF = async (laudo: any, emitidoPor: string) => {
+  const dtAtual = new Date()
+    .toLocaleString("pt-BR", { timeZone: "America/Fortaleza" })
+    .substring(0, 16);
+
+  const logoBase64 = await imageUrlToBase64("/Gemini_Generated.png");
+
+  // ── Header ──────────────────────────────────────────────────────────────────
+  const headerContent: any = {
+    table: {
+      widths: ["*", "auto"],
+      body: [
+        [
+          // Left: logo
+          logoBase64
+            ? { image: logoBase64, width: 110, margin: [0, 6, 0, 6], border: [false, false, false, false] }
+            : { text: "COMETA", bold: true, fontSize: 14, color: "#fff", margin: [0, 12, 0, 12], border: [false, false, false, false] },
+          // Right: title block
+          {
+            stack: [
+              { text: "LAUDO TÉCNICO", style: "headerTitle" },
+              { text: `Nº ${laudo.numeroChamado || "—"}`, style: "headerSub" },
+            ],
+            alignment: "right",
+            margin: [0, 8, 0, 8],
+            border: [false, false, false, false],
+          },
+        ],
+      ],
     },
+    layout: "noBorders",
+    fillColor: BLUE,
+    margin: [0, 0, 0, 0],
+  };
+
+  // Yellow accent bar
+  const accentBar = {
+    canvas: [{ type: "rect", x: 0, y: 0, w: 595, h: 5, color: YELLOW }],
+    margin: [0, 0, 0, 20],
+  };
+
+  // ── Meta pill row ────────────────────────────────────────────────────────────
+  const metaBar = {
+    table: {
+      widths: ["*", "*", "*"],
+      body: [
+        [
+          { text: [`Emitido por\n`, { text: emitidoPor, bold: true, color: TEXT_DARK }], style: "metaCell", border: [false, false, false, false] },
+          { text: [`Data de Emissão\n`, { text: dtAtual, bold: true, color: TEXT_DARK }], style: "metaCell", border: [false, false, false, false] },
+          { text: [`Loja / Setor\n`, { text: `${laudo.loja || "—"} · ${laudo.setor || "—"}`, bold: true, color: TEXT_DARK }], style: "metaCell", border: [false, false, false, false] },
+        ],
+      ],
+    },
+    layout: "noBorders",
+    fillColor: LIGHT_GRAY,
+    margin: [0, 0, 0, 4],
+  };
+
+  // ── Sections ─────────────────────────────────────────────────────────────────
+  const equipSection = {
+    margin: [0, 0, 0, 0],
+    stack: [
+      sectionTitle("Identificação do Equipamento"),
+      infoRow("Equipamento", `${laudo.equipamento || "—"}${laudo.modelo && laudo.modelo !== "Sem Modelo" ? " — " + laudo.modelo : ""}`),
+      infoRow("Número de Tombo", laudo.tombo || "—"),
+      infoRow("Técnico Responsável", laudo.tecnico || "—"),
+    ],
+  };
+
+  const diagSection = {
+    stack: [
+      sectionTitle("Diagnóstico Técnico"),
+      infoRow("Estado do Equipamento", formatEstado(laudo.estadoEquipamento)),
+      infoRow("Necessidade", formatNecessidade(laudo.necessidade)),
+      { text: "TESTES REALIZADOS", style: "blockLabel", margin: [0, 10, 0, 4] },
+      { text: laudo.testesRealizados || "Não preenchido.", style: "blockText" },
+      { text: "DIAGNÓSTICO / CONCLUSÃO", style: "blockLabel", margin: [0, 12, 0, 4] },
+      { text: laudo.diagnostico || "Não preenchido.", style: "blockText" },
+    ],
+  };
+
+  // ── Signature block ───────────────────────────────────────────────────────────
+  const signatureInner: any[] = [
+    { text: "ASSINATURA DO TÉCNICO", style: "blockLabel", margin: [0, 0, 0, 12] },
+  ];
+
+  if (laudo.signature) {
+    signatureInner.push({ image: laudo.signature, width: 180, alignment: "center", margin: [0, 0, 0, 8] });
+  } else {
+    signatureInner.push({
+      canvas: [{ type: "line", x1: 100, y1: 40, x2: 415, y2: 40, lineWidth: 1, lineColor: "#CBD5E1" }],
+      margin: [0, 0, 0, 4],
+    });
+  }
+
+  signatureInner.push(
+    { text: laudo.tecnico || emitidoPor, alignment: "center", fontSize: 10, bold: true, color: TEXT_DARK },
+    { text: "Técnico Responsável", alignment: "center", fontSize: 8, color: TEXT_MUTED, margin: [0, 2, 0, 0] }
+  );
+
+  const signatureSection = {
+    stack: [
+      sectionTitle("Assinatura"),
+      { stack: signatureInner, margin: [0, 8, 0, 0] },
+    ],
+  };
+
+  // ── Footer ────────────────────────────────────────────────────────────────────
+  const footer = (_currentPage: number, _pageCount: number) => ({
+    columns: [
+      { text: `Chamado #${laudo.numeroChamado || "—"} · ${laudo.loja || ""} · ${laudo.setor || ""}`, style: "footerLeft" },
+      { text: `Emitido em ${dtAtual}`, style: "footerRight", alignment: "right" },
+    ],
+    margin: [40, 10, 40, 0],
+  });
+
+  // ── Doc Definition ────────────────────────────────────────────────────────────
+  const docDefinition: any = {
+    pageSize: "A4",
+    pageMargins: [40, 40, 40, 60],
+    footer,
     content: [
-      {
-        text: 'LAUDO TÉCNICO',
-        style: 'header',
-        alignment: 'center',
-        margin: [0, 0, 0, 20]
-      },
-      // Box de Reimpressão
-      {
-        table: {
-          widths: ['*'],
-          body: [
-            [
-              {
-                stack: [
-                  { text: `${laudo.setor} - ${laudo.loja}`, color: '#c00000', bold: true, alignment: 'center', margin: [0, 5, 0, 5], fontSize: 12 },
-                  { text: `Emitido por: ${emitidoPor} em ${dtAtual}`, alignment: 'center', fontSize: 10, margin: [0, 0, 0, 5] }
-                ],
-                margin: [0, 5, 0, 0],
-                borderColor: ['#dddddd', '#dddddd', '#dddddd', '#dddddd']
-              }
-            ]
-          ]
-        },
-        margin: [0, 0, 0, 20]
-      },
-      // Tabela de Informações
-      {
-        table: {
-          widths: ['*'],
-          body: [
-            [{ text: `Número do Chamado: ${laudo.numeroChamado || ''}`, style: 'tableCell', bold: true, fillColor: '#f2f2f2' }],
-            [{ text: `Técnico: ${laudo.tecnico || ''}`, style: 'tableCell' }],
-            [{ text: `Data: ${laudo.data || ''}`, style: 'tableCell' }],
-            [{ text: `Loja: ${laudo.loja || ''}`, style: 'tableCell' }],
-            [{ text: `Setor: ${laudo.setor || ''}`, style: 'tableCell' }],
-            [{ text: `Equipamento: ${laudo.equipamento || ''}${laudo.modelo && laudo.modelo !== 'Sem Modelo' ? ' - ' + laudo.modelo : ''}`, style: 'tableCell' }],
-            [{ text: `Tombo: ${laudo.tombo || ''}`, style: 'tableCell' }],
-            [{ text: `Estado do Equipamento: ${formatEstado(laudo.estadoEquipamento)}`, style: 'tableCell' }],
-            [{ text: `Necessidade: ${formatNecessidade(laudo.necessidade)}`, style: 'tableCell' }]
-          ]
-        },
-        layout: {
-          hLineWidth: () => 1,
-          vLineWidth: () => 1,
-          hLineColor: () => '#cccccc',
-          vLineColor: () => '#cccccc',
-          paddingLeft: () => 8,
-          paddingRight: () => 8,
-          paddingTop: () => 6,
-          paddingBottom: () => 6,
-        },
-        margin: [0, 0, 0, 20]
-      },
-      // Testes Realizados
-      { text: 'TESTES REALIZADOS', style: 'sectionTitle', margin: [0, 10, 0, 5] },
-      { text: laudo.testesRealizados || 'Não preenchido', margin: [0, 0, 0, 15], fontSize: 10 },
-
-      // Diagnóstico
-      { text: 'DIAGNÓSTICO', style: 'sectionTitle', margin: [0, 10, 0, 5] },
-      { text: laudo.diagnostico || 'Não preenchido', margin: [0, 0, 0, 25], fontSize: 10 },
-
-      // Assinatura do Técnico
-      {
-        table: {
-          widths: ['*'],
-          body: [
-            [
-              {
-                stack: [
-                  { text: 'ASSINATURA DO TÉCNICO', style: 'sectionTitle', margin: [0, 0, 0, 10], border: [false, false, false, false] },
-                  laudo.signature ? { image: laudo.signature, width: 200, alignment: 'center', margin: [0, 10, 0, 10] } : { text: 'Nenhuma assinatura registrada.', alignment: 'center', margin: [0, 20, 0, 20], color: 'gray' }
-                ]
-              }
-            ]
-          ]
-        },
-        layout: {
-          hLineWidth: () => 1,
-          vLineWidth: () => 1,
-          hLineColor: () => '#cccccc',
-          vLineColor: () => '#cccccc',
-          paddingLeft: () => 10,
-          paddingRight: () => 10,
-          paddingTop: () => 10,
-          paddingBottom: () => 10,
-        }
-      }
+      headerContent,
+      accentBar,
+      metaBar,
+      equipSection,
+      diagSection,
+      signatureSection,
     ],
     styles: {
-      header: {
-        fontSize: 18,
+      headerTitle: {
+        fontSize: 20,
         bold: true,
-        color: '#1e3a5f'
+        color: "#FFFFFF",
+        letterSpacing: 2,
       },
-      tableCell: {
+      headerSub: {
         fontSize: 10,
-        color: '#333333'
+        color: YELLOW,
+        bold: true,
+        margin: [0, 2, 0, 0],
+      },
+      metaCell: {
+        fontSize: 9,
+        color: TEXT_MUTED,
+        alignment: "center",
+        margin: [0, 10, 0, 10],
       },
       sectionTitle: {
-        fontSize: 12,
+        fontSize: 11,
         bold: true,
-        color: '#000000'
-      }
-    }
+        color: BLUE,
+        letterSpacing: 1,
+      },
+      rowLabel: {
+        fontSize: 9,
+        color: TEXT_MUTED,
+        bold: false,
+      },
+      rowValue: {
+        fontSize: 10,
+        color: TEXT_DARK,
+        bold: true,
+      },
+      blockLabel: {
+        fontSize: 9,
+        bold: true,
+        color: TEXT_MUTED,
+        letterSpacing: 1,
+      },
+      blockText: {
+        fontSize: 10,
+        color: TEXT_DARK,
+        lineHeight: 1.5,
+      },
+      footerLeft: {
+        fontSize: 8,
+        color: TEXT_MUTED,
+      },
+      footerRight: {
+        fontSize: 8,
+        color: TEXT_MUTED,
+      },
+    },
   };
 
   pdfOk.createPdf(docDefinition).open();
