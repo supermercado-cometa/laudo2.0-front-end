@@ -19,6 +19,7 @@
 
 # production
 /build
+/api-laudo
 
 # misc
 .DS_Store

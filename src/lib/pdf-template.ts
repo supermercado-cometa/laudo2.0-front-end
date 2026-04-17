@@ -1,11 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 
 const pdfOk = pdfMake as any;
-const fonts = pdfFonts as any;
-if (fonts && fonts.pdfMake) {
-  pdfOk.vfs = fonts.pdfMake.vfs;
+const pdfFontsOk = pdfFonts as any;
+
+if (pdfFontsOk && pdfFontsOk.pdfMake) {
+  pdfOk.vfs = pdfFontsOk.pdfMake.vfs;
+} else if (pdfFontsOk) {
+  pdfOk.vfs = pdfFontsOk.vfs || pdfOk.vfs;
 }
 
 export const gerarLaudoPDF = (laudo: any, emitidoPor: string) => {
@@ -57,7 +60,7 @@ export const gerarLaudoPDF = (laudo: any, emitidoPor: string) => {
               {
                 stack: [
                   { text: `${laudo.setor} - ${laudo.loja}`, color: '#c00000', bold: true, alignment: 'center', margin: [0, 5, 0, 5], fontSize: 12 },
-                  { text: `Emitido por: ${laudo.tecnico || laudo.createdByUsername || 'Sistema'} em ${dtAtual}`, alignment: 'center', fontSize: 10, margin: [0, 0, 0, 5] }
+                  { text: `Emitido por: ${emitidoPor} em ${dtAtual}`, alignment: 'center', fontSize: 10, margin: [0, 0, 0, 5] }
                 ],
                 margin: [0, 5, 0, 0],
                 borderColor: ['#dddddd', '#dddddd', '#dddddd', '#dddddd']
@@ -67,43 +70,33 @@ export const gerarLaudoPDF = (laudo: any, emitidoPor: string) => {
         },
         margin: [0, 0, 0, 20]
       },
+      // Tabela de Informações
       {
         table: {
-          widths: ['50%', '50%'],
+          widths: ['*'],
           body: [
-            [
-              { text: `Nº do Chamado:\n${laudo.numeroChamado || ''}`, style: 'tableCell', fillColor: '#f1f5f9', bold: true, margin: [5, 5, 5, 5] },
-              { text: `Data de Emissão:\n${laudo.data || ''}`, style: 'tableCell', fillColor: '#f1f5f9', bold: true, margin: [5, 5, 5, 5], alignment: 'right' }
-            ],
-            [
-              { text: `Especialista Responsável:\n${laudo.tecnico || ''}`, style: 'tableCell', margin: [5, 5, 5, 5] },
-              { text: `Loja / Setor:\n${laudo.loja || ''} - ${laudo.setor || ''}`, style: 'tableCell', margin: [5, 5, 5, 5], alignment: 'right' }
-            ],
-            [
-              { text: `Equipamento Analisado:\n${laudo.equipamento || ''}`, style: 'tableCell', fillColor: '#f8fafc', margin: [5, 5, 5, 5] },
-              { text: `Modelo Identificado:\n${laudo.modelo && laudo.modelo !== 'Sem Modelo' ? laudo.modelo : 'Não especificado'}`, style: 'tableCell', fillColor: '#f8fafc', margin: [5, 5, 5, 5], alignment: 'right' }
-            ],
-            [
-              { text: `Número de Tombo / Patrimônio:\n${laudo.tombo || ''}`, style: 'tableCell', margin: [5, 5, 5, 5], colSpan: 2 },
-              {}
-            ],
-            [
-              { text: `Status Atual:\n${formatEstado(laudo.estadoEquipamento)}`, style: 'tableCell', bold: true, fillColor: '#eff6ff', color: '#1e3a8a', margin: [5, 5, 5, 5] },
-              { text: `Recomendação Técnica:\n${formatNecessidade(laudo.necessidade)}`, style: 'tableCell', bold: true, fillColor: '#eff6ff', color: '#1e3a8a', margin: [5, 5, 5, 5], alignment: 'right' }
-            ]
+            [{ text: `Número do Chamado: ${laudo.numeroChamado || ''}`, style: 'tableCell', bold: true, fillColor: '#f2f2f2' }],
+            [{ text: `Técnico: ${laudo.tecnico || ''}`, style: 'tableCell' }],
+            [{ text: `Data: ${laudo.data || ''}`, style: 'tableCell' }],
+            [{ text: `Loja: ${laudo.loja || ''}`, style: 'tableCell' }],
+            [{ text: `Setor: ${laudo.setor || ''}`, style: 'tableCell' }],
+            [{ text: `Equipamento: ${laudo.equipamento || ''}${laudo.modelo && laudo.modelo !== 'Sem Modelo' ? ' - ' + laudo.modelo : ''}`, style: 'tableCell' }],
+            [{ text: `Tombo: ${laudo.tombo || ''}`, style: 'tableCell' }],
+            [{ text: `Estado do Equipamento: ${formatEstado(laudo.estadoEquipamento)}`, style: 'tableCell' }],
+            [{ text: `Necessidade: ${formatNecessidade(laudo.necessidade)}`, style: 'tableCell' }]
           ]
         },
         layout: {
           hLineWidth: () => 1,
           vLineWidth: () => 1,
-          hLineColor: () => '#e2e8f0',
-          vLineColor: () => '#e2e8f0',
-          paddingLeft: () => 10,
-          paddingRight: () => 10,
-          paddingTop: () => 8,
-          paddingBottom: () => 8,
+          hLineColor: () => '#cccccc',
+          vLineColor: () => '#cccccc',
+          paddingLeft: () => 8,
+          paddingRight: () => 8,
+          paddingTop: () => 6,
+          paddingBottom: () => 6,
         },
-        margin: [0, 0, 0, 25]
+        margin: [0, 0, 0, 20]
       },
       // Testes Realizados
       { text: 'TESTES REALIZADOS', style: 'sectionTitle', margin: [0, 10, 0, 5] },
