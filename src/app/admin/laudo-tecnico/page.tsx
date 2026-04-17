@@ -131,6 +131,8 @@ export default function InfoFormularioPage() {
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
   const [newTicketTitle, setNewTicketTitle] = useState("");
   const [isCreatingTicket, setIsCreatingTicket] = useState(false);
+  const [glpiPasswordManual, setGlpiPasswordManual] = useState("");
+  const [showManualPass, setShowManualPass] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -320,7 +322,7 @@ export default function InfoFormularioPage() {
         const fRes = await fetch(`${API_BASE_URL}/glpi/followup`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ numeroChamado, glpiPassword: "", laudo: glpiInfo })
+          body: JSON.stringify({ numeroChamado, glpiPassword: glpiPasswordManual, laudo: glpiInfo })
         });
 
         if (fRes.ok) {
@@ -392,7 +394,7 @@ export default function InfoFormularioPage() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          glpiPassword: "",
+          glpiPassword: glpiPasswordManual,
           laudo: glpiInfo,
           relacao: {
             titulo: newTicketTitle,
@@ -415,7 +417,7 @@ export default function InfoFormularioPage() {
           await fetch(`${API_BASE_URL}/glpi/ticket/link`, {
             method: "POST",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-            body: JSON.stringify({ glpiPassword: "", tickets_id_1: Number(numeroChamado), tickets_id_2: ticketId, link: 1 })
+            body: JSON.stringify({ glpiPassword: glpiPasswordManual, tickets_id_1: Number(numeroChamado), tickets_id_2: ticketId, link: 1 })
           });
         }
         window.open(`${GLPI_BASE_URL}${ticketId}`, "_blank");
@@ -670,6 +672,29 @@ export default function InfoFormularioPage() {
                       )}
                     </div>
                   </div>
+                </div>
+
+                <div className="pt-2 border-t border-gray-100">
+                  <button 
+                    onClick={() => setShowManualPass(!showManualPass)}
+                    className="text-[10px] uppercase font-bold text-blue-600 tracking-widest flex items-center gap-1 opacity-60 hover:opacity-100 transition-opacity"
+                  >
+                    {showManualPass ? "✕ Cancelar senha manual" : "🔑 Usar minha senha individual do GLPI"}
+                  </button>
+                  
+                  {showManualPass && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="mt-4 space-y-2">
+                      <Label className="text-[10px] uppercase font-bold text-gray-400 font-black">Sua Senha do GLPI</Label>
+                      <Input 
+                        type="password" 
+                        value={glpiPasswordManual} 
+                        onChange={e => setGlpiPasswordManual(e.target.value)}
+                        placeholder="Digite sua senha..."
+                        className="h-12 rounded-xl bg-gray-50 border-gray-200"
+                      />
+                      <p className="text-[9px] text-gray-400 italic">Deixe vazio para usar a automação do sistema.</p>
+                    </motion.div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
