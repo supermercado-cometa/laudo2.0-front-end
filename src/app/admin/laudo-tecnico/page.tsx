@@ -138,7 +138,13 @@ export default function InfoFormularioPage() {
 
     fetch(`${API_BASE_URL}/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())
-      .then(d => { if (d?.user?.signature) setSavedSignature(d.user.signature); })
+      .then(d => { 
+        if (d?.user?.signature) {
+          setSavedSignature(d.user.signature);
+          // Marca como não redisanhando para usar a salva
+          setIsRedrawing(false);
+        }
+      })
       .catch(() => { });
 
     const load = async (ep: string, set: (d: any[]) => void) => {
@@ -189,13 +195,17 @@ export default function InfoFormularioPage() {
       if (canvasSig) {
         signature = canvasSig;
         const token = localStorage.getItem("token");
-        await fetch(`${API_BASE_URL}/auth/save-signature`, {
+        // Salva silenciosamente a assinatura no perfil do usuário
+        fetch(`${API_BASE_URL}/auth/save-signature`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({ signature: canvasSig })
-        });
-        setSavedSignature(canvasSig);
-        setIsRedrawing(false);
+        }).then(r => {
+          if (r.ok) {
+            setSavedSignature(canvasSig);
+            setIsRedrawing(false);
+          }
+        }).catch(() => {});
       }
     }
     const photos = await Promise.all(imagens.map(img => fileToBase64(img.file)));
@@ -453,9 +463,20 @@ export default function InfoFormularioPage() {
               </div>
               <div className="space-y-3">
                 <Label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Modelo</Label>
-                <select value={modelo} onChange={e => setModelo(e.target.value)} className="w-full h-12 rounded-xl bg-gray-50 border-none px-4 text-[#1A1A2E] appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]">
+                <select 
+                  value={modelo} 
+                  onChange={e => setModelo(e.target.value)} 
+                  className="w-full h-12 rounded-xl bg-gray-50 border-none px-4 text-[#1A1A2E] appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]"
+                >
                   <option value="">Selecione...</option>
-                  {modelos.map(m => <option key={m.id} value={m.nome}>{m.nome}</option>)}
+                  {modelos
+                    .filter(m => {
+                      // Filtra os modelos pelo Equipamento selecionado
+                      const selectedEq = equipamentos.find(e => e.nome === equipamento);
+                      return selectedEq ? m.equipamentoId === selectedEq.id : true;
+                    })
+                    .map(m => <option key={m.id} value={m.nome}>{m.nome}</option>)
+                  }
                 </select>
               </div>
             </div>
