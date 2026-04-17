@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   CheckCircle2, ClipboardCheck, Image as ImageIcon, Trash2, Loader2,
-  ExternalLink, Tag, MapPin, Users, RefreshCw, Zap
+  ExternalLink, Tag, MapPin, Users, RefreshCw, Zap, FileText, Printer
 } from "lucide-react";
 import SignatureCanvas from "react-signature-canvas";
 import { motion, AnimatePresence } from "framer-motion";
