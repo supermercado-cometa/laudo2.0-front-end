@@ -33,6 +33,8 @@ interface Laudo {
   necessidade?: string;
   signature?: string;
   photos?: string;
+  glpiTicketId?: number;
+  glpiSynced?: boolean;
 }
 
 // ─── Subcomponentes ───────────────────────────────────────────────────────────
@@ -175,7 +177,14 @@ function DetailPanel({
               </div>
               <div>
                 <h3 className="text-[#1A1A2E] text-[20px] uppercase tracking-tighter font-black">Laudo #{laudo.id}</h3>
-                <p className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">{laudo.data}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">{laudo.data}</p>
+                  {laudo.glpiSynced && (
+                    <span className="bg-green-50 text-green-600 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest border border-green-100 flex items-center gap-1">
+                      <CheckCircle2 className="w-2 h-2" /> Sincronizado GLPI
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -212,8 +221,14 @@ function DetailPanel({
         <div className="flex-1 px-8 py-8 space-y-10">
           {/* Seção: Informações Gerais */}
           <div className="space-y-6">
-            <div className="border-l-4 border-[#003B99] pl-4">
+            <div className="flex items-center justify-between border-l-4 border-[#003B99] pl-4">
               <h4 className="text-[13px] uppercase text-[#1A1A2E] font-black tracking-widest">Informações Gerais</h4>
+              {laudo.glpiSynced && (
+                <div className="flex items-center gap-1 bg-blue-50 text-[#003B99] px-3 py-1 rounded-full border border-blue-100">
+                  <ExternalLink className="w-3 h-3" />
+                  <span className="text-[9px] font-black uppercase tracking-widest">Notificado ao Externo</span>
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-gray-50/50 p-6 rounded-3xl">
               {field("numeroChamado", "Chamado")}
@@ -488,6 +503,11 @@ export default function LaudosGeradosPage() {
                         <p className="text-[#1A1A2E] text-[18px] uppercase tracking-tight font-bold">
                           {item.numeroChamado ? `Chamado: ${item.numeroChamado}` : "Sem chamado"}
                         </p>
+                        {item.glpiSynced && (
+                          <span className="bg-green-50 text-green-600 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest border border-green-100 flex items-center gap-1">
+                            <CheckCircle2 className="w-2 h-2" /> Sincronizado
+                          </span>
+                        )}
                       </div>
                       <p className="text-gray-500 uppercase text-[10px] tracking-widest">Técnico: <span className="text-[#1A1A2E] font-medium">{item.tecnico}</span></p>
                       <p className="text-gray-500 uppercase text-[10px] tracking-widest">Equip.: <span className="text-[#1A1A2E] font-medium">{item.equipamento}{item.modelo !== "Sem Modelo" ? ` - ${item.modelo}` : ""}</span></p>
