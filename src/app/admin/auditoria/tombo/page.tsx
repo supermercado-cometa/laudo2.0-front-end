@@ -141,6 +141,40 @@ export default function AuditoriaTomboPage() {
                     </div>
                  </div>
               </div>
+
+               {/* Ações de Auditoria */}
+               <div className="mt-8 pt-8 border-t border-gray-100 flex flex-wrap gap-4">
+                  <Button 
+                    variant="outline"
+                    onClick={async () => {
+                      if (!confirm("Deseja solicitar o recolhimento deste equipamento para despacho?")) return;
+                      try {
+                        const token = localStorage.getItem("token");
+                        const res = await fetch(`${API_BASE_URL}/glpi/ticket/recollect`, {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json", Authorization: token ? `Bearer ${token}` : "" },
+                          body: JSON.stringify({
+                            tombo: resultado.tombo,
+                            equipamento: resultado.equipamento,
+                            loja: resultado.loja,
+                            setor: resultado.setor
+                          })
+                        });
+                        if (res.ok) {
+                          const { ticketId } = await res.json();
+                          alert(`Solicitação de recolhimento criada: Chamado #${ticketId}`);
+                        } else {
+                          alert("Falha ao criar solicitação no GLPI.");
+                        }
+                      } catch {
+                        alert("Erro de conexão.");
+                      }
+                    }}
+                    className="rounded-xl border-amber-200 text-amber-700 hover:bg-amber-50 h-10 text-[10px] uppercase font-bold tracking-widest"
+                  >
+                    Recolhimento de Despacho
+                  </Button>
+               </div>
             </div>
           )}
         </div>

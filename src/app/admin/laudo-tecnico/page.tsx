@@ -15,6 +15,8 @@ import { LojaType } from "@/types/domain";
 import { AdminPageLayout } from "@/components/admin-page-layout";
 import { API_BASE_URL } from "@/lib/api-config";
 import { gerarLaudoPDF } from "@/lib/pdf-template";
+import GlpiPromoteModal, { GlpiPromotePayload } from "@/components/glpi-promote-modal";
+import GlpiRelateModal, { GlpiRelacaoPayload } from "@/components/glpi-relate-modal";
 
 const GLPI_BASE_URL = process.env.NEXT_PUBLIC_GLPI_BASEPESQUISA_URL || "http://192.168.7.181/front/ticket.form.php?id=";
 
@@ -122,6 +124,7 @@ export default function InfoFormularioPage() {
 
   // Modal de criação de chamado GLPI (sem chamado existente)
   const [isRelateModalOpen, setIsRelateModalOpen] = useState(false);
+  const [isPromoteModalOpen, setIsPromoteModalOpen] = useState(false);
   const [categories, setCategories] = useState<GlpiItem[]>([]);
   const [locations, setLocations] = useState<GlpiItem[]>([]);
   const [groups, setGroups] = useState<GlpiItem[]>([]);
@@ -318,22 +321,8 @@ export default function InfoFormularioPage() {
       };
 
       if (numeroChamado) {
-        setStatusMsg(`Registrando acompanhamento no chamado #${numeroChamado}...`);
-        const fRes = await fetch(`${API_BASE_URL}/glpi/followup`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ numeroChamado, glpiPassword: glpiPasswordManual, laudo: glpiInfo })
-        });
-
-        if (fRes.ok) {
-          setGlpiTicketId(Number(numeroChamado));
-          console.log("✅ Sincronização GLPI realizada com sucesso:", { ticketId: numeroChamado, status: "Acompanhamento Criado" });
-        } else {
-          const err = await fRes.json().catch(() => ({}));
-          console.warn("GLPI followup falhou:", err.error);
-        }
-        setStep("done");
-        setShowSuccess(true);
+        setStatusMsg("Redirecionando para Promoção de Chamado...");
+        setIsPromoteModalOpen(true);
       } else {
         setStatusMsg("Abrindo opções GLPI...");
         await carregarLookups();
@@ -429,6 +418,67 @@ export default function InfoFormularioPage() {
     } catch (e) {
       console.error(e);
       alert("Erro de conexão ao criar chamado.");
+    } finally {
+      setIsCreatingTicket(false);
+      setIsSending(false);
+      setStep("idle"); setStatusMsg("");
+    }
+  };
+
+  const handlePromoteTicket = async (data: GlpiPromotePayload) => {
+    setIsCreatingTicket(true);
+    setStatusMsg("Orquestrando promoção no GLPI...");
+    
+    const token = localStorage.getItem("token");
+    const payload = savedPayload!;
+    const glpiInfo = {
+      equipamento: payload.equipamento as string,
+      modelo: payload.modelo as string,
+      tombo: payload.tombo as string,
+      loja: payload.loja as string,
+      setor: payload.setor as string,
+      testesRealizados: payload.testesRealizados as string,
+      diagnostico: payload.diagnostico as string,
+      estadoEquipamento: estadoEquipamento.toLowerCase() === "funcionando" ? "funcionando" : "nao_funcionando",
+      necessidade:
+        necessidade === "Ser substituído" ? "substituido" :
+        necessidade === "Enviado p/ conserto" ? "enviar_conserto" :
+        necessidade === "Ser descartado" ? "descartado" : necessidade.toLowerCase(),
+    };
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/glpi/ticket/promote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          parentTicketId: numeroChamado,
+          glpiPassword: glpiPasswordManual,
+          laudo: glpiInfo,
+          relacao: {
+            titulo: data.titulo,
+            categoriaId: data.categoriaId,
+          },
+          asset: data.asset,
+          managerId: data.managerId
+        })
+      });
+
+      if (!res.ok) {
+        const e = await res.json().catch(() => ({}));
+        alert(`Erro na promoção: ${e.error || "Verifique o patrimônio e gerente."}`);
+        return;
+      }
+
+      const { subTicketId } = await res.json();
+      if (subTicketId) {
+        setGlpiTicketId(subTicketId);
+        window.open(`${GLPI_BASE_URL}${subTicketId}`, "_blank");
+      }
+      setIsPromoteModalOpen(false);
+      setShowSuccess(true);
+    } catch (e) {
+      console.error(e);
+      alert("Erro ao promover chamado.");
     } finally {
       setIsCreatingTicket(false);
       setIsSending(false);
@@ -746,6 +796,15 @@ export default function InfoFormularioPage() {
             </ModalCard>
           </Overlay>
         )}
+
+        {/* Modal: Promoção de Sub-chamado */}
+        <GlpiPromoteModal 
+          open={isPromoteModalOpen}
+          apiBaseUrl={API_BASE_URL}
+          tomboDefault={tombo}
+          onCancel={() => { setIsPromoteModalOpen(false); setIsSending(false); }}
+          onConfirm={handlePromoteTicket}
+        />
 
         {/* Modal: sucesso */}
         {showSuccess && (
