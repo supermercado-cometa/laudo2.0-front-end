@@ -8,7 +8,7 @@ export type GlpiPromotePayload = {
   localizacaoId: number | null;
   grupoId: number | null;
   asset: { id: number; itemtype: string } | null;
-  managerId: number | null;
+  managerIds: number[];
 };
 
 export default function GlpiPromoteModal({
@@ -30,7 +30,7 @@ export default function GlpiPromoteModal({
   const [assetError, setAssetError] = useState("");
 
   const [managers, setManagers] = useState<Array<{ id: number; name: string; realname: string; firstname: string }>>([]);
-  const [managerId, setManagerId] = useState<number | null>(null);
+  const [selectedManagerIds, setSelectedManagerIds] = useState<number[]>([]);
   const [loadingManagers, setLoadingManagers] = useState(false);
 
   const [categoriasLista, setCategoriasLista] = useState<Array<{ id: number; completename: string }>>([]);
@@ -151,36 +151,47 @@ export default function GlpiPromoteModal({
             )}
           </div>
 
-          {/* Seleção de Gerente para Validação */}
+          {/* Seleção de Gerente para Validação (Múltipla) */}
           <div className="grid gap-1.5">
-            <label className="text-sm font-medium">Gerente Resposável (Validação)</label>
-            <select 
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              value={managerId || ""}
-              onChange={(e) => setManagerId(Number(e.target.value))}
-            >
-              <option value="">Selecione um gerente...</option>
+            <label className="text-sm font-medium">Gerentes Responsáveis (Validação)</label>
+            <div className="border rounded-md p-2 max-h-40 overflow-y-auto space-y-2 bg-slate-50/50">
+              {loadingManagers && <p className="text-xs text-slate-500 animate-pulse">Carregando gerentes...</p>}
               {managers.map(m => (
-                <option key={m.id} value={m.id}>
-                  {m.realname} {m.firstname} ({m.name})
-                </option>
+                <label key={m.id} className="flex items-center gap-2 p-1.5 hover:bg-slate-100 rounded cursor-pointer transition-colors">
+                  <input 
+                    type="checkbox" 
+                    className="w-4 h-4 accent-primary rounded shadow-sm"
+                    checked={selectedManagerIds.includes(m.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedManagerIds(prev => [...prev, m.id]);
+                      } else {
+                        setSelectedManagerIds(prev => prev.filter(id => id !== m.id));
+                      }
+                    }}
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold">{m.realname} {m.firstname}</span>
+                    <span className="text-[10px] text-slate-400 leading-none uppercase">{m.name}</span>
+                  </div>
+                </label>
               ))}
-            </select>
-            {loadingManagers && <p className="text-xs text-slate-500">Carregando gerentes...</p>}
+            </div>
+            <p className="text-xs text-slate-400 italic">Selecione um ou mais gerentes conforme a necessidade (ex: Felipe e Alex).</p>
           </div>
         </div>
 
         <div className="flex justify-end gap-3 mt-8">
           <Button variant="outline" onClick={onCancel}>Cancelar</Button>
           <Button 
-            disabled={loadingAsset || !asset || !managerId || !categoriaId}
+            disabled={loadingAsset || !asset || selectedManagerIds.length === 0 || !categoriaId}
             onClick={() => onConfirm({
               titulo,
               categoriaId,
               localizacaoId: null, // Pode ser herdado do pai se necessário
               grupoId: null,
               asset: asset ? { id: asset.id, itemtype: asset.itemtype } : null,
-              managerId
+              managerIds: selectedManagerIds
             })}
           >
             Promover Chamado
