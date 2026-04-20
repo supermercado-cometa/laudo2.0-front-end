@@ -177,6 +177,11 @@ export default function GlpiPromoteModal({
                 </label>
               ))}
             </div>
+            {managers.length === 0 && !loadingManagers && (
+              <p className="text-[10px] text-amber-600 bg-amber-50 p-2 rounded border border-amber-100 italic">
+                Atenção: Nenhum gerente encontrado nos grupos padrão (Gerente, ADM, Supervisão). Verifique se o usuário já possui grupos vinculados no GLPI.
+              </p>
+            )}
             <p className="text-xs text-slate-400 italic">Selecione um ou mais gerentes conforme a necessidade (ex: Felipe e Alex).</p>
           </div>
         </div>
@@ -184,7 +189,7 @@ export default function GlpiPromoteModal({
         <div className="flex justify-end gap-3 mt-8">
           <Button variant="outline" onClick={onCancel}>Cancelar</Button>
           <Button 
-            disabled={loadingAsset || !asset || selectedManagerIds.length === 0 || !categoriaId}
+            disabled={loadingAsset || selectedManagerIds.length === 0 || !categoriaId}
             onClick={() => onConfirm({
               titulo,
               categoriaId,
