@@ -18,6 +18,10 @@ export default function GlpiPromoteModal({
   tomboDefault,
   onCancel,
   onConfirm,
+  showManualPass,
+  setShowManualPass,
+  passwordManual,
+  setPasswordManual,
 }: {
   open: boolean;
   apiBaseUrl: string;
