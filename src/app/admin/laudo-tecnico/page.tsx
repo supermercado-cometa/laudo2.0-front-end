@@ -397,7 +397,12 @@ export default function InfoFormularioPage() {
 
       if (!cRes.ok) {
         const e = await cRes.json().catch(() => ({}));
-        alert(`Erro ao criar chamado: ${e.error || "Verifique as configurações GLPI."}`);
+        if (cRes.status === 401 && !glpiPasswordManual) {
+          setShowManualPass(true);
+          alert("Autenticação automática falhou. Por favor, digite sua senha do GLPI.");
+        } else {
+          alert(`Erro ao criar chamado: ${e.error || "Verifique as configurações GLPI."}`);
+        }
         return;
       }
       const { ticketId } = await cRes.json();
@@ -466,7 +471,12 @@ export default function InfoFormularioPage() {
 
       if (!res.ok) {
         const e = await res.json().catch(() => ({}));
-        alert(`Erro na promoção: ${e.error || "Verifique o patrimônio e gerente."}`);
+        if (res.status === 401 && !glpiPasswordManual) {
+          setShowManualPass(true);
+          alert("Autenticação automática falhou. Por favor, digite sua senha do GLPI.");
+        } else {
+          alert(`Erro na promoção: ${e.error || "Verifique o patrimônio e gerente."}`);
+        }
         return;
       }
 
@@ -789,6 +799,28 @@ export default function InfoFormularioPage() {
                       <RefreshCw className="w-5 h-5" />
                     </Button>
                   </div>
+
+                  <div className="pt-2 border-t border-gray-100">
+                    <button 
+                      onClick={() => setShowManualPass(!showManualPass)}
+                      className="text-[10px] uppercase font-bold text-[#003B99] tracking-widest flex items-center gap-1 opacity-60 hover:opacity-100 transition-opacity"
+                    >
+                      {showManualPass ? "✕ Usar automação do sistema" : "🔑 Usar minha senha individual do GLPI"}
+                    </button>
+                    {showManualPass && (
+                      <div className="mt-4 space-y-2">
+                        <Label className="text-[10px] uppercase font-bold text-gray-400 font-black">Sua Senha do GLPI</Label>
+                        <Input 
+                          type="password" 
+                          value={glpiPasswordManual} 
+                          onChange={e => setGlpiPasswordManual(e.target.value)}
+                          placeholder="Digite sua senha..."
+                          className="h-12 rounded-xl bg-gray-50 border-gray-200"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  
                   <button onClick={() => { setIsRelateModalOpen(false); setIsSending(false); setStep("idle"); setShowSuccess(true); }} className="w-full text-[10px] uppercase font-bold text-gray-400 tracking-widest py-2">
                     Pular — só salvar localmente
                   </button>
@@ -805,6 +837,10 @@ export default function InfoFormularioPage() {
           tomboDefault={tombo}
           onCancel={() => { setIsPromoteModalOpen(false); setIsSending(false); }}
           onConfirm={handlePromoteTicket}
+          showManualPass={showManualPass}
+          setShowManualPass={setShowManualPass}
+          passwordManual={glpiPasswordManual}
+          setPasswordManual={setGlpiPasswordManual}
         />
 
         {/* Modal: sucesso */}

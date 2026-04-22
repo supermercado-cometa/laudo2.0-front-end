@@ -24,6 +24,10 @@ export default function GlpiPromoteModal({
   tomboDefault: string;
   onCancel: () => void;
   onConfirm: (data: GlpiPromotePayload) => void;
+  showManualPass: boolean;
+  setShowManualPass: (v: boolean) => void;
+  passwordManual: string;
+  setPasswordManual: (v: string) => void;
 }) {
   const [titulo, setTitulo] = useState(`Sub-chamado: Promoção de Laudo - ${tomboDefault}`);
   const [mensagemPai, setMensagemPai] = useState("Um sub-chamado foi criado e encaminhado para validação da Liderança correspondente ao laudo emitido:");
@@ -173,9 +177,35 @@ export default function GlpiPromoteModal({
           </div>
 
           {/* Status da Automação de Validação */}
-          <div className="p-2 bg-blue-50 border border-blue-100 rounded flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-            <span className="text-[10px] text-blue-700 font-medium">A validação será solicitada automaticamente para <b>Felipe Fernandes</b> e <b>Alex Thalles</b>.</span>
+          <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              <span className="text-[10px] text-blue-700 font-bold uppercase tracking-wider">Envio Automático Ativo</span>
+            </div>
+            <p className="text-[11px] text-blue-600 leading-relaxed">
+              Sua senha foi carregada no login. A validação será solicitada para <b>Felipe Fernandes</b> e <b>Alex Thalles</b> usando suas credenciais salvas.
+            </p>
+            
+            <button 
+              type="button"
+              onClick={() => setShowManualPass(!showManualPass)}
+              className="text-[10px] font-bold text-blue-800 underline hover:text-blue-900"
+            >
+              {showManualPass ? "✕ Usar automação do sistema" : "🔑 Usar outra senha do GLPI manualmente"}
+            </button>
+
+            {showManualPass && (
+              <div className="pt-2 animate-in fade-in slide-in-from-top-1">
+                <label className="text-[9px] font-black text-blue-900 uppercase block mb-1">Senha Manual</label>
+                <Input 
+                  type="password"
+                  value={passwordManual}
+                  onChange={(e) => setPasswordManual(e.target.value)}
+                  className="h-10 text-sm bg-white border-blue-200"
+                  placeholder="Sua senha do GLPI..."
+                />
+              </div>
+            )}
           </div>
         </div>
 
