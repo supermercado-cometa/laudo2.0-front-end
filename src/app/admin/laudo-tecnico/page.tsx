@@ -138,6 +138,7 @@ export default function InfoFormularioPage() {
   const [showManualPass, setShowManualPass] = useState(false);
 
   useEffect(() => {
+    console.log("🚀 [SSO_PROMO_V1] Frontend carregado!");
     const token = localStorage.getItem("token");
     if (!token) { router.replace("/"); return; }
 
