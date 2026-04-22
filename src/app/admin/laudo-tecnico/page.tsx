@@ -604,10 +604,10 @@ export default function InfoFormularioPage() {
             <div className="border-l-4 border-[#003B99] pl-4">
               <h3 className="text-[#1A1A2E] text-[20px] tracking-tight uppercase">Evidências do Ativo</h3>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6">
+              {imagens.map((img, idx) => (
                 <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-gray-200 group cursor-pointer" onClick={() => setPreviewIndex(idx)}>
                   <img src={img.preview} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
-                  <button onClick={() => removeImage(idx)} className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={(e) => { e.stopPropagation(); removeImage(idx); }} className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
