@@ -855,6 +855,7 @@ export default function InfoFormularioPage() {
           setPasswordManual={setGlpiPasswordManual}
         />
 
+        {showSuccess && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-[#003B99]/90 backdrop-blur-md p-6">
             <div className="bg-white rounded-[40px] p-12 text-center shadow-2xl max-w-sm w-full border-b-8 border-green-500">
               <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8">
@@ -903,6 +904,7 @@ export default function InfoFormularioPage() {
               </Button>
             </div>
           </motion.div>
+        )}
 
         {/* Visualizador de Imagens (Lightbox) */}
         {previewIndex !== null && (
