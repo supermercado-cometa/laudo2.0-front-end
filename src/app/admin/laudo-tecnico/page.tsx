@@ -459,7 +459,8 @@ export default function InfoFormularioPage() {
             categoriaId: data.categoriaId,
           },
           asset: data.asset,
-          managerIds: data.managerIds
+          managerIds: data.managerIds,
+          mensagemPai: data.mensagemPai
         })
       });
 

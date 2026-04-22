@@ -9,6 +9,7 @@ export type GlpiPromotePayload = {
   grupoId: number | null;
   asset: { id: number; itemtype: string } | null;
   managerIds: number[];
+  mensagemPai: string;
 };
 
 export default function GlpiPromoteModal({
@@ -25,11 +26,11 @@ export default function GlpiPromoteModal({
   onConfirm: (data: GlpiPromotePayload) => void;
 }) {
   const [titulo, setTitulo] = useState(`Sub-chamado: Promoção de Laudo - ${tomboDefault}`);
+  const [mensagemPai, setMensagemPai] = useState("Um sub-chamado foi criado e encaminhado para validação da Liderança correspondente ao laudo emitido:");
   const [asset, setAsset] = useState<{ id: number; name: string; itemtype: string } | null>(null);
   const [loadingAsset, setLoadingAsset] = useState(false);
   const [assetError, setAssetError] = useState("");
 
-  const [managers, setManagers] = useState<Array<{ id: number; name: string; realname: string; firstname: string }>>([]);
   const [selectedManagerIds, setSelectedManagerIds] = useState<number[]>([]);
   const [loadingManagers, setLoadingManagers] = useState(false);
 
@@ -60,7 +61,7 @@ export default function GlpiPromoteModal({
     }
   }, [open, tomboDefault, apiBaseUrl]);
 
-  // ===== Buscar Gerentes =====
+  // ===== Buscar Gerentes e Auto-selecionar Felipe/Alex =====
   useEffect(() => {
     if (open) {
       setLoadingManagers(true);
@@ -69,7 +70,16 @@ export default function GlpiPromoteModal({
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((resp) => resp.json())
-        .then((data) => setManagers(Array.isArray(data) ? data : []))
+        .then((data) => {
+          if (Array.isArray(data)) {
+            // Filtra apenas Felipe Fernandes e Alex Thalles
+            const targetManagers = data.filter(m => 
+              m.realname.includes("Felipe Fernandes") || 
+              m.realname.includes("Alex Thalles")
+            );
+            setSelectedManagerIds(targetManagers.map(m => m.id));
+          }
+        })
         .catch((err) => console.error("Erro ao carregar gerentes:", err))
         .finally(() => setLoadingManagers(false));
     }
@@ -101,10 +111,21 @@ export default function GlpiPromoteModal({
         <h3 className="text-xl font-bold mb-4 text-primary">Promover para Sub-chamado</h3>
         
         <div className="space-y-4">
-          {/* Título */}
+          {/* Título do Chamado Filho */}
           <div className="grid gap-1.5">
-            <label className="text-sm font-medium">Título do Sub-chamado</label>
+            <label className="text-sm font-medium">Título do Sub-chamado (Novo Ticket)</label>
             <Input value={titulo} onChange={(e) => setTitulo(e.target.value)} />
+          </div>
+
+          {/* Mensagem no Chamado Pai */}
+          <div className="grid gap-1.5">
+            <label className="text-sm font-medium text-blue-600 font-semibold">Aviso para o Chamado Pai (Página Principal)</label>
+            <textarea 
+              value={mensagemPai} 
+              onChange={(e) => setMensagemPai(e.target.value)}
+              className="w-full min-h-[80px] p-2 text-sm border rounded-md focus:ring-2 focus:ring-primary outline-none resize-none"
+              placeholder="Texto que aparecerá como acompanhamento no chamado original..."
+            />
           </div>
 
           {/* Info do Ativo (Patrimônio) */}
@@ -151,55 +172,28 @@ export default function GlpiPromoteModal({
             )}
           </div>
 
-          {/* Seleção de Gerente para Validação (Múltipla) */}
-          <div className="grid gap-1.5">
-            <label className="text-sm font-medium">Gerentes Responsáveis (Validação)</label>
-            <div className="border rounded-md p-2 max-h-40 overflow-y-auto space-y-2 bg-slate-50/50">
-              {loadingManagers && <p className="text-xs text-slate-500 animate-pulse">Carregando gerentes...</p>}
-              {managers.map(m => (
-                <label key={m.id} className="flex items-center gap-2 p-1.5 hover:bg-slate-100 rounded cursor-pointer transition-colors">
-                  <input 
-                    type="checkbox" 
-                    className="w-4 h-4 accent-primary rounded shadow-sm"
-                    checked={selectedManagerIds.includes(m.id)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectedManagerIds(prev => [...prev, m.id]);
-                      } else {
-                        setSelectedManagerIds(prev => prev.filter(id => id !== m.id));
-                      }
-                    }}
-                  />
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold">{m.realname} {m.firstname}</span>
-                    <span className="text-[10px] text-slate-400 leading-none uppercase">{m.name}</span>
-                  </div>
-                </label>
-              ))}
-            </div>
-            {managers.length === 0 && !loadingManagers && (
-              <p className="text-[10px] text-amber-600 bg-amber-50 p-2 rounded border border-amber-100 italic">
-                Atenção: Nenhum gerente encontrado nos grupos padrão (Gerente, ADM, Supervisão). Verifique se o usuário já possui grupos vinculados no GLPI.
-              </p>
-            )}
-            <p className="text-xs text-slate-400 italic">Selecione um ou mais gerentes conforme a necessidade (ex: Felipe e Alex).</p>
+          {/* Status da Automação de Validação */}
+          <div className="p-2 bg-blue-50 border border-blue-100 rounded flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+            <span className="text-[10px] text-blue-700 font-medium">A validação será solicitada automaticamente para <b>Felipe Fernandes</b> e <b>Alex Thalles</b>.</span>
           </div>
         </div>
 
         <div className="flex justify-end gap-3 mt-8">
           <Button variant="outline" onClick={onCancel}>Cancelar</Button>
           <Button 
-            disabled={loadingAsset || selectedManagerIds.length === 0 || !categoriaId}
+            disabled={loadingAsset || !categoriaId || loadingManagers}
             onClick={() => onConfirm({
               titulo,
               categoriaId,
-              localizacaoId: null, // Pode ser herdado do pai se necessário
+              localizacaoId: null,
               grupoId: null,
               asset: asset ? { id: asset.id, itemtype: asset.itemtype } : null,
-              managerIds: selectedManagerIds
+              managerIds: selectedManagerIds,
+              mensagemPai
             })}
           >
-            Promover Chamado
+            {loadingManagers ? "Carregando..." : "Promover Chamado"}
           </Button>
         </div>
       </div>
