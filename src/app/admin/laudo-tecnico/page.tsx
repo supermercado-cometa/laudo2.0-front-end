@@ -604,6 +604,7 @@ export default function InfoFormularioPage() {
             <div className="border-l-4 border-[#003B99] pl-4">
               <h3 className="text-[#1A1A2E] text-[20px] tracking-tight uppercase">Evidências do Ativo</h3>
             </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6">
               {imagens.map((img, idx) => (
                 <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-gray-200 group cursor-pointer" onClick={() => setPreviewIndex(idx)}>
                   <img src={img.preview} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
