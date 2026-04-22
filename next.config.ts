@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
     // Ignora avisos de lint no build para acelerar o deploy
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    // Reduz as threads de compilação pra 1, evitando estourar a RAM (OOM) no Coolify
+    cpus: 1,
+    workerThreads: false,
+  },
 };
 
 export default nextConfig;
