@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   CheckCircle2, ClipboardCheck, Image as ImageIcon, Trash2, Loader2,
-  ExternalLink, Tag, MapPin, Users, RefreshCw, Zap, FileText, Printer
+  ExternalLink, Tag, MapPin, Users, RefreshCw, Zap, FileText, Printer,
+  X, ChevronLeft, ChevronRight, ZoomIn
 } from "lucide-react";
 import SignatureCanvas from "react-signature-canvas";
 import { motion, AnimatePresence } from "framer-motion";
@@ -136,6 +137,10 @@ export default function InfoFormularioPage() {
   const [isCreatingTicket, setIsCreatingTicket] = useState(false);
   const [glpiPasswordManual, setGlpiPasswordManual] = useState("");
   const [showManualPass, setShowManualPass] = useState(false);
+  
+  // Visualizador de Imagens
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     console.log("🚀 [SSO_PROMO_V2] Frontend carregado!");
@@ -600,8 +605,7 @@ export default function InfoFormularioPage() {
               <h3 className="text-[#1A1A2E] text-[20px] tracking-tight uppercase">Evidências do Ativo</h3>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6">
-              {imagens.map((img, idx) => (
-                <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-gray-200 group">
+                <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-gray-200 group cursor-pointer" onClick={() => setPreviewIndex(idx)}>
                   <img src={img.preview} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
                   <button onClick={() => removeImage(idx)} className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <Trash2 className="w-4 h-4" />
@@ -850,8 +854,6 @@ export default function InfoFormularioPage() {
           setPasswordManual={setGlpiPasswordManual}
         />
 
-        {/* Modal: sucesso */}
-        {showSuccess && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-[#003B99]/90 backdrop-blur-md p-6">
             <div className="bg-white rounded-[40px] p-12 text-center shadow-2xl max-w-sm w-full border-b-8 border-green-500">
               <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8">
@@ -899,6 +901,85 @@ export default function InfoFormularioPage() {
                 Novo Laudo
               </Button>
             </div>
+          </motion.div>
+
+        {/* Visualizador de Imagens (Lightbox) */}
+        {previewIndex !== null && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[150] bg-black/95 flex flex-col items-center justify-center p-4 lg:p-10"
+            onClick={() => { setPreviewIndex(null); setIsZoomed(false); }}
+          >
+            {/* Header / Controles Superiores */}
+            <div className="absolute top-6 left-0 right-0 px-6 flex justify-between items-center z-[160]">
+              <span className="text-white/50 text-[10px] font-black uppercase tracking-[0.2em]">
+                Evidência {previewIndex + 1} de {imagens.length}
+              </span>
+              <div className="flex gap-4">
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setIsZoomed(!isZoomed); }}
+                  className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white backdrop-blur-md"
+                >
+                  <ZoomIn className={`w-5 h-5 transition-transform ${isZoomed ? "scale-125 text-blue-400" : ""}`} />
+                </button>
+                <button 
+                  onClick={() => { setPreviewIndex(null); setIsZoomed(false); }}
+                  className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white backdrop-blur-md"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            {/* Imagem Principal */}
+            <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+              <motion.img 
+                key={previewIndex}
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ 
+                  scale: isZoomed ? 2.5 : 1, 
+                  opacity: 1,
+                  y: 0,
+                  x: 0
+                }}
+                transition={{ type: "spring", damping: 30, stiffness: 300 }}
+                src={imagens[previewIndex].preview} 
+                alt="Preview"
+                className={`max-w-full max-h-full object-contain select-none ${isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"}`}
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  setIsZoomed(!isZoomed); 
+                }}
+                drag={isZoomed}
+                dragConstraints={{ left: -500, right: 500, top: -500, bottom: 500 }}
+              />
+            </div>
+
+            {/* Navegação Carrossel */}
+            {imagens.length > 1 && !isZoomed && (
+              <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 pointer-events-none">
+                <button 
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    setPreviewIndex(previewIndex === 0 ? imagens.length - 1 : previewIndex - 1);
+                    setIsZoomed(false);
+                  }}
+                  className="w-14 h-14 bg-black/20 rounded-full flex items-center justify-center text-white backdrop-blur-md pointer-events-auto hover:bg-white/10 active:scale-90 transition-all"
+                >
+                  <ChevronLeft className="w-8 h-8" />
+                </button>
+                <button 
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    setPreviewIndex(previewIndex === imagens.length - 1 ? 0 : previewIndex + 1);
+                    setIsZoomed(false);
+                  }}
+                  className="w-14 h-14 bg-black/20 rounded-full flex items-center justify-center text-white backdrop-blur-md pointer-events-auto hover:bg-white/10 active:scale-90 transition-all"
+                >
+                  <ChevronRight className="w-8 h-8" />
+                </button>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
