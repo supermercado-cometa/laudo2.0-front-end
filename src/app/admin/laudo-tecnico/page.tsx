@@ -170,11 +170,17 @@ export default function InfoFormularioPage() {
   }, [router]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    setImagens(prev => [
-      ...prev,
-      ...Array.from(e.target.files!).map(file => ({ file, preview: URL.createObjectURL(file) }))
-    ]);
+    if (!e.target.files || e.target.files.length === 0) return;
+    console.log(`[DEBUG] ${e.target.files.length} imagens selecionadas`);
+    
+    const novasImagens = Array.from(e.target.files).map(file => ({ 
+      file, 
+      preview: URL.createObjectURL(file) 
+    }));
+
+    setImagens(prev => [...prev, ...novasImagens]);
+    // Reseta o valor para permitir selecionar o mesmo arquivo/lote novamente
+    e.target.value = "";
   };
 
   const removeImage = (idx: number) => {
@@ -605,7 +611,7 @@ export default function InfoFormularioPage() {
               <label className="relative aspect-square rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-white hover:border-[#003B99]/30 transition-all group">
                 <ImageIcon className="w-6 h-6 text-gray-400 group-hover:text-[#003B99]" />
                 <span className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Adicionar</span>
-                <input type="file" multiple accept="image/*" capture="environment" className="hidden" onChange={handleImageChange} />
+                <input type="file" multiple accept="image/*" className="hidden" onChange={handleImageChange} />
               </label>
             </div>
           </div>
