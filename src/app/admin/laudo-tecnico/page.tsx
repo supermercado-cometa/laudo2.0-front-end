@@ -490,17 +490,18 @@ export default function InfoFormularioPage() {
       };
 
       const body = {
-        parentTicketId: Number(numeroChamado),
+        parentTicketId: numeroChamado, // Mantido como String conforme log de sucesso parcial
         glpiPassword: glpiPasswordManual,
         laudo: glpiInfo,
         titulo: data.titulo,
         categoriaId: data.categoriaId,
         asset: data.asset,
-        managerId: data.managerIds[0] || null, // Legado: primeiro gerente
-        managerIds: data.managerIds,           // Novo: múltiplos gerentes
+        managerId: data.managerIds[0] || null, // Compatibilidade com backend que espera ID único
+        managerIds: data.managerIds,           // Suporte para múltiplos gestores
+        mensagemPai: data.mensagemPai          // Restauração da edição do chamado pai
       };
 
-      console.log("🚀 [DEBUG FINAL] Body Final:", JSON.stringify(body, null, 2));
+      console.log("🚀 [PROMOÇÃO COMPLETA] Enviando Payload Final:", body);
 
       const res = await fetch(`${API_BASE_URL}/glpi/ticket/promote`, {
         method: "POST",
