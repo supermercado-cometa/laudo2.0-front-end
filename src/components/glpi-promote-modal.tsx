@@ -84,8 +84,11 @@ export default function GlpiPromoteModal({
           if (Array.isArray(data)) {
             // Filtra apenas Felipe Fernandes e Alex Thalles (robusto contra variações de acento/caixa)
             const targetManagers = data.filter(m => {
-              const nameLower = (m.realname || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-              return nameLower.includes("felipe fernandes") || nameLower.includes("alex thalles");
+              const full = `${m.firstname || ""} ${m.realname || ""}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+              // Se encontrar o par (Nome + Sobrenome) ou se for um dos sobrenomes específicos (caso o nome esteja vazio)
+              const matchesFelipe = (full.includes("felipe") && full.includes("fernandes")) || full.trim() === "fernandes";
+              const matchesAlex   = (full.includes("alex") && full.includes("thalles"))     || full.trim() === "thalles";
+              return matchesFelipe || matchesAlex;
             });
             console.log("👥 [DEBUG] Gerentes encontrados no filtro:", targetManagers.map(m => m.realname));
             if (targetManagers.length === 0) {
