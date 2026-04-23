@@ -87,6 +87,10 @@ export default function GlpiPromoteModal({
               const nameLower = (m.realname || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
               return nameLower.includes("felipe fernandes") || nameLower.includes("alex thalles");
             });
+            console.log("👥 [DEBUG] Gerentes encontrados no filtro:", targetManagers.map(m => m.realname));
+            if (targetManagers.length === 0) {
+               console.warn("⚠️ [AVISO] Nenhum gestor (Felipe/Alex) foi encontrado na lista:", data.map(m => m.realname));
+            }
             setSelectedManagerIds(targetManagers.map(m => m.id));
           }
         })
@@ -189,7 +193,10 @@ export default function GlpiPromoteModal({
               <span className="text-[10px] text-blue-700 font-bold uppercase tracking-wider">Envio Automático Ativo</span>
             </div>
             <p className="text-[11px] text-blue-600 leading-relaxed">
-              Sua senha foi carregada no login. A validação será solicitada para <b>Felipe Fernandes</b> e <b>Alex Thalles</b> usando suas credenciais salvas.
+              {selectedManagerIds.length > 0 
+                ? `Sua senha foi carregada no login. A validação será solicitada para ${selectedManagerIds.length} gestor(es) usando suas credenciais salvas.`
+                : "⚠️ Nenhum gestor (Felipe/Alex) foi localizado no GLPI de Homologação. A promoção não pode ser concluída sem gestores vinculados."
+              }
             </p>
             
             <button 
@@ -218,7 +225,7 @@ export default function GlpiPromoteModal({
         <div className="flex justify-end gap-3 mt-8">
           <Button variant="outline" onClick={onCancel}>Cancelar</Button>
           <Button 
-            disabled={loadingAsset || !categoriaId || loadingManagers || isPromoting}
+            disabled={loadingAsset || !categoriaId || loadingManagers || isPromoting || selectedManagerIds.length === 0}
             onClick={() => onConfirm({
               titulo,
               categoriaId,
