@@ -490,22 +490,25 @@ export default function InfoFormularioPage() {
       };
 
       const body = {
-        parentTicketId: numeroChamado, // Mantido como String conforme log de sucesso parcial
+        parentTicketId: numeroChamado,
         glpiPassword: glpiPasswordManual,
         laudo: glpiInfo,
         titulo: data.titulo,
         categoriaId: data.categoriaId,
         asset: data.asset,
-        managerId: data.managerIds[0] || null, // Compatibilidade com backend que espera ID único
-        managerIds: data.managerIds,           // Suporte para múltiplos gestores
-        mensagemPai: data.mensagemPai          // Restauração da edição do chamado pai
+        managerId: data.managerIds[0] || null,
+        managerIds: data.managerIds,
+        mensagemPai: data.mensagemPai
       };
 
-      console.log("🚀 [PROMOÇÃO COMPLETA] Enviando Payload Final:", body);
+      console.log("🚀 [TENTATIVA DEFINITIVA] Payload:", body);
 
       const res = await fetch(`${API_BASE_URL}/glpi/ticket/promote`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: { 
+          "Content-Type": "application/json", 
+          "Authorization": token || "" // Removido 'Bearer' para bater com o padrão do RelateModal
+        },
         body: JSON.stringify(body)
       });
 
