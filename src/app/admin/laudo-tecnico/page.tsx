@@ -494,7 +494,7 @@ export default function InfoFormularioPage() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          parentTicketId: numeroChamado,
+          parentTicketId: numeroChamado ? Number(numeroChamado) : null,
           glpiPassword: glpiPasswordManual,
           laudo: glpiInfo,
           relacao: {
