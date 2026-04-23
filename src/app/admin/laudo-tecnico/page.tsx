@@ -134,6 +134,10 @@ export default function InfoFormularioPage() {
   const [selectedLocation, setSelectedLocation] = useState<number | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
   const [newTicketTitle, setNewTicketTitle] = useState("");
+  const [newTicketMessage, setNewTicketMessage] = useState("Chamado aberto automaticamente através do sistema de Laudo Técnico.");
+  const [assetInfo, setAssetInfo] = useState<{ id: number; name: string; itemtype: string } | null>(null);
+  const [isLoadingAsset, setIsLoadingAsset] = useState(false);
+  const [assetError, setAssetError] = useState("");
   const [isCreatingTicket, setIsCreatingTicket] = useState(false);
   const [glpiPasswordManual, setGlpiPasswordManual] = useState("");
   const [showManualPass, setShowManualPass] = useState(false);
@@ -358,6 +362,20 @@ export default function InfoFormularioPage() {
     const token = localStorage.getItem("token");
     const h = { Authorization: `Bearer ${token}` };
     try {
+      // Busca Asset se tiver tombo
+      if (tombo) {
+        setIsLoadingAsset(true);
+        setAssetError("");
+        fetch(`${API_BASE_URL}/glpi/lookup/asset/${tombo}`, { headers: h })
+          .then(async (r) => {
+            if (!r.ok) throw new Error("Não encontrado");
+            return r.json();
+          })
+          .then(setAssetInfo)
+          .catch(e => setAssetError(e.message))
+          .finally(() => setIsLoadingAsset(false));
+      }
+
       const [c, l, g] = await Promise.all([
         fetch(`${API_BASE_URL}/glpi/lookup/categories-db`, { headers: h }),
         fetch(`${API_BASE_URL}/glpi/lookup/locations-db`, { headers: h }),
@@ -368,7 +386,7 @@ export default function InfoFormularioPage() {
       if (g.ok) setGroups(await g.json());
     } catch (e) { console.error(e); }
     finally { setIsLoadingLookups(false); }
-  }, []);
+  }, [tombo]);
 
   const handleCreateTicket = async () => {
     if (!newTicketTitle.trim()) { alert("Informe o título."); return; }
@@ -403,7 +421,9 @@ export default function InfoFormularioPage() {
             categoriaId: selectedCategory,
             localizacaoId: selectedLocation,
             grupoId: selectedGroup,
-          }
+          },
+          asset: assetInfo ? { id: assetInfo.id, itemtype: assetInfo.itemtype } : null,
+          mensagemPai: newTicketMessage
         })
       });
 
@@ -796,14 +816,57 @@ export default function InfoFormularioPage() {
                 </div>
               ) : (
                 <div className="space-y-5 mt-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase font-black text-gray-400 tracking-widest">Título do Chamado</label>
-                    <Input value={newTicketTitle} onChange={e => setNewTicketTitle(e.target.value)} className="h-12 rounded-xl bg-gray-50 border-none" />
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] uppercase font-black text-gray-400 tracking-widest">Título do Chamado</label>
+                      <Input value={newTicketTitle} onChange={e => setNewTicketTitle(e.target.value)} className="h-12 rounded-xl bg-gray-50 border-none" />
+                    </div>
+
+                    <div className="space-y-2">
+                       <label className="text-[10px] uppercase font-black text-blue-600 tracking-widest font-black">Aviso / Descrição Adicional</label>
+                       <textarea 
+                         value={newTicketMessage} 
+                         onChange={e => setNewTicketMessage(e.target.value)}
+                         className="w-full h-20 p-4 rounded-xl bg-blue-50/30 border border-blue-100/50 text-xs text-blue-900 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                       />
+                    </div>
+
+                    {tombo && (
+                      <div className="p-4 rounded-xl bg-gray-50 border border-gray-100 space-y-2">
+                        <label className="text-[10px] uppercase font-black text-gray-400 tracking-widest">Patrimônio Identificado ({tombo})</label>
+                        {isLoadingAsset ? (
+                          <p className="text-[11px] animate-pulse">Buscando no GLPI...</p>
+                        ) : assetInfo ? (
+                          <div>
+                            <p className="text-xs font-bold text-green-700">{assetInfo.name}</p>
+                            <p className="text-[10px] text-gray-400 uppercase">{assetInfo.itemtype}</p>
+                          </div>
+                        ) : (
+                          <p className="text-[11px] text-amber-600 italic">{assetError || "Nenhum ativo vinculado automaticamente."}</p>
+                        )}
+                      </div>
+                    )}
+
+                    <LookupSelect icon={Tag} label="Categoria" items={categories} value={selectedCategory} onChange={setSelectedCategory} displayKey="completename" />
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <LookupSelect icon={MapPin} label="Localização" items={locations} value={selectedLocation} onChange={setSelectedLocation} displayKey="completename" />
+                      <LookupSelect icon={Users} label="Grupo" items={groups} value={selectedGroup} onChange={setSelectedGroup} displayKey="completename" fallbackKey="name" />
+                    </div>
+
+                    {/* Status da Automação de Validação */}
+                    <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                        <span className="text-[9px] text-blue-700 font-black uppercase tracking-wider">Envio Automático Ativo</span>
+                      </div>
+                      <p className="text-[10px] text-blue-600 leading-tight">
+                        A validação será solicitada para <b>Felipe Fernandes</b> e <b>Alex Thalles</b> usando credenciais do sistema.
+                      </p>
+                    </div>
                   </div>
-                  <LookupSelect icon={Tag} label="Categoria" items={categories} value={selectedCategory} onChange={setSelectedCategory} displayKey="completename" />
-                  <LookupSelect icon={MapPin} label="Localização" items={locations} value={selectedLocation} onChange={setSelectedLocation} displayKey="completename" />
-                  <LookupSelect icon={Users} label="Grupo" items={groups} value={selectedGroup} onChange={setSelectedGroup} displayKey="completename" fallbackKey="name" />
-                  <div className="flex gap-3 pt-2">
+
+                  <div className="flex gap-3 pt-4">
                     <Button onClick={handleCreateTicket} disabled={isCreatingTicket} className="flex-1 h-14 bg-[#003B99] rounded-2xl text-[13px] font-bold uppercase tracking-widest">
                       {isCreatingTicket ? <Loader2 className="animate-spin" /> : <><ExternalLink className="w-4 h-4 mr-2" /> Criar e Abrir no GLPI</>}
                     </Button>
