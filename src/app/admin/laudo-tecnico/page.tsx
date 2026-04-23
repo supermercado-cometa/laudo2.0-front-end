@@ -492,9 +492,16 @@ export default function InfoFormularioPage() {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
-          parentTicketId: numeroChamado ? Number(numeroChamado) : null,
+          parentTicketId: numeroChamado,
           glpiPassword: glpiPasswordManual,
-          laudo: glpiInfo,
+          laudo: {
+            ...glpiInfo,
+            estadoEquipamento: (estadoEquipamento || "").toUpperCase() === "FUNCIONANDO" ? "FUNCIONANDO" : "NAO_FUNCIONANDO",
+            necessidade:
+              necessidade === "Ser substituído" ? "SUBSTITUIDO" :
+              necessidade === "Enviado p/ conserto" ? "ENVIAR_CONSERTO" :
+              necessidade === "Ser descartado" ? "DESCARTADO" : (necessidade || "").toUpperCase(),
+          },
           relacao: {
             titulo: data.titulo,
             categoriaId: data.categoriaId,
