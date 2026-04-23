@@ -22,8 +22,10 @@ export default function GlpiPromoteModal({
   setShowManualPass,
   passwordManual,
   setPasswordManual,
+  isPromoting,
 }: {
   open: boolean;
+  isPromoting?: boolean;
   apiBaseUrl: string;
   tomboDefault: string;
   onCancel: () => void;
@@ -216,7 +218,7 @@ export default function GlpiPromoteModal({
         <div className="flex justify-end gap-3 mt-8">
           <Button variant="outline" onClick={onCancel}>Cancelar</Button>
           <Button 
-            disabled={loadingAsset || !categoriaId || loadingManagers}
+            disabled={loadingAsset || !categoriaId || loadingManagers || isPromoting}
             onClick={() => onConfirm({
               titulo,
               categoriaId,
@@ -227,7 +229,7 @@ export default function GlpiPromoteModal({
               mensagemPai
             })}
           >
-            {loadingManagers ? "Carregando..." : "Promover Chamado"}
+            {isPromoting ? "Processando..." : loadingManagers ? "Carregando..." : "Promover Chamado"}
           </Button>
         </div>
       </div>

@@ -467,24 +467,29 @@ export default function InfoFormularioPage() {
     setIsCreatingTicket(true);
     setStatusMsg("Orquestrando promoção no GLPI...");
     
-    const token = localStorage.getItem("token");
-    const payload = savedPayload!;
-    const glpiInfo = {
-      equipamento: payload.equipamento as string,
-      modelo: payload.modelo as string,
-      tombo: payload.tombo as string,
-      loja: payload.loja as string,
-      setor: payload.setor as string,
-      testesRealizados: payload.testesRealizados as string,
-      diagnostico: payload.diagnostico as string,
-      estadoEquipamento: estadoEquipamento.toLowerCase() === "funcionando" ? "funcionando" : "nao_funcionando",
-      necessidade:
-        necessidade === "Ser substituído" ? "substituido" :
-        necessidade === "Enviado p/ conserto" ? "enviar_conserto" :
-        necessidade === "Ser descartado" ? "descartado" : necessidade.toLowerCase(),
-    };
-
     try {
+      const token = localStorage.getItem("token");
+      const payload = savedPayload;
+      
+      if (!payload) {
+        throw new Error("Dados do laudo não encontrados. Salve o laudo primeiro.");
+      }
+
+      const glpiInfo = {
+        equipamento: payload.equipamento as string,
+        modelo: payload.modelo as string,
+        tombo: payload.tombo as string,
+        loja: payload.loja as string,
+        setor: payload.setor as string,
+        testesRealizados: payload.testesRealizados as string,
+        diagnostico: payload.diagnostico as string,
+        estadoEquipamento: (estadoEquipamento || "").toLowerCase() === "funcionando" ? "funcionando" : "nao_funcionando",
+        necessidade:
+          necessidade === "Ser substituído" ? "substituido" :
+          necessidade === "Enviado p/ conserto" ? "enviar_conserto" :
+          necessidade === "Ser descartado" ? "descartado" : (necessidade || "").toLowerCase(),
+      };
+
       const res = await fetch(`${API_BASE_URL}/glpi/ticket/promote`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -513,16 +518,19 @@ export default function InfoFormularioPage() {
         return;
       }
 
-      const { subTicketId } = await res.json();
-      if (subTicketId) {
-        setGlpiTicketId(subTicketId);
-        window.open(`${GLPI_BASE_URL}${subTicketId}`, "_blank");
+      const resData = await res.json();
+      const sId = resData.subTicketId || resData.ticketId;
+      
+      if (sId) {
+        setGlpiTicketId(sId);
+        window.open(`${GLPI_BASE_URL}${sId}`, "_blank");
       }
+      
       setIsPromoteModalOpen(false);
       setShowSuccess(true);
-    } catch (e) {
-      console.error(e);
-      alert("Erro ao promover chamado.");
+    } catch (e: any) {
+      console.error("Erro na promoção:", e);
+      alert(e.message || "Erro ao promover chamado.");
     } finally {
       setIsCreatingTicket(false);
       setIsSending(false);
@@ -910,6 +918,7 @@ export default function InfoFormularioPage() {
         {/* Modal: Promoção de Sub-chamado */}
         <GlpiPromoteModal 
           open={isPromoteModalOpen}
+          isPromoting={isCreatingTicket}
           apiBaseUrl={API_BASE_URL}
           tomboDefault={tombo}
           onCancel={() => { setIsPromoteModalOpen(false); setIsSending(false); }}
