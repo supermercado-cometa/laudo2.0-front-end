@@ -14,12 +14,10 @@ import SignatureCanvas from "react-signature-canvas";
 import { motion, AnimatePresence } from "framer-motion";
 import { LojaType } from "@/types/domain";
 import { AdminPageLayout } from "@/components/admin-page-layout";
-import { API_BASE_URL } from "@/lib/api-config";
+import { API_BASE_URL, GLPI_BASE_URL } from "@/lib/api-config";
 import { gerarLaudoPDF } from "@/lib/pdf-template";
 import GlpiPromoteModal, { GlpiPromotePayload } from "@/components/glpi-promote-modal";
 import GlpiRelateModal, { GlpiRelacaoPayload } from "@/components/glpi-relate-modal";
-
-const GLPI_BASE_URL = process.env.NEXT_PUBLIC_GLPI_BASEPESQUISA_URL || "http://192.168.7.181/front/ticket.form.php?id=";
 
 interface GlpiItem { id: number; completename?: string; name?: string; }
 
