@@ -291,8 +291,8 @@ export default function InfoFormularioPage() {
   // ─── Executa o fluxo completo após confirmação ────────────────────────────
   const handleFinalizar = async () => {
     // Validação de campos vitais antes de prosseguir
-    if (!equipamento || !loja || !nomeTecnico || !tombo) {
-      alert("Por favor, preencha Equipamento, Loja, Técnico e Tombo antes de finalizar.");
+    if (!equipamento || !loja || !nomeTecnico) {
+      alert("Por favor, preencha Equipamento, Loja e Técnico antes de finalizar.");
       return;
     }
 
@@ -481,11 +481,12 @@ export default function InfoFormularioPage() {
         setor: payload.setor as string,
         testesRealizados: payload.testesRealizados as string,
         diagnostico: payload.diagnostico as string,
-        estadoEquipamento: (estadoEquipamento || "").toLowerCase() === "funcionando" ? "funcionando" : "nao_funcionando",
+        tecnico: payload.nomeTecnico as string,
+        estadoEquipamento: (estadoEquipamento || "").toUpperCase() === "FUNCIONANDO" ? "FUNCIONANDO" : "NAO_FUNCIONANDO",
         necessidade:
-          necessidade === "Ser substituído" ? "substituido" :
-          necessidade === "Enviado p/ conserto" ? "enviar_conserto" :
-          necessidade === "Ser descartado" ? "descartado" : (necessidade || "").toLowerCase(),
+          necessidade === "Ser substituído" ? "SUBSTITUIDO" :
+          necessidade === "Enviado p/ conserto" ? "ENVIAR_CONSERTO" :
+          necessidade === "Ser descartado" ? "DESCARTADO" : (necessidade || "").toUpperCase(),
       };
 
       const res = await fetch(`${API_BASE_URL}/glpi/ticket/promote`, {
@@ -494,14 +495,7 @@ export default function InfoFormularioPage() {
         body: JSON.stringify({
           parentTicketId: numeroChamado,
           glpiPassword: glpiPasswordManual,
-          laudo: {
-            ...glpiInfo,
-            estadoEquipamento: (estadoEquipamento || "").toUpperCase() === "FUNCIONANDO" ? "FUNCIONANDO" : "NAO_FUNCIONANDO",
-            necessidade:
-              necessidade === "Ser substituído" ? "SUBSTITUIDO" :
-              necessidade === "Enviado p/ conserto" ? "ENVIAR_CONSERTO" :
-              necessidade === "Ser descartado" ? "DESCARTADO" : (necessidade || "").toUpperCase(),
-          },
+          laudo: glpiInfo,
           relacao: {
             titulo: data.titulo,
             categoriaId: data.categoriaId,
