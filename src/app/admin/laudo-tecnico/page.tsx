@@ -489,21 +489,23 @@ export default function InfoFormularioPage() {
           necessidade === "Ser descartado" ? "DESCARTADO" : (necessidade || "").toUpperCase(),
       };
 
+      const body = {
+        parentTicketId: numeroChamado,
+        glpiPassword: glpiPasswordManual,
+        laudo: glpiInfo,
+        titulo: data.titulo,
+        categoriaId: data.categoriaId,
+        asset: data.asset,
+        managerIds: data.managerIds,
+        mensagemPai: data.mensagemPai
+      };
+
+      console.log("🚀 [DEBUG] Enviando para Promoção GLPI:", body);
+
       const res = await fetch(`${API_BASE_URL}/glpi/ticket/promote`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          parentTicketId: numeroChamado,
-          glpiPassword: glpiPasswordManual,
-          laudo: glpiInfo,
-          relacao: {
-            titulo: data.titulo,
-            categoriaId: data.categoriaId,
-          },
-          asset: data.asset,
-          managerIds: data.managerIds,
-          mensagemPai: data.mensagemPai
-        })
+        body: JSON.stringify(body)
       });
 
       if (!res.ok) {
