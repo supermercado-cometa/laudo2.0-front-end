@@ -490,17 +490,17 @@ export default function InfoFormularioPage() {
       };
 
       const body = {
-        parentTicketId: numeroChamado,
+        parentTicketId: Number(numeroChamado),
         glpiPassword: glpiPasswordManual,
         laudo: glpiInfo,
         titulo: data.titulo,
         categoriaId: data.categoriaId,
         asset: data.asset,
-        managerIds: data.managerIds,
-        mensagemPai: data.mensagemPai
+        managerId: data.managerIds[0] || null, // Legado: primeiro gerente
+        managerIds: data.managerIds,           // Novo: múltiplos gerentes
       };
 
-      console.log("🚀 [DEBUG] Enviando para Promoção GLPI:", body);
+      console.log("🚀 [DEBUG FINAL] Body Final:", JSON.stringify(body, null, 2));
 
       const res = await fetch(`${API_BASE_URL}/glpi/ticket/promote`, {
         method: "POST",
