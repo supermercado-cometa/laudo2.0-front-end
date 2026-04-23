@@ -107,7 +107,7 @@ export default function InfoFormularioPage() {
   const [lojas, setLojas] = useState<LojaType[]>([]);
   const [equipamentos, setEquipamentos] = useState<{ id: number; nome: string }[]>([]);
   const [setores, setSetores] = useState<{ id: number; nome: string }[]>([]);
-  const [modelos, setModelos] = useState<{ id: number; nome: string }[]>([]);
+  const [modelos, setModelos] = useState<{ id: number; nome: string; equipamentoId?: number }[]>([]);
 
   const [isSending, setIsSending] = useState(false);
   const [step, setStep] = useState<"idle" | "saving" | "glpi" | "done">("idle");
@@ -162,6 +162,7 @@ export default function InfoFormularioPage() {
       })
       .catch(() => { });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const load = async (ep: string, set: (d: any[]) => void) => {
       try {
         const r = await fetch(`${API_BASE_URL}/${ep}`, { headers: { Authorization: `Bearer ${token}` } });
@@ -717,6 +718,7 @@ export default function InfoFormularioPage() {
               disabled={isSending}
               onClick={async () => {
                 const payload = await buildPayload();
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 gerarLaudoPDF(payload as any, nomeTecnico);
               }}
               className="h-16 rounded-[20px] text-[12px] font-black tracking-widest uppercase border-2 border-gray-100 text-gray-400 hover:border-[#003B99]/20 transition-all flex items-center justify-center gap-3"
@@ -939,6 +941,7 @@ export default function InfoFormularioPage() {
                 <Button
                   onClick={() => {
                     if (savedPayload) {
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       gerarLaudoPDF(savedPayload as any, nomeTecnico);
                     }
                   }}

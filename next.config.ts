@@ -1,12 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   typescript: {
-    // Ignora erros de tipagem para contornar bugs de worker do Next 15
-    ignoreBuildErrors: true,
+    // Re-habilitado para garantir integridade do build em produção
+    ignoreBuildErrors: false,
   },
   eslint: {
-    // Ignora avisos de lint no build para acelerar o deploy
+    // Ignoramos lint no build para evitar bloqueio por 'any' ou avisos menores, mas mantemos o TS rigoroso
     ignoreDuringBuilds: true,
   },
   experimental: {

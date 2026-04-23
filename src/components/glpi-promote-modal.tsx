@@ -80,11 +80,11 @@ export default function GlpiPromoteModal({
         .then((resp) => resp.json())
         .then((data) => {
           if (Array.isArray(data)) {
-            // Filtra apenas Felipe Fernandes e Alex Thalles
-            const targetManagers = data.filter(m => 
-              m.realname.includes("Felipe Fernandes") || 
-              m.realname.includes("Alex Thalles")
-            );
+            // Filtra apenas Felipe Fernandes e Alex Thalles (robusto contra variações de acento/caixa)
+            const targetManagers = data.filter(m => {
+              const nameLower = (m.realname || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+              return nameLower.includes("felipe fernandes") || nameLower.includes("alex thalles");
+            });
             setSelectedManagerIds(targetManagers.map(m => m.id));
           }
         })

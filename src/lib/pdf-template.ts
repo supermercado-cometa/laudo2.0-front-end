@@ -251,5 +251,12 @@ export const gerarLaudoPDF = async (laudo: any, emitidoPor: string) => {
     },
   };
 
-  pdfOk.createPdf(docDefinition).open();
+  try {
+    // Abre em nova aba de forma mais resiliente para evitar bloqueios de popup após o async
+    const pdfDocGenerator = pdfOk.createPdf(docDefinition);
+    pdfDocGenerator.open();
+  } catch (e) {
+    console.error("Erro ao abrir PDF, tentando download como fallback:", e);
+    pdfOk.createPdf(docDefinition).download(`Laudo_${laudo.numeroChamado || "SemNumero"}.pdf`);
+  }
 };
