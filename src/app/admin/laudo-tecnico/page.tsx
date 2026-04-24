@@ -152,10 +152,17 @@ export default function InfoFormularioPage() {
 
     fetch(`${API_BASE_URL}/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())
-      .then(d => { 
+      .then(async d => { 
         if (d?.user?.signature) {
-          setSavedSignature(d.user.signature);
-          // Marca como não redisanhando para usar a salva
+          // Normaliza o fundo da assinatura salva (pode estar com fundo transparente = preto)
+          // Passa pelo compressImage para garantir fundo branco
+          try {
+            const normalized = await compressImage(d.user.signature, 800, 0.85);
+            setSavedSignature(normalized);
+          } catch {
+            // Fallback: usa a assinatura original se a normalização falhar
+            setSavedSignature(d.user.signature);
+          }
           setIsRedrawing(false);
         }
       })
