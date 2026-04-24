@@ -49,27 +49,28 @@ export default function GlpiPromoteModal({
   const [categoriaQuery, setCategoriaQuery] = useState("");
   const [isCategoriaOpen, setIsCategoriaOpen] = useState(false);
 
-  // ===== Inicialização / Busca de Ativo =====
-  useEffect(() => {
-    if (open && tomboDefault) {
-      setLoadingAsset(true);
-      setAssetError("");
-      const token = localStorage.getItem("token") || "";
-      fetch(`${apiBaseUrl}/glpi/lookup/asset/${tomboDefault}`, {
-        headers: { Authorization: `Bearer ${token}` },
+  // Estado editável do tombo (não busca automaticamente)
+  const [tomboInput, setTomboInput] = useState(tomboDefault || "");
+
+  const buscarAtivo = () => {
+    if (!tomboInput.trim()) return;
+    setLoadingAsset(true);
+    setAssetError("");
+    const token = localStorage.getItem("token") || "";
+    fetch(`${apiBaseUrl}/glpi/lookup/asset/${tomboInput.trim()}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(async (resp) => {
+        if (!resp.ok) {
+          const err = await resp.json();
+          throw new Error(err.error || "Patrimônio não encontrado");
+        }
+        return resp.json();
       })
-        .then(async (resp) => {
-          if (!resp.ok) {
-            const err = await resp.json();
-            throw new Error(err.error || "Patrimônio não encontrado");
-          }
-          return resp.json();
-        })
-        .then((data) => setAsset(data))
-        .catch((err) => setAssetError(err.message))
-        .finally(() => setLoadingAsset(false));
-    }
-  }, [open, tomboDefault, apiBaseUrl]);
+      .then((data) => setAsset(data))
+      .catch((err) => setAssetError(err.message))
+      .finally(() => setLoadingAsset(false));
+  };
 
   // ===== Buscar Gerentes e Auto-selecionar Felipe/Alex =====
   useEffect(() => {
@@ -145,20 +146,39 @@ export default function GlpiPromoteModal({
             />
           </div>
 
-          {/* Info do Ativo (Patrimônio) */}
-          <div className="p-3 bg-slate-50 rounded-md border border-slate-200">
-            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Patrimônio (Tombo: {tomboDefault})</label>
-            {loadingAsset ? (
-              <p className="text-sm animate-pulse">Buscando ativo no GLPI...</p>
-            ) : asset ? (
-              <div className="mt-1">
-                <p className="text-sm font-bold text-green-700">{asset.name}</p>
+          {/* Campo editável de Patrimônio (Tombo) */}
+          <div className="grid gap-1.5">
+            <label className="text-sm font-medium">Patrimônio (Tombo)</label>
+            <div className="flex gap-2">
+              <Input
+                value={tomboInput}
+                onChange={(e) => {
+                  setTomboInput(e.target.value);
+                  setAsset(null); // Limpa o ativo se o usuário editar o campo
+                  setAssetError("");
+                }}
+                placeholder="Digite o número do tombo..."
+              />
+              <button
+                type="button"
+                onClick={buscarAtivo}
+                disabled={loadingAsset || !tomboInput.trim()}
+                className="px-3 py-2 text-sm bg-slate-100 hover:bg-slate-200 border rounded-md whitespace-nowrap disabled:opacity-50"
+              >
+                {loadingAsset ? "Buscando..." : "🔍 Buscar"}
+              </button>
+            </div>
+            {asset && (
+              <div className="p-2 bg-green-50 rounded border border-green-200 text-sm">
+                <p className="font-bold text-green-700">{asset.name}</p>
                 <p className="text-xs text-slate-600">Tipo: {asset.itemtype}</p>
               </div>
-            ) : (
-              <p className="text-sm text-red-500">{assetError || "Ativo não vinculado"}</p>
+            )}
+            {assetError && (
+              <p className="text-xs text-red-500">{assetError} — o chamado será criado sem vínculo de ativo.</p>
             )}
           </div>
+
 
           {/* Seleção de Categoria */}
           <div className="grid gap-1.5 relative">
@@ -228,7 +248,7 @@ export default function GlpiPromoteModal({
         <div className="flex justify-end gap-3 mt-8">
           <Button variant="outline" onClick={onCancel}>Cancelar</Button>
           <Button 
-            disabled={loadingAsset || !categoriaId || loadingManagers || isPromoting || selectedManagerIds.length === 0}
+            disabled={!categoriaId || loadingManagers || isPromoting || selectedManagerIds.length === 0}
             onClick={() => onConfirm({
               titulo,
               categoriaId,
