@@ -272,7 +272,7 @@ export default function InfoFormularioPage() {
       nomeTecnico,
       equipamento,
       loja,
-      tombo,
+      tombo: tombo || "",
       modelo: modelo || "Sem Modelo",
       setor,
       testesRealizados,
@@ -606,7 +606,7 @@ export default function InfoFormularioPage() {
                 </select>
               </div>
               <div className="space-y-3">
-                <Label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Número de Tombo</Label>
+                <Label className="text-[#9CA3AF] text-[10px] uppercase tracking-wider">Número de Tombo (Opcional)</Label>
                 <Input value={tombo} onChange={e => setTombo(e.target.value)} placeholder="Patrimônio" className="h-12 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-[#1A4CAB]" />
               </div>
               <div className="space-y-3">
