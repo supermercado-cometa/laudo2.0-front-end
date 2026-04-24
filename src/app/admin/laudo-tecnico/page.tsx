@@ -113,6 +113,7 @@ export default function InfoFormularioPage() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [glpiTicketId, setGlpiTicketId] = useState<number | null>(null);
   const [savedPayload, setSavedPayload] = useState<Record<string, unknown> | null>(null);
+  const [currentLaudoId, setCurrentLaudoId] = useState<number | null>(null);
 
   // Modal de confirmação antes de executar
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -297,8 +298,17 @@ export default function InfoFormularioPage() {
   // ─── Executa o fluxo completo após confirmação ────────────────────────────
   const handleFinalizar = async () => {
     // Validação de campos vitais antes de prosseguir
-    if (!equipamento || !loja || !nomeTecnico) {
-      alert("Por favor, preencha Equipamento, Loja e Técnico antes de finalizar.");
+    // Validação de campos vitais antes de prosseguir
+    const missingFields = [];
+    if (!equipamento) missingFields.push("Equipamento");
+    if (!loja) missingFields.push("Loja");
+    if (!nomeTecnico) missingFields.push("Técnico");
+    if (!setor) missingFields.push("Setor");
+    if (!estadoEquipamento) missingFields.push("Estado Atual");
+    if (!necessidade) missingFields.push("Ação Recomendada");
+
+    if (missingFields.length > 0) {
+      alert(`Por favor, preencha os seguintes campos obrigatórios: ${missingFields.join(", ")}`);
       return;
     }
 
@@ -307,24 +317,36 @@ export default function InfoFormularioPage() {
 
     try {
       // ① Salvar no banco
-      setStep("saving"); setStatusMsg("Salvando laudo...");
-      const token = localStorage.getItem("token");
-      const payload = await buildPayload();
-      setSavedPayload(payload);
+      let laudoId = currentLaudoId;
 
-      const saveRes = await fetch(`${API_BASE_URL}/info-laudos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify(payload)
-      });
+      if (!laudoId) {
+        setStep("saving"); setStatusMsg("Salvando laudo...");
+        const token = localStorage.getItem("token");
+        const payload = await buildPayload();
+        setSavedPayload(payload);
 
-      if (!saveRes.ok) {
-        const err = await saveRes.json().catch(() => ({}));
-        alert(`Erro ao salvar: ${err.error || "Erro no servidor."}`);
-        return;
+        const saveRes = await fetch(`${API_BASE_URL}/info-laudos`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify(payload)
+        });
+
+        if (!saveRes.ok) {
+          const err = await saveRes.json().catch(() => ({}));
+          alert(`Erro ao salvar: ${err.error || "Erro no servidor."}`);
+          setIsSending(false);
+          setStep("idle");
+          return;
+        }
+        const savedLaudo = await saveRes.json();
+        laudoId = savedLaudo.id;
+        setCurrentLaudoId(laudoId);
+      } else {
+        console.log("♻️ Laudo já salvo nesta sessão (ID:", laudoId, "), pulando salvamento para evitar duplicatas.");
+        // Atualiza apenas o payload se necessário
+        const payload = await buildPayload();
+        setSavedPayload(payload);
       }
-      const savedLaudo = await saveRes.json();
-      const laudoId = savedLaudo.id;
 
       // ② PDF removido do fluxo automático (separado a pedido do técnico)
       // O PDF será gerado manualmente ou ao final de tudo.
@@ -438,7 +460,16 @@ export default function InfoFormularioPage() {
           setShowManualPass(true);
           alert("Autenticação automática falhou. Por favor, digite sua senha do GLPI.");
         } else {
-          alert(`Erro ao criar chamado: ${e.error || "Verifique as configurações GLPI."}`);
+          const errorMsg = e.error || "Verifique as configurações GLPI.";
+          const confirm = window.confirm(`O laudo foi criado com sucesso no banco de dados, mas houve um erro ao enviar para o GLPI: ${errorMsg}\n\nDeseja finalizar o atendimento mesmo assim?`);
+          
+          if (confirm) {
+            setIsRelateModalOpen(false);
+            setIsSending(false);
+            setStep("idle");
+            setShowSuccess(true);
+            return;
+          }
         }
         return;
       }
@@ -522,7 +553,16 @@ export default function InfoFormularioPage() {
           setShowManualPass(true);
           alert("Autenticação automática falhou. Por favor, digite sua senha do GLPI.");
         } else {
-          alert(`Erro na promoção: ${e.error || "Verifique o patrimônio e gerente."}`);
+          const errorMsg = e.error || "Verifique o patrimônio e gerente.";
+          const confirm = window.confirm(`O laudo foi criado com sucesso no banco de dados, mas houve um erro na promoção do GLPI: ${errorMsg}\n\nDeseja finalizar o atendimento mesmo assim?`);
+          
+          if (confirm) {
+            setIsPromoteModalOpen(false);
+            setIsSending(false);
+            setStep("idle");
+            setShowSuccess(true);
+            return;
+          }
         }
         return;
       }
@@ -553,6 +593,7 @@ export default function InfoFormularioPage() {
     setEstadoEquipamento(""); setNecessidade(""); setImagens([]);
     sigPadRef.current?.clear();
     setShowSuccess(false); setGlpiTicketId(null); setSavedPayload(null);
+    setCurrentLaudoId(null);
     setSelectedCategory(null); setSelectedLocation(null); setSelectedGroup(null);
     setStep("idle"); setStatusMsg("");
   };
@@ -888,6 +929,9 @@ export default function InfoFormularioPage() {
                   <div className="flex gap-3 pt-4">
                     <Button onClick={handleCreateTicket} disabled={isCreatingTicket} className="flex-1 h-14 bg-[#003B99] rounded-2xl text-[13px] font-bold uppercase tracking-widest">
                       {isCreatingTicket ? <Loader2 className="animate-spin" /> : <><ExternalLink className="w-4 h-4 mr-2" /> Criar e Abrir no GLPI</>}
+                    </Button>
+                    <Button variant="outline" onClick={() => { setIsRelateModalOpen(false); setIsSending(false); setStep("idle"); }} disabled={isCreatingTicket} className="h-14 rounded-2xl border-gray-200 text-gray-400 font-bold uppercase text-[10px] tracking-widest px-6 hover:bg-gray-50">
+                      Voltar ao Formulário
                     </Button>
                     <Button variant="ghost" onClick={() => carregarLookups()} disabled={isLoadingLookups} className="w-14 h-14 rounded-2xl text-gray-400" title="Recarregar">
                       <RefreshCw className="w-5 h-5" />

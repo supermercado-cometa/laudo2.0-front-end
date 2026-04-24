@@ -246,7 +246,7 @@ export default function GlpiPromoteModal({
         </div>
 
         <div className="flex justify-end gap-3 mt-8">
-          <Button variant="outline" onClick={onCancel}>Cancelar</Button>
+          <Button variant="outline" onClick={onCancel}>Voltar</Button>
           <Button 
             disabled={!categoriaId || loadingManagers || isPromoting || selectedManagerIds.length === 0}
             onClick={() => onConfirm({
