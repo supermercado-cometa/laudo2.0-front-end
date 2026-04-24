@@ -473,6 +473,7 @@ export default function InfoFormularioPage() {
         throw new Error("Dados do laudo não encontrados. Salve o laudo primeiro.");
       }
 
+      // Usa os valores já convertidos do payload salvo para evitar capturar estado React desatualizado
       const glpiInfo = {
         equipamento: payload.equipamento as string,
         modelo: payload.modelo as string,
@@ -482,11 +483,8 @@ export default function InfoFormularioPage() {
         testesRealizados: payload.testesRealizados as string,
         diagnostico: payload.diagnostico as string,
         tecnico: payload.nomeTecnico as string,
-        estadoEquipamento: (estadoEquipamento || "").toUpperCase() === "FUNCIONANDO" ? "FUNCIONANDO" : "NAO_FUNCIONANDO",
-        necessidade:
-          necessidade === "Ser substituído" ? "SUBSTITUIDO" :
-          necessidade === "Enviado p/ conserto" ? "ENVIAR_CONSERTO" :
-          necessidade === "Ser descartado" ? "DESCARTADO" : (necessidade || "").toUpperCase(),
+        estadoEquipamento: payload.estadoEquipamento as string,
+        necessidade: payload.necessidade as string,
       };
 
       const body = {
@@ -501,13 +499,13 @@ export default function InfoFormularioPage() {
         mensagemPai: data.mensagemPai
       };
 
-      console.log("🚀 [TENTATIVA DEFINITIVA] Payload:", body);
+      console.log("🚀 [PROMOTE] Payload enviado:", body);
 
       const res = await fetch(`${API_BASE_URL}/glpi/ticket/promote`, {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json", 
-          "Authorization": token || "" // Removido 'Bearer' para bater com o padrão do RelateModal
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`  // Padrão correto, igual ao handleCreateTicket
         },
         body: JSON.stringify(body)
       });
