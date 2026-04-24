@@ -35,6 +35,41 @@ interface Laudo {
   photos?: string;
 }
 
+const compressImage = (file: File | string, maxWidth = 1280, quality = 0.7): Promise<string> => 
+  new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = typeof file === "string" ? file : URL.createObjectURL(file);
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      let { width, height } = img;
+      if (width > height) {
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+      } else {
+        if (height > maxWidth) {
+          width = (width * maxWidth) / height;
+          height = maxWidth;
+        }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+        resolve(dataUrl);
+      } else {
+        reject(new Error("Não foi possível obter o contexto do canvas"));
+      }
+    };
+    img.onerror = (err) => reject(err);
+  });
+
 // ─── Subcomponentes ───────────────────────────────────────────────────────────
 function DetailItem({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
   return (
@@ -91,13 +126,26 @@ function DetailPanel({
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [form, setForm] = useState<Laudo>({ ...laudo });
+  const [normalizedSignature, setNormalizedSignature] = useState(laudo.signature);
 
   // Pega laudos que têm o mesmo número de chamado
   const related = laudo.numeroChamado 
     ? allLaudos.filter(l => l.numeroChamado === laudo.numeroChamado && l.id !== laudo.id)
     : [];
 
-  useEffect(() => { setForm({ ...laudo }); setIsEditing(false); }, [laudo]);
+  useEffect(() => { 
+    setForm({ ...laudo }); 
+    setIsEditing(false); 
+    
+    // Normaliza a assinatura ao abrir/mudar de laudo
+    if (laudo.signature) {
+      compressImage(laudo.signature, 800, 0.9)
+        .then(setNormalizedSignature)
+        .catch(() => setNormalizedSignature(laudo.signature));
+    } else {
+      setNormalizedSignature(undefined);
+    }
+  }, [laudo]);
 
   const field = (key: keyof Laudo, label: string, type: "input" | "textarea" | "select" = "input", opts?: string[]) => (
     <div className="space-y-2">
@@ -266,7 +314,7 @@ function DetailPanel({
                 <h4 className="text-[13px] uppercase text-[#1A1A2E] font-black tracking-widest">Assinatura</h4>
               </div>
               <div className="flex flex-col items-center bg-gray-50 p-10 rounded-3xl border border-dashed border-gray-200">
-                <img src={laudo.signature} alt="Assinatura" className="max-h-24 mix-blend-multiply" />
+                <img src={normalizedSignature} alt="Assinatura" className="max-h-24 mix-blend-multiply" />
                 <div className="mt-4 w-32 h-[1px] bg-gray-300" />
                 <p className="text-[10px] uppercase font-black text-gray-400 mt-2 tracking-widest">{laudo.tecnico}</p>
               </div>
@@ -304,7 +352,10 @@ function DetailPanel({
           {/* Ações do Rodapé */}
           <div className="flex gap-3 pt-4 pb-16">
             <Button
-              onClick={() => { const n = localStorage.getItem("fullName") || ""; gerarLaudoPDF(laudo, n); }}
+              onClick={() => { 
+                const n = localStorage.getItem("fullName") || ""; 
+                gerarLaudoPDF({ ...laudo, signature: normalizedSignature || laudo.signature }, n); 
+              }}
               className="flex-1 h-14 bg-[#003B99] rounded-2xl text-[13px] font-black uppercase tracking-widest gap-2"
             >
               <Printer className="w-4 h-4" /> Exportar PDF
