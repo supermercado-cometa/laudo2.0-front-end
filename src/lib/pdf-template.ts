@@ -151,7 +151,23 @@ export const gerarLaudoPDF = async (laudo: any, emitidoPor: string) => {
   ];
 
   if (laudo.signature) {
-    signatureInner.push({ image: laudo.signature, width: 180, alignment: "center", margin: [0, 0, 0, 8] });
+    // Força fundo branco via tabela (seguro contra transparência/black backgrounds)
+    signatureInner.push({
+      table: {
+        widths: ["*"],
+        body: [[{
+          image: laudo.signature,
+          width: 180,
+          alignment: "center",
+          margin: [0, 5, 0, 5]
+        }]]
+      },
+      layout: {
+        fillColor: "#FFFFFF",
+        defaultBorder: false
+      },
+      margin: [0, 0, 0, 8]
+    });
   } else {
     signatureInner.push({
       canvas: [{ type: "line", x1: 100, y1: 40, x2: 415, y2: 40, lineWidth: 1, lineColor: "#CBD5E1" }],

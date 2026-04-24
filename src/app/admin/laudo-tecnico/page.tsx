@@ -222,6 +222,8 @@ export default function InfoFormularioPage() {
         canvas.height = height;
         const ctx = canvas.getContext("2d");
         if (ctx) {
+          // Limpa e preenche com branco para garantir que não haja canal alfa
+          ctx.clearRect(0, 0, width, height);
           ctx.fillStyle = "#FFFFFF";
           ctx.fillRect(0, 0, width, height);
           ctx.drawImage(img, 0, 0, width, height);
