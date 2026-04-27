@@ -35,7 +35,7 @@ export default function GlpiPromoteModal({
   passwordManual: string;
   setPasswordManual: (v: string) => void;
 }) {
-  const defaultMsg = "Um sub-chamado foi criado e encaminhado para validação da Liderança correspondente ao laudo emitido:";
+  const defaultMsg = "";
   const [titulo, setTitulo] = useState(defaultMsg);
   const [mensagemPai, setMensagemPai] = useState(defaultMsg);
   const [asset, setAsset] = useState<{ id: number; name: string; itemtype: string } | null>(null);
