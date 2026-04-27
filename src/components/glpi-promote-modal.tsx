@@ -35,8 +35,9 @@ export default function GlpiPromoteModal({
   passwordManual: string;
   setPasswordManual: (v: string) => void;
 }) {
-  const [titulo, setTitulo] = useState(`Sub-chamado: Promoção de Laudo - ${tomboDefault}`);
-  const [mensagemPai, setMensagemPai] = useState("Um sub-chamado foi criado e encaminhado para validação da Liderança correspondente ao laudo emitido:");
+  const defaultMsg = "Um sub-chamado foi criado e encaminhado para validação da Liderança correspondente ao laudo emitido:";
+  const [titulo, setTitulo] = useState(`Sub-chamado: ${defaultMsg}`);
+  const [mensagemPai, setMensagemPai] = useState(defaultMsg);
   const [asset, setAsset] = useState<{ id: number; name: string; itemtype: string } | null>(null);
   const [loadingAsset, setLoadingAsset] = useState(false);
   const [assetError, setAssetError] = useState("");
@@ -140,7 +141,12 @@ export default function GlpiPromoteModal({
             <label className="text-sm font-medium text-blue-600 font-semibold">Aviso para o Chamado Pai (Página Principal)</label>
             <textarea 
               value={mensagemPai} 
-              onChange={(e) => setMensagemPai(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                setMensagemPai(val);
+                // Sincroniza o título automaticamente com o aviso
+                setTitulo(`Sub-chamado: ${val}`);
+              }}
               className="w-full min-h-[80px] p-2 text-sm border rounded-md focus:ring-2 focus:ring-primary outline-none resize-none"
               placeholder="Texto que aparecerá como acompanhamento no chamado original..."
             />
