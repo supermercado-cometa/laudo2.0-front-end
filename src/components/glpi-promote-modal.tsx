@@ -36,7 +36,7 @@ export default function GlpiPromoteModal({
   setPasswordManual: (v: string) => void;
 }) {
   const defaultMsg = "Um sub-chamado foi criado e encaminhado para validação da Liderança correspondente ao laudo emitido:";
-  const [titulo, setTitulo] = useState(`Sub-chamado: ${defaultMsg}`);
+  const [titulo, setTitulo] = useState(defaultMsg);
   const [mensagemPai, setMensagemPai] = useState(defaultMsg);
   const [asset, setAsset] = useState<{ id: number; name: string; itemtype: string } | null>(null);
   const [loadingAsset, setLoadingAsset] = useState(false);
@@ -144,8 +144,8 @@ export default function GlpiPromoteModal({
               onChange={(e) => {
                 const val = e.target.value;
                 setMensagemPai(val);
-                // Sincroniza o título automaticamente com o aviso
-                setTitulo(`Sub-chamado: ${val}`);
+                // Sincroniza o título automaticamente com o aviso, sem prefixo
+                setTitulo(val);
               }}
               className="w-full min-h-[80px] p-2 text-sm border rounded-md focus:ring-2 focus:ring-primary outline-none resize-none"
               placeholder="Texto que aparecerá como acompanhamento no chamado original..."
