@@ -469,7 +469,7 @@ export default function LaudosGeradosPage() {
           <h2 className="text-[#1A1A2E] text-[32px] tracking-tighter mb-8 uppercase">Laudos Gerados</h2>
 
           {/* Filtros */}
-          <div className="bg-white rounded-[32px] p-8 shadow-sm space-y-8 mb-10">
+          <div className="bg-white rounded-[32px] p-8 shadow-md space-y-8 mb-10 sticky top-4 z-20 border border-gray-100">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="space-y-2">
                 <Label className="text-xs uppercase text-gray-400">Técnico</Label>
