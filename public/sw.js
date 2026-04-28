@@ -7,6 +7,11 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  // Ignorar chamadas de API e autenticação para evitar bloqueios de SSL no Service Worker
+  if (event.request.url.includes('homoapilaudos') || event.request.url.includes('/auth/')) {
+    return;
+  }
+  
   // Necessário para habilitar o prompt de instalação
   event.respondWith(fetch(event.request));
 });
