@@ -2,12 +2,12 @@
 
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import { API_BASE_URL } from "@/lib/api-config";
 
 export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
