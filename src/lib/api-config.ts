@@ -1,21 +1,13 @@
 const getApiBaseUrl = () => {
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    // Se estiver explicitamente em homo ou local
-    if (host.includes("homo") || host.includes("localhost") || host.includes("127.0.0.1")) {
-      return "https://homoapilaudos.cometasupermercados.com.br";
-    }
-    // Se estiver no domínio de produção real
+    // APENAS se for o domínio de produção real, usa a API de produção
     if (host === "laudos.cometasupermercados.com.br" || host === "laudo.cometasupermercados.com.br") {
       return "https://apilaudos.cometasupermercados.com.br";
     }
   }
-
-  const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (envUrl && !envUrl.includes("undefined") && envUrl !== "") {
-    return envUrl;
-  }
-  return "https://apilaudos.cometasupermercados.com.br";
+  // Para todo o resto (homo, IP, localhost), usa Homologação por padrão
+  return "https://homoapilaudos.cometasupermercados.com.br";
 };
 
 const getGlpiBaseUrl = () => {

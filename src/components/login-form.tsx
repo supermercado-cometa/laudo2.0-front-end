@@ -11,6 +11,7 @@ export function LoginForm() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    alert(`DEBUG: Tentando conectar em ${API_BASE_URL}`);
     setErrorMsg(null);
     setLoading(true);
 
