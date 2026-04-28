@@ -464,9 +464,9 @@ export default function LaudosGeradosPage() {
       </div>
 
       {/* Lado Direito */}
-      <div className="flex-1 lg:w-[65%] flex flex-col p-4 lg:p-20 overflow-y-auto">
+      <div className="flex-1 lg:w-[65%] flex flex-col p-4 pt-0 lg:px-20 lg:pb-20 lg:pt-0 overflow-y-auto">
         <div className="max-w-[1000px] w-full mx-auto pb-20">
-          <h2 className="text-[#1A1A2E] text-[32px] tracking-tighter mb-8 uppercase">Laudos Gerados</h2>
+          <h2 className="text-[#1A1A2E] text-[32px] tracking-tighter mb-8 uppercase pt-10 lg:pt-20">Laudos Gerados</h2>
 
           {/* Filtros */}
           <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm rounded-[32px] p-8 shadow-xl space-y-8 mb-10 border border-gray-100 transition-all duration-300">
