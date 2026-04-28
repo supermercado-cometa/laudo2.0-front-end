@@ -58,9 +58,9 @@ export function LoginForm() {
       // Fluxo de navegação unificado para /admin
       console.log(`Login success, redirecting to /admin. Admin: ${data?.isAdmin === true}`);
       window.location.href = "/admin";
-    } catch (err) {
+    } catch (err: any) {
       console.error("Login error detail:", err);
-      setErrorMsg("Erro de rede ou servidor indisponível");
+      setErrorMsg(`Erro técnico: ${err.message || "Servidor indisponível"}`);
       setLoading(false);
     }
   }
