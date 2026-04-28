@@ -60,7 +60,7 @@ export function LoginForm() {
       window.location.href = "/admin";
     } catch (err: any) {
       console.error("Login error detail:", err);
-      setErrorMsg(`Erro técnico: ${err.message || "Servidor indisponível"}`);
+      setErrorMsg("Erro de rede ou servidor indisponível");
       setLoading(false);
     }
   }
