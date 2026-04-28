@@ -20,11 +20,15 @@ export function LoginForm() {
     const password = String(formData.get("password") || "");
 
     try {
-      const body = new URLSearchParams({ username, password });
       const resp = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body,
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ username, password }),
+        mode: "cors",
+        credentials: "include"
       });
       console.log(resp);
 
