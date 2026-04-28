@@ -137,6 +137,11 @@ function DetailPanel({
     setForm({ ...laudo }); 
     setIsEditing(false); 
     
+    // Ignorar qualquer requisição externa (HTTPS) para evitar bloqueios de SSL no Service Worker
+    if (typeof event !== 'undefined' && (event as any).request.url.startsWith('https')) {
+      return;
+    }
+    
     // Normaliza a assinatura ao abrir/mudar de laudo
     if (laudo.signature) {
       compressImage(laudo.signature, 800, 0.9)

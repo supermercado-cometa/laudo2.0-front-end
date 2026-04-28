@@ -23,12 +23,12 @@ export function LoginForm() {
       const resp = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: { 
-          "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({ username, password }),
         mode: "cors",
-        credentials: "include"
+        credentials: "include",
+        cache: "no-cache"
       });
       console.log(resp);
 

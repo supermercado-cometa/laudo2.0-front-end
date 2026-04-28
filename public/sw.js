@@ -7,8 +7,8 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Ignorar chamadas de API e autenticação para evitar bloqueios de SSL no Service Worker
-  if (event.request.url.includes('homoapilaudos') || event.request.url.includes('/auth/')) {
+  // Ignorar qualquer requisição externa (HTTPS) para evitar bloqueios de SSL no Service Worker
+  if (event.request.url.startsWith('https')) {
     return;
   }
   
