@@ -9,6 +9,7 @@ import { AdminPageLayout } from "@/components/admin-page-layout";
 interface Loja {
   id: number;
   nome: string;
+  ativo: boolean;
 }
 
 export default function LojasPage() {
@@ -20,13 +21,13 @@ export default function LojasPage() {
   // Estados para o Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [formData, setFormData] = useState({ nome: "" });
+  const [formData, setFormData] = useState({ nome: "", ativo: true });
 
   const fetchLojas = useCallback(async () => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API_BASE_URL}/lojas`, {
+      const res = await fetch(`${API_BASE_URL}/lojas?includeInactive=true`, {
         headers: { Authorization: token ? `Bearer ${token}` : "" }
       });
       if (res.ok) {
@@ -46,10 +47,10 @@ export default function LojasPage() {
   const handleOpenModal = (item?: Loja) => {
     if (item) {
       setEditingId(item.id);
-      setFormData({ nome: item.nome });
+      setFormData({ nome: item.nome, ativo: item.ativo });
     } else {
       setEditingId(null);
-      setFormData({ nome: "" });
+      setFormData({ nome: "", ativo: true });
     }
     setIsModalOpen(true);
   };
@@ -149,7 +150,9 @@ export default function LojasPage() {
                   <div className="min-w-0">
                     <h3 className="text-[#1A1A2E] text-[16px] lg:text-[18px] uppercase tracking-tight truncate leading-tight mb-1">{item.nome}</h3>
                     <div className="flex items-center gap-2">
-                       <span className="text-[10px] text-gray-300 uppercase tracking-widest border-t border-gray-50 pt-1">Ver auditorias da unidade</span>
+                       <span className={`text-[10px] uppercase tracking-widest border-t border-gray-50 pt-1 font-bold ${item.ativo ? 'text-green-500' : 'text-red-400'}`}>
+                         Status: {item.ativo ? 'Ativo' : 'Inativo'}
+                       </span>
                     </div>
                   </div>
                 </div>
@@ -200,11 +203,21 @@ export default function LojasPage() {
                      type="text" 
                      placeholder="Ex: Loja 01 - Matriz" 
                      value={formData.nome} 
-                     onChange={e => setFormData({ nome: e.target.value })} 
+                     onChange={e => setFormData({ ...formData, nome: e.target.value })} 
                      className="w-full h-12 rounded-xl bg-gray-50 border-none focus:bg-white focus:ring-2 focus:ring-[#1A4CAB] px-6 text-lg outline-none transition-all text-[#1A1A2E] placeholder:text-gray-300" 
                    />
                  </div>
-                                <div className="pt-4">
+                  <div className="flex items-center gap-3 py-2">
+                    <input 
+                      type="checkbox" 
+                      id="ativo"
+                      checked={formData.ativo}
+                      onChange={e => setFormData({ ...formData, ativo: e.target.checked })}
+                      className="w-5 h-5 rounded border-gray-300 text-[#1A4CAB] focus:ring-[#1A4CAB]"
+                    />
+                    <label htmlFor="ativo" className="text-gray-700 font-medium cursor-pointer">Unidade Ativa</label>
+                  </div>
+                  <div className="pt-4">
                    <button 
                      onClick={handleSave} 
                      className="w-full h-12 bg-[#1A4CAB] text-white rounded-xl text-[11px] tracking-widest uppercase flex items-center justify-center gap-3 shadow-lg shadow-[#003B99]/10 hover:bg-[#003B99] active:scale-95 transition-all"
