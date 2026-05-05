@@ -94,7 +94,7 @@ export default function AdminHomePage() {
       icon: ShieldCheck,
       colorClass: "text-[#003B99]",
       bgColorClass: "bg-[#003B991F]",
-      path: "/admin/auditoria/tombo",
+      path: "/admin/auditoria",
       adminOnly: true
     },
     {
