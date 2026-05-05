@@ -130,15 +130,9 @@ export default function GlpiPromoteModal({
         <h3 className="text-xl font-bold mb-4 text-primary">Promover para Sub-chamado</h3>
         
         <div className="space-y-4">
-          {/* Título do Chamado Filho */}
+          {/* Aviso Unificado para Pai e Sub-chamado */}
           <div className="grid gap-1.5">
-            <label className="text-sm font-medium">Título do Sub-chamado (Novo Ticket)</label>
-            <Input value={titulo} onChange={(e) => setTitulo(e.target.value)} />
-          </div>
-
-          {/* Mensagem no Chamado Pai */}
-          <div className="grid gap-1.5">
-            <label className="text-sm font-medium text-blue-600 font-semibold">Aviso para o Chamado Pai (Página Principal)</label>
+            <label className="text-sm font-medium text-blue-600 font-semibold">Aviso para o chamado pai e sub-chamado</label>
             <textarea 
               value={mensagemPai} 
               onChange={(e) => {
@@ -148,7 +142,7 @@ export default function GlpiPromoteModal({
                 setTitulo(val);
               }}
               className="w-full min-h-[80px] p-2 text-sm border rounded-md focus:ring-2 focus:ring-primary outline-none resize-none"
-              placeholder="Texto que aparecerá como acompanhamento no chamado original..."
+              placeholder="Texto que aparecerá como título do sub-chamado e acompanhamento no chamado original..."
             />
           </div>
 
