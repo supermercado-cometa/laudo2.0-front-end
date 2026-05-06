@@ -20,6 +20,7 @@ import { API_BASE_URL } from "@/lib/api-config";
 export default function AdminHomePage() {
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [showLaudosModal, setShowLaudosModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -66,13 +67,7 @@ export default function AdminHomePage() {
       path: "/admin/setores",
       adminOnly: true
     },
-    {
-      title: "Laudos Gerados",
-      icon: FileText,
-      colorClass: "text-[#9C27B0]",
-      bgColorClass: "bg-[#9C27B01F]",
-      path: isAdmin ? "/admin/laudos" : "/admin/laudos-cometa?view=meus",
-    },
+
     {
       title: "Monitoramento GLPI",
       icon: Activity,
@@ -102,7 +97,7 @@ export default function AdminHomePage() {
       icon: ClipboardCheck,
       colorClass: "text-[#003B99]",
       bgColorClass: "bg-[#003B991F]",
-      path: "/admin/laudo-tecnico",
+      path: "#laudos-modal",
     },
   ];
 
@@ -132,7 +127,13 @@ export default function AdminHomePage() {
             icon={module.icon}
             colorClass={module.colorClass}
             bgColorClass={module.bgColorClass}
-            onClick={() => router.push(module.path)}
+            onClick={() => {
+              if (module.path === "#laudos-modal") {
+                setShowLaudosModal(true);
+              } else {
+                router.push(module.path);
+              }
+            }}
           />
         ))}
       </div>
@@ -141,6 +142,40 @@ export default function AdminHomePage() {
         <span>Cometa Supermercados 2026</span>
         <span>Gestão de Auditoria Técnica</span>
       </div>
+
+      {/* Modal de Seleção de Laudo */}
+      {showLaudosModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
+            <h3 className="text-xl font-bold mb-2 text-[#003B99] text-center">Laudo Técnico</h3>
+            <p className="text-sm text-gray-600 mb-6 text-center">
+              O que você deseja fazer?
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => router.push(isAdmin ? "/admin/laudos" : "/admin/laudos-cometa?view=meus")}
+                className="w-full py-3 px-4 bg-[#9C27B01F] text-[#9C27B0] font-medium rounded-md hover:bg-[#9C27B02F] transition-colors flex items-center justify-center gap-2"
+              >
+                <FileText className="w-5 h-5" />
+                Consultar Laudos Existentes
+              </button>
+              <button
+                onClick={() => router.push("/admin/laudo-tecnico")}
+                className="w-full py-3 px-4 bg-[#003B991F] text-[#003B99] font-medium rounded-md hover:bg-[#003B992F] transition-colors flex items-center justify-center gap-2"
+              >
+                <ClipboardCheck className="w-5 h-5" />
+                Criar Novo Laudo Técnico
+              </button>
+              <button
+                onClick={() => setShowLaudosModal(false)}
+                className="w-full mt-2 py-2 px-4 text-gray-500 font-medium rounded-md hover:bg-gray-100 transition-colors"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
