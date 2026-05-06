@@ -188,8 +188,8 @@ export default function ModelosPage() {
                   <div className="min-w-0">
                     <h3 className="text-[#1A1A2E] text-[16px] lg:text-[18px] uppercase tracking-tight truncate leading-tight mb-1">{item.nome}</h3>
                     <div className="flex items-center gap-2">
-                       <span className={`text-[10px] uppercase tracking-widest border-t border-gray-50 pt-1 font-bold ${item.ativo ? 'text-green-500' : 'text-red-400'}`}>
-                         Status: {item.ativo ? 'Ativo' : 'Inativo'}
+                       <span className={`text-[10px] uppercase tracking-widest border-t border-gray-50 pt-1 font-bold ${item.ativo !== false ? 'text-green-500' : 'text-red-400'}`}>
+                         Status: {item.ativo !== false ? 'Ativo' : 'Inativo'}
                        </span>
                        <span className="text-[10px] text-gray-300 uppercase tracking-widest border-t border-gray-50 pt-1"> · Equipamento: {equipamentos.find(eq => eq.id === item.equipamentoId)?.nome || "N/A"}</span>
                     </div>
