@@ -98,14 +98,6 @@ export default function AdminHomePage() {
       adminOnly: true
     },
     {
-      title: "Dashboard",
-      icon: Activity,
-      colorClass: "text-[#003B99]",
-      bgColorClass: "bg-[#003B991F]",
-      path: "/admin/dashboard",
-      adminOnly: true
-    },
-    {
       title: "Laudo Técnico",
       icon: ClipboardCheck,
       colorClass: "text-[#003B99]",

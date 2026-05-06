@@ -253,7 +253,7 @@ export default function AuditoriaDashboardPage() {
         {!isSearching && results.length === 0 && (
           <div className="space-y-8 animate-in fade-in duration-700">
             {/* Row 1: Metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <MetricCard 
                 title="Total de Laudos" 
                 value={stats?.totalLaudos ?? 0} 
@@ -278,11 +278,27 @@ export default function AuditoriaDashboardPage() {
                 isLoading={isLoadingStats}
               />
               <MetricCard 
+                title="Criticidade Média" 
+                value={`${((stats?.statusDistrib.find(s => s.estadoEquipamento === 'NAO_FUNCIONANDO')?._count.id || 0) / (stats?.totalLaudos || 1) * 100).toFixed(1)}%`} 
+                subValue="Equipamentos danificados"
+                icon={Activity} 
+                color="red"
+                isLoading={isLoadingStats}
+              />
+              <MetricCard 
+                title="Lojas Atendidas" 
+                value={stats?.porLoja.length ?? 0} 
+                subValue="Unidades com registros"
+                icon={Store} 
+                color="green"
+                isLoading={isLoadingStats}
+              />
+              <MetricCard 
                 title="Top Técnico" 
                 value={stats?.porTecnico?.[0]?.tecnico ?? "—"} 
                 subValue="Maior volume emitido"
                 icon={UserCheck} 
-                color="green"
+                color="blue"
                 isLoading={isLoadingStats}
               />
             </div>
@@ -330,19 +346,37 @@ export default function AuditoriaDashboardPage() {
               </div>
             </div>
 
-            {/* Row 3: Distribuição por Loja */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-3 mb-8">
-                <Store className="w-5 h-5 text-[#FECC00]" />
-                <h3 className="text-sm font-black uppercase tracking-widest text-[#1A1A2E]">Volume por Unidade (Loja)</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Distribuição por Loja */}
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center gap-3 mb-8">
+                  <Store className="w-5 h-5 text-[#FECC00]" />
+                  <h3 className="text-sm font-black uppercase tracking-widest text-[#1A1A2E]">Volume por Unidade (Loja)</h3>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {stats?.porLoja.map((item, i) => (
+                    <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+                      <span className="text-[10px] font-bold uppercase text-[#1A1A2E] truncate pr-2">{item.loja}</span>
+                      <span className="px-3 py-1 bg-white rounded-full text-[10px] font-black text-[#1A4CAB] shrink-0">{item._count.id} laudos</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {stats?.porLoja.map((item, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
-                    <span className="text-xs font-bold uppercase text-[#1A1A2E]">{item.loja}</span>
-                    <span className="px-3 py-1 bg-white rounded-full text-[10px] font-black text-[#1A4CAB]">{item._count.id} laudos</span>
-                  </div>
-                ))}
+
+              {/* Top Técnicos */}
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                <div className="flex items-center gap-3 mb-8">
+                  <UserCheck className="w-5 h-5 text-green-500" />
+                  <h3 className="text-sm font-black uppercase tracking-widest text-[#1A1A2E]">Top Técnicos (Eficiência)</h3>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {stats?.porTecnico.map((item, i) => (
+                    <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+                      <span className="text-[10px] font-bold uppercase text-[#1A1A2E] truncate pr-2">{item.tecnico}</span>
+                      <span className="px-3 py-1 bg-white rounded-full text-[10px] font-black text-green-600 shrink-0">{item._count.id} emitidos</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
