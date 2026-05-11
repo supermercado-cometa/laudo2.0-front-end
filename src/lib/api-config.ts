@@ -15,7 +15,7 @@ const getGlpiBaseUrl = () => {
     const host = window.location.hostname;
     if (host.includes("homo") || host.includes("localhost") || host.includes("127.0.0.1")) {
       // URL para abertura de chamados no GLPI de Homologação
-      return "http://192.168.7.181/front/ticket.form.php?id="; 
+      return "http://suporte.cometasupermercados.com.br/front/ticket.form.php?id="; 
     }
   }
   
@@ -24,7 +24,7 @@ const getGlpiBaseUrl = () => {
     return envGlpi;
   }
   // Fallback Produção
-  return "http://192.168.7.181/front/ticket.form.php?id=";
+  return "http://suporte.cometasupermercados.com.br/front/ticket.form.php?id=";
 };
 
 export const API_BASE_URL = getApiBaseUrl();
