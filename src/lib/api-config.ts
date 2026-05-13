@@ -1,12 +1,24 @@
 const getApiBaseUrl = () => {
+  // 1. Prioridade Total: Variável de Ambiente configurada no .env
+  const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (envUrl && envUrl.trim() !== "" && !envUrl.includes("undefined")) {
+    return envUrl;
+  }
+
+  // 2. Fallback: Lógica de Detecção por Hostname (Caso a env falhe)
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    // APENAS se for o domínio de produção real, usa a API de produção
-    if (host === "laudos.cometasupermercados.com.br" || host === "laudo.cometasupermercados.com.br") {
+    // Aceita variações de produção
+    if (
+      host === "laudos.cometasupermercados.com.br" || 
+      host === "laudo.cometasupermercados.com.br" ||
+      host === "apilaudos.cometasupermercados.com.br"
+    ) {
       return "https://apilaudos.cometasupermercados.com.br";
     }
   }
-  // Para todo o resto (homo, IP, localhost), usa Homologação por padrão
+
+  // 3. Última Instância: Homologação
   return "https://homoapilaudos.cometasupermercados.com.br";
 };
 
