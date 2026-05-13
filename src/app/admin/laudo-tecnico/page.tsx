@@ -145,6 +145,12 @@ export default function InfoFormularioPage() {
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const [isZoomed, setIsZoomed] = useState(false);
 
+  // Ref para evitar closure stale no finally dos fluxos assíncronos
+  const isRelateModalOpenRef = useRef(isRelateModalOpen);
+  const isPromoteModalOpenRef = useRef(isPromoteModalOpen);
+  useEffect(() => { isRelateModalOpenRef.current = isRelateModalOpen; }, [isRelateModalOpen]);
+  useEffect(() => { isPromoteModalOpenRef.current = isPromoteModalOpen; }, [isPromoteModalOpen]);
+
   useEffect(() => {
     console.log("🚀 [SSO_PROMO_V2] Frontend carregado!");
     const token = localStorage.getItem("token");
@@ -383,7 +389,7 @@ export default function InfoFormularioPage() {
       console.error(err);
       alert("Erro inesperado. Tente novamente.");
     } finally {
-      if (!isRelateModalOpen) {
+      if (!isRelateModalOpenRef.current && !isPromoteModalOpenRef.current) {
         setIsSending(false);
         setStep("idle");
         setStatusMsg("");
@@ -527,8 +533,13 @@ export default function InfoFormularioPage() {
         testesRealizados: payload.testesRealizados as string,
         diagnostico: payload.diagnostico as string,
         tecnico: payload.nomeTecnico as string,
-        estadoEquipamento: payload.estadoEquipamento as string,
-        necessidade: payload.necessidade as string,
+        // Garante lowercase para compatibilidade com buildFollowupHtml()
+        estadoEquipamento: String(payload.estadoEquipamento || "").toLowerCase() === "funcionando"
+          ? "funcionando" : "nao_funcionando",
+        necessidade: String(payload.necessidade || "").toLowerCase()
+          .replace("substituido", "substituido")
+          .replace("enviar_conserto", "enviar_conserto")
+          .replace("descartado", "descartado"),
       };
 
       const body = {
