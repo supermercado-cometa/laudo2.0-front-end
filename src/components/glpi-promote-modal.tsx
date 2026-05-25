@@ -6,7 +6,6 @@ export type GlpiPromotePayload = {
   titulo: string;
   categoriaId: number | null;
   localizacaoId: number | null;
-  requerenteId: number | null;
   grupoId: number | null;
   asset: { id: number; itemtype: string } | null;
   managerIds: number[];
@@ -59,12 +58,6 @@ export default function GlpiPromoteModal({
   const [localizacaoId, setLocalizacaoId] = useState<number | null>(null);
   const [localizacaoQuery, setLocalizacaoQuery] = useState("");
   const [isLocalizacaoOpen, setIsLocalizacaoOpen] = useState(false);
-
-  // Requerentes
-  const [requerentesLista, setRequerentesLista] = useState<Array<{ id: number; name: string; realname: string; firstname: string }>>([]);
-  const [requerenteId, setRequerenteId] = useState<number | null>(null);
-  const [requerenteQuery, setRequerenteQuery] = useState("");
-  const [isRequerenteOpen, setIsRequerenteOpen] = useState(false);
 
   const buscarAtivo = () => {
     if (!tomboInput.trim()) return;
@@ -143,19 +136,6 @@ export default function GlpiPromoteModal({
     }
   }, [open, apiBaseUrl]);
 
-  // ===== Buscar Requerentes =====
-  useEffect(() => {
-    if (open) {
-      const token = localStorage.getItem("token") || "";
-      fetch(`${apiBaseUrl}/glpi/lookup/users-db`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((resp) => resp.json())
-        .then((data) => setRequerentesLista(Array.isArray(data) ? data : []))
-        .catch((err) => console.error("Erro ao carregar requerentes:", err));
-    }
-  }, [open, apiBaseUrl]);
-
   const filteredCategorias = categoriasLista.filter((c) =>
     c.completename.toLowerCase().includes(categoriaQuery.toLowerCase())
   );
@@ -163,13 +143,6 @@ export default function GlpiPromoteModal({
   const filteredLocalizacoes = localizacoesLista.filter((l) =>
     l.completename.toLowerCase().includes(localizacaoQuery.toLowerCase())
   );
-
-  const filteredRequerentes = requerentesLista.filter((u) => {
-    const fullName = `${u.firstname || ""} ${u.realname || ""}`.trim().toLowerCase();
-    const login = (u.name || "").toLowerCase();
-    const query = requerenteQuery.toLowerCase();
-    return fullName.includes(query) || login.includes(query);
-  });
 
   // ===== Render =====
   if (!open) return null;
@@ -294,43 +267,6 @@ export default function GlpiPromoteModal({
             )}
           </div>
 
-          {/* Seleção de Requerente */}
-          <div className="grid gap-1.5 relative">
-            <label className="text-sm font-medium">Requerente</label>
-            <Input 
-              value={requerenteQuery} 
-              placeholder="Digite para filtrar requerente..." 
-              onFocus={() => setIsRequerenteOpen(true)}
-              onChange={(e) => setRequerenteQuery(e.target.value)}
-              onBlur={() => setTimeout(() => setIsRequerenteOpen(false), 200)}
-            />
-            {isRequerenteOpen && (
-              <div className="absolute top-full left-0 w-full z-10 bg-white border rounded shadow-md mt-1 max-h-40 overflow-y-auto">
-                {filteredRequerentes.length === 0 ? (
-                  <div className="p-2 text-sm text-slate-500">Nenhum requerente encontrado</div>
-                ) : (
-                  filteredRequerentes.map(u => {
-                    const dispName = `${u.firstname || ""} ${u.realname || ""}`.trim() || u.name;
-                    return (
-                      <button 
-                        key={u.id} 
-                        type="button"
-                        className="w-full text-left p-2 hover:bg-slate-100 text-sm"
-                        onClick={() => {
-                          setRequerenteId(u.id);
-                          setRequerenteQuery(dispName);
-                          setIsRequerenteOpen(false);
-                        }}
-                      >
-                        {dispName} ({u.name})
-                      </button>
-                    );
-                  })
-                )}
-              </div>
-            )}
-          </div>
-
           {/* Status da Automação de Validação */}
           <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg space-y-3">
             <div className="flex items-center gap-2">
@@ -370,12 +306,11 @@ export default function GlpiPromoteModal({
         <div className="flex justify-end gap-3 mt-8">
           <Button variant="outline" onClick={onCancel}>Voltar</Button>
           <Button 
-            disabled={!categoriaId || !localizacaoId || !requerenteId || loadingManagers || isPromoting || selectedManagerIds.length === 0}
+            disabled={!categoriaId || !localizacaoId || loadingManagers || isPromoting || selectedManagerIds.length === 0}
             onClick={() => onConfirm({
               titulo,
               categoriaId,
               localizacaoId,
-              requerenteId,
               grupoId: null,
               asset: asset ? { id: asset.id, itemtype: asset.itemtype } : null,
               managerIds: selectedManagerIds,
