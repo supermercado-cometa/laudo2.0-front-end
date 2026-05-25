@@ -551,7 +551,9 @@ export default function InfoFormularioPage() {
         asset: data.asset,
         managerId: data.managerIds[0] || null,
         managerIds: data.managerIds,
-        mensagemPai: data.mensagemPai
+        mensagemPai: data.mensagemPai,
+        localizacaoId: data.localizacaoId,
+        requerenteId: data.requerenteId
       };
 
       console.log("🚀 [PROMOTE] Payload enviado:", body);

@@ -6,6 +6,7 @@ export type GlpiPromotePayload = {
   titulo: string;
   categoriaId: number | null;
   localizacaoId: number | null;
+  requerenteId: number | null;
   grupoId: number | null;
   asset: { id: number; itemtype: string } | null;
   managerIds: number[];
@@ -52,6 +53,18 @@ export default function GlpiPromoteModal({
 
   // Estado editável do tombo (não busca automaticamente)
   const [tomboInput, setTomboInput] = useState(tomboDefault || "");
+
+  // Localizações
+  const [localizacoesLista, setLocalizacoesLista] = useState<Array<{ id: number; completename: string }>>([]);
+  const [localizacaoId, setLocalizacaoId] = useState<number | null>(null);
+  const [localizacaoQuery, setLocalizacaoQuery] = useState("");
+  const [isLocalizacaoOpen, setIsLocalizacaoOpen] = useState(false);
+
+  // Requerentes
+  const [requerentesLista, setRequerentesLista] = useState<Array<{ id: number; name: string; realname: string; firstname: string }>>([]);
+  const [requerenteId, setRequerenteId] = useState<number | null>(null);
+  const [requerenteQuery, setRequerenteQuery] = useState("");
+  const [isRequerenteOpen, setIsRequerenteOpen] = useState(false);
 
   const buscarAtivo = () => {
     if (!tomboInput.trim()) return;
@@ -117,9 +130,46 @@ export default function GlpiPromoteModal({
     }
   }, [open, apiBaseUrl]);
 
+  // ===== Buscar Localizações =====
+  useEffect(() => {
+    if (open) {
+      const token = localStorage.getItem("token") || "";
+      fetch(`${apiBaseUrl}/glpi/lookup/locations-db`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((resp) => resp.json())
+        .then((data) => setLocalizacoesLista(Array.isArray(data) ? data : []))
+        .catch((err) => console.error("Erro ao carregar localizações:", err));
+    }
+  }, [open, apiBaseUrl]);
+
+  // ===== Buscar Requerentes =====
+  useEffect(() => {
+    if (open) {
+      const token = localStorage.getItem("token") || "";
+      fetch(`${apiBaseUrl}/glpi/lookup/users-db`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((resp) => resp.json())
+        .then((data) => setRequerentesLista(Array.isArray(data) ? data : []))
+        .catch((err) => console.error("Erro ao carregar requerentes:", err));
+    }
+  }, [open, apiBaseUrl]);
+
   const filteredCategorias = categoriasLista.filter((c) =>
     c.completename.toLowerCase().includes(categoriaQuery.toLowerCase())
   );
+
+  const filteredLocalizacoes = localizacoesLista.filter((l) =>
+    l.completename.toLowerCase().includes(localizacaoQuery.toLowerCase())
+  );
+
+  const filteredRequerentes = requerentesLista.filter((u) => {
+    const fullName = `${u.firstname || ""} ${u.realname || ""}`.trim().toLowerCase();
+    const login = (u.name || "").toLowerCase();
+    const query = requerenteQuery.toLowerCase();
+    return fullName.includes(query) || login.includes(query);
+  });
 
   // ===== Render =====
   if (!open) return null;
@@ -195,6 +245,7 @@ export default function GlpiPromoteModal({
                 {filteredCategorias.map(c => (
                   <button 
                     key={c.id} 
+                    type="button"
                     className="w-full text-left p-2 hover:bg-slate-100 text-sm"
                     onClick={() => {
                       setCategoriaId(c.id);
@@ -205,6 +256,77 @@ export default function GlpiPromoteModal({
                     {c.completename}
                   </button>
                 ))}
+              </div>
+            )}
+          </div>
+
+          {/* Seleção de Localização */}
+          <div className="grid gap-1.5 relative">
+            <label className="text-sm font-medium">Localização</label>
+            <Input 
+              value={localizacaoQuery} 
+              placeholder="Digite para filtrar localização..." 
+              onFocus={() => setIsLocalizacaoOpen(true)}
+              onChange={(e) => setLocalizacaoQuery(e.target.value)}
+              onBlur={() => setTimeout(() => setIsLocalizacaoOpen(false), 200)}
+            />
+            {isLocalizacaoOpen && (
+              <div className="absolute top-full left-0 w-full z-10 bg-white border rounded shadow-md mt-1 max-h-40 overflow-y-auto">
+                {filteredLocalizacoes.length === 0 ? (
+                  <div className="p-2 text-sm text-slate-500">Nenhuma localização encontrada</div>
+                ) : (
+                  filteredLocalizacoes.map(l => (
+                    <button 
+                      key={l.id} 
+                      type="button"
+                      className="w-full text-left p-2 hover:bg-slate-100 text-sm"
+                      onClick={() => {
+                        setLocalizacaoId(l.id);
+                        setLocalizacaoQuery(l.completename);
+                        setIsLocalizacaoOpen(false);
+                      }}
+                    >
+                      {l.completename}
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Seleção de Requerente */}
+          <div className="grid gap-1.5 relative">
+            <label className="text-sm font-medium">Requerente</label>
+            <Input 
+              value={requerenteQuery} 
+              placeholder="Digite para filtrar requerente..." 
+              onFocus={() => setIsRequerenteOpen(true)}
+              onChange={(e) => setRequerenteQuery(e.target.value)}
+              onBlur={() => setTimeout(() => setIsRequerenteOpen(false), 200)}
+            />
+            {isRequerenteOpen && (
+              <div className="absolute top-full left-0 w-full z-10 bg-white border rounded shadow-md mt-1 max-h-40 overflow-y-auto">
+                {filteredRequerentes.length === 0 ? (
+                  <div className="p-2 text-sm text-slate-500">Nenhum requerente encontrado</div>
+                ) : (
+                  filteredRequerentes.map(u => {
+                    const dispName = `${u.firstname || ""} ${u.realname || ""}`.trim() || u.name;
+                    return (
+                      <button 
+                        key={u.id} 
+                        type="button"
+                        className="w-full text-left p-2 hover:bg-slate-100 text-sm"
+                        onClick={() => {
+                          setRequerenteId(u.id);
+                          setRequerenteQuery(dispName);
+                          setIsRequerenteOpen(false);
+                        }}
+                      >
+                        {dispName} ({u.name})
+                      </button>
+                    );
+                  })
+                )}
               </div>
             )}
           </div>
@@ -248,11 +370,12 @@ export default function GlpiPromoteModal({
         <div className="flex justify-end gap-3 mt-8">
           <Button variant="outline" onClick={onCancel}>Voltar</Button>
           <Button 
-            disabled={!categoriaId || loadingManagers || isPromoting || selectedManagerIds.length === 0}
+            disabled={!categoriaId || !localizacaoId || !requerenteId || loadingManagers || isPromoting || selectedManagerIds.length === 0}
             onClick={() => onConfirm({
               titulo,
               categoriaId,
-              localizacaoId: null,
+              localizacaoId,
+              requerenteId,
               grupoId: null,
               asset: asset ? { id: asset.id, itemtype: asset.itemtype } : null,
               managerIds: selectedManagerIds,
