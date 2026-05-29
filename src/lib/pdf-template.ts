@@ -197,19 +197,77 @@ export const gerarLaudoPDF = async (laudo: any, emitidoPor: string) => {
     margin: [40, 16, 40, 0],
   });
 
+  // ── Seção de Evidências Fotográficas ────────────────────────────────────────
+  let photosSection: any = null;
+
+  const rawPhotos = laudo.photos;
+  let photoArray: string[] = [];
+  if (rawPhotos) {
+    try {
+      const parsed = typeof rawPhotos === "string" ? JSON.parse(rawPhotos) : rawPhotos;
+      if (Array.isArray(parsed)) {
+        photoArray = parsed.filter((p: any) => typeof p === "string" && p.startsWith("data:image"));
+      }
+    } catch {
+      // se não for JSON, ignora silenciosamente
+    }
+  }
+
+  if (photoArray.length > 0) {
+    // Monta linhas de 2 imagens por coluna
+    const rows: any[] = [];
+    for (let i = 0; i < photoArray.length; i += 2) {
+      const left = {
+        stack: [
+          { image: photoArray[i], width: 220, margin: [0, 0, 0, 4] },
+          { text: `Foto ${i + 1}`, fontSize: 8, color: TEXT_MUTED, alignment: "center" },
+        ],
+        margin: [0, 0, 8, 0],
+      };
+      const right = photoArray[i + 1]
+        ? {
+            stack: [
+              { image: photoArray[i + 1], width: 220, margin: [0, 0, 0, 4] },
+              { text: `Foto ${i + 2}`, fontSize: 8, color: TEXT_MUTED, alignment: "center" },
+            ],
+          }
+        : { text: "", width: 220 };
+
+      rows.push({
+        columns: [left, right],
+        columnGap: 10,
+        margin: [0, 0, 0, 12],
+      });
+    }
+
+    photosSection = {
+      stack: [
+        sectionTitle("Evidências Fotográficas"),
+        ...rows,
+      ],
+    };
+  }
+
   // ── Doc Definition ────────────────────────────────────────────────────────────
+  const contentItems: any[] = [
+    headerContent,
+    accentBar,
+    metaBar,
+    equipSection,
+    diagSection,
+  ];
+
+  if (photosSection) {
+    contentItems.push(photosSection);
+  }
+
+  contentItems.push(signatureSection);
+
   const docDefinition: any = {
     pageSize: "A4",
     pageMargins: [40, 40, 40, 60],
     footer,
-    content: [
-      headerContent,
-      accentBar,
-      metaBar,
-      equipSection,
-      diagSection,
-      signatureSection,
-    ],
+    content: contentItems,
     styles: {
       headerTitle: {
         fontSize: 20,
