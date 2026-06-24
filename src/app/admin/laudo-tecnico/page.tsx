@@ -381,7 +381,8 @@ export default function InfoFormularioPage() {
         setIsPromoteModalOpen(true);
       } else {
         setStatusMsg("Abrindo opções GLPI...");
-        await carregarLookups();
+        // Passa tombo explicitamente para evitar closure stale no useCallback
+        await carregarLookups(tombo);
         setNewTicketTitle(`Laudo Técnico - ${equipamento || "Equipamento"} - ${loja || "Loja"}`);
         setIsRelateModalOpen(true);
       }
@@ -397,16 +398,19 @@ export default function InfoFormularioPage() {
     }
   };
 
-  const carregarLookups = useCallback(async () => {
+  const carregarLookups = useCallback(async (tomboValue?: string) => {
+    // Usa o valor passado explicitamente (evita closure stale do useCallback)
+    const tomboParaBusca = tomboValue ?? tombo;
     setIsLoadingLookups(true);
     const token = localStorage.getItem("token");
     const h = { Authorization: `Bearer ${token}` };
     try {
-      // Busca Asset se tiver tombo
-      if (tombo) {
+      // Busca Asset se tiver tombo — usa o parâmetro explícito para evitar closure stale
+      if (tomboParaBusca) {
         setIsLoadingAsset(true);
         setAssetError("");
-        fetch(`${API_BASE_URL}/glpi/lookup/asset/${tombo}`, { headers: h })
+        setAssetInfo(null);
+        fetch(`${API_BASE_URL}/glpi/lookup/asset/${encodeURIComponent(tomboParaBusca.trim())}`, { headers: h })
           .then(async (r) => {
             if (!r.ok) throw new Error("Não encontrado");
             return r.json();
