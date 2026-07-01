@@ -64,23 +64,79 @@ function LookupSelect({ icon: Icon, label, items, value, onChange, displayKey, f
   value: number | null; onChange: (v: number | null) => void;
   displayKey: keyof GlpiItem; fallbackKey?: keyof GlpiItem;
 }) {
+  const [query, setQuery] = React.useState("");
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  // Sincroniza o texto digitado quando o valor selecionado muda (ex: no reset do formulário)
+  React.useEffect(() => {
+    if (value === null) {
+      setQuery("");
+    } else {
+      const selectedItem = items.find(item => item.id === value);
+      if (selectedItem) {
+        const text = (selectedItem[displayKey] as string) || (fallbackKey ? selectedItem[fallbackKey] as string : "") || `ID ${selectedItem.id}`;
+        setQuery(text);
+      }
+    }
+  }, [value, items, displayKey, fallbackKey]);
+
+  const filteredItems = items.filter(item => {
+    const text = ((item[displayKey] as string) || (fallbackKey ? item[fallbackKey] as string : "") || "").toLowerCase();
+    return text.includes(query.toLowerCase());
+  });
+
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 relative">
       <label className="text-[10px] uppercase font-black text-gray-400 tracking-widest flex items-center gap-2">
         <Icon className="w-3.5 h-3.5" /> {label}
       </label>
-      <select
-        value={value ?? ""}
-        onChange={e => onChange(e.target.value ? Number(e.target.value) : null)}
-        className="w-full h-12 rounded-xl bg-gray-50 border-none px-4 text-[#1A1A2E] text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-[#1A4CAB]"
-      >
-        <option value="">— Selecione (opcional) —</option>
-        {items.map(item => (
-          <option key={item.id} value={item.id}>
-            {(item[displayKey] as string) || (fallbackKey ? item[fallbackKey] as string : "") || `ID ${item.id}`}
-          </option>
-        ))}
-      </select>
+      <Input
+        value={query}
+        placeholder="Digite para filtrar..."
+        onFocus={() => setIsOpen(true)}
+        onChange={e => {
+          setQuery(e.target.value);
+          onChange(null); // Limpa a seleção ativa ao digitar nova busca
+        }}
+        onBlur={() => setTimeout(() => setIsOpen(false), 200)}
+        className="w-full h-12 rounded-xl bg-gray-50 border-none px-4 text-[#1A1A2E] text-sm focus:ring-2 focus:ring-[#1A4CAB]"
+      />
+      {isOpen && (
+        <div className="absolute top-full left-0 w-full z-50 bg-white border border-gray-100 rounded-xl shadow-lg mt-1 max-h-40 overflow-y-auto">
+          <button
+            type="button"
+            className="w-full text-left px-4 py-2 hover:bg-gray-50 text-xs text-gray-400 border-b border-gray-50"
+            onClick={() => {
+              onChange(null);
+              setQuery("");
+              setIsOpen(false);
+            }}
+          >
+            — Selecione (opcional) —
+          </button>
+          {filteredItems.length === 0 ? (
+            <div className="px-4 py-2 text-xs text-gray-400 italic">Nenhum resultado encontrado</div>
+          ) : (
+            filteredItems.map(item => {
+              const text = (item[displayKey] as string) || (fallbackKey ? item[fallbackKey] as string : "") || `ID ${item.id}`;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  className="w-full text-left px-4 py-2 hover:bg-gray-50 text-xs text-gray-700 transition-colors"
+                  onClick={() => {
+                    onChange(item.id);
+                    setQuery(text);
+                    setIsOpen(false);
+                  }}
+                >
+                  {text}
+                </button>
+              );
+            })
+          )}
+        </div>
+      )}
     </div>
   );
 }
