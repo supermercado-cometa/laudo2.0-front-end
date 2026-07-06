@@ -14,7 +14,7 @@ export async function middleware(req: NextRequest) {
   // Determina a URL base do backend
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL && !process.env.NEXT_PUBLIC_API_BASE_URL.includes("undefined")
     ? process.env.NEXT_PUBLIC_API_BASE_URL
-    : "https://homoapilaudos.cometasupermercados.com.br";
+    : "https://apilaudos.cometasupermercados.com.br";
 
   try {
     const res = await fetch(`${API_BASE_URL}/auth/me`, {

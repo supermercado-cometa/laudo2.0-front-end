@@ -19,7 +19,7 @@ const getApiBaseUrl = () => {
   }
 
   // 3. Última Instância: Homologação
-  return "https://homoapilaudos.cometasupermercados.com.br";
+  return "https://apilaudos.cometasupermercados.com.br";
 };
 
 const getGlpiBaseUrl = () => {
