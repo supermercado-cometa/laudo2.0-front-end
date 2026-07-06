@@ -138,9 +138,6 @@ export default function AdminHomePage() {
         ))}
       </div>
 
-      <div className="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center text-gray-400 text-xs uppercase tracking-widest">
-        <span>Cometa Supermercados 2026</span>
-      </div>
 
       {/* Modal de Seleção de Laudo */}
       {showLaudosModal && (
