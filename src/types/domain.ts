@@ -9,6 +9,14 @@ export type SetorType = {
 export type LojaType = {
   id: number;
   nome: string;
+  filial?: string;
+  cidade?: string;
+};
+
+export type ModeloType = {
+  id: number;
+  nome: string;
+  equipamento_id?: number;
 };
 
 export type Equipamento = {
@@ -37,4 +45,12 @@ export type InfoLaudo = {
   necessidade?: "SUBSTITUIDO" | "ENVIAR_CONSERTO" | "DESCARTADO" | null;
   createdAt: string;
   createdByUsername?: string | null;
+};
+
+export type UsuarioType = {
+  id: number;
+  username: string;
+  isAdmin: boolean;
+  canManageUsers?: boolean;
+  createdAt?: string;
 };

@@ -1,137 +1,110 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { clearBrowserCachesAndCookies } from "@/lib/browser-cleanup";
+import { useRouter, usePathname } from "next/navigation";
+import { AdminHeader } from "@/components/admin-header";
+import { BottomNav } from "@/components/bottom-nav";
+import { API_BASE_URL } from "@/lib/api-config";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [displayName, setDisplayName] = React.useState("Usuário");
-  const [isAuditoriaOpen, setIsAuditoriaOpen] = React.useState(true);
-  const [showNotice, setShowNotice] = React.useState(false);
+  const [authorized, setAuthorized] = React.useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const isHome = pathname === "/admin";
 
   React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      const fullName = localStorage.getItem("fullName");
-      const username = localStorage.getItem("username");
-      setDisplayName(fullName || username || "Usuário");
-    }
-  }, []);
+    const checkAuth = async () => {
+      if (typeof window !== "undefined") {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          router.replace("/");
+          return;
+        }
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/auth/me`, {
+            headers: { Authorization: token ? `Bearer ${token}` : "" },
+            cache: 'no-store'
+          });
+
+          if (!res.ok) {
+            router.replace("/");
+            return;
+          }
+
+          await res.json();
+          // Não redirecionamos mais o não-admin, pois ele agora tem seu próprio dashboard no /admin
+          setAuthorized(true);
+        } catch {
+          setAuthorized(true);
+        }
+      }
+    };
+
+    checkAuth();
+  }, [router]);
+
+  if (!authorized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F7FB]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#003B99] mx-auto mb-4"></div>
+          <p className="text-gray-600">Verificando permissões...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen flex">
-      {showNotice && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[1000]">
-          <div className="rounded-md bg-green-600 text-white px-4 py-2 shadow">
-            Aplicação atualizada - cache limpo
-          </div>
+    /* 
+       Ajuste de Centralização Absoluta (justify-center) 
+       Garante que o conteúdo flutue no centro da tela em monitores grandes.
+    */
+    <div className={`min-h-screen bg-[#F5F7FB] flex flex-col ${isHome ? 'items-center' : ''}`}>
+      {isHome ? (
+        /* LAYOUT CENTRALIZADO (HOME) - GUIA DESKTOP */
+        <div className="w-full max-w-[1400px] px-0 lg:px-8 pt-4 lg:pt-16 pb-0 lg:pb-12 flex flex-col animate-in fade-in zoom-in-95 duration-700">
+          <AdminHeader />
+          <AnimatePresence mode="wait">
+            <motion.main 
+              key={pathname}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3 }}
+              className="w-full px-6 lg:px-0 flex flex-col items-start font-['Roboto']"
+            >
+              {children}
+            </motion.main>
+          </AnimatePresence>
+        </div>
+      ) : (
+        /* LAYOUT FULL SCREEN (SUBPÁGINAS) */
+        <div className="w-full flex-1 flex flex-col">
+          <AdminHeader />
+          <AnimatePresence mode="wait">
+            <motion.main 
+              key={pathname}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="w-full flex-1 flex"
+            >
+              {children}
+            </motion.main>
+          </AnimatePresence>
         </div>
       )}
-      <aside className="w-64 bg-gray-50 border-r flex flex-col">
-        <div className="p-4 border-b">
-          <p className="text-sm font-medium">Bem-vindo, {displayName}</p>
-          <p className="text-xs text-muted-foreground">
-            Ao painel administrador
-          </p>
-        </div>
 
-        <nav className="p-2 space-y-1">
-          {/* Links principais */}
-          <Link href="/admin">
-            <Button variant="ghost" className="justify-start w-full">
-              Início
-            </Button>
-          </Link>
-          <Link href="/admin/equipamentos">
-            <Button variant="ghost" className="justify-start w-full">
-              Equipamentos
-            </Button>
-          </Link>
-          <Link href="/admin/modelos">
-            <Button variant="ghost" className="justify-start w-full">
-              Modelos
-            </Button>
-          </Link>
-          <Link href="/admin/lojas">
-            <Button variant="ghost" className="justify-start w-full">
-              Lojas
-            </Button>
-          </Link>
-          <Link href="/admin/setores">
-            <Button variant="ghost" className="justify-start w-full">
-              Setores
-            </Button>
-          </Link>
-          <Link href="/admin/laudos">
-            <Button variant="ghost" className="justify-start w-full">
-              Laudos Gerados
-            </Button>
-          </Link>
-          <Link href="/admin/glpi-monitor">
-            <Button variant="ghost" className="justify-start w-full">
-              Monitoramento GLPI
-            </Button>
-          </Link>
-          <Link href="/infoFormulario">
-            <Button variant="ghost" className="justify-start w-full">
-              Laudo Técnico
-            </Button>
-          </Link>
-
-          {/* Grupo: Auditoria (colapsável) */}
-          <div className="mt-2">
-            <Button
-              variant="ghost"
-              className="justify-start w-full"
-              onClick={() => setIsAuditoriaOpen((v) => !v)}
-            >
-              Auditoria
-            </Button>
-            {isAuditoriaOpen && (
-              <div className="ml-4 space-y-1">
-                {/* Removido: link “Visão geral” */}
-                <Link href="/admin/audiToria/tombo">
-                  <Button variant="ghost" className="justify-start w-full">
-                    Tombo
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Sair */}
-          <div className="mt-4 p-2 border-t">
-            <Button
-              variant="default"
-              className="w-full"
-              onClick={async () => {
-                try {
-                  const API_BASE_URL =
-                    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
-                  await fetch(`${API_BASE_URL}/auth/logout`, {
-                    method: "POST",
-                    cache: "no-store",
-                  });
-                } catch {}
-                try {
-                  clearBrowserCachesAndCookies();
-                } catch {}
-                if (typeof window !== "undefined") {
-                  window.location.replace("/");
-                }
-              }}
-            >
-              Sair
-            </Button>
-          </div>
-        </nav>
-      </aside>
-
-      <main className="flex-1 p-6">{children}</main>
+      <BottomNav />
     </div>
   );
 }

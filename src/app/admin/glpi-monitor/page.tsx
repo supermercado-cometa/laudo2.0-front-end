@@ -1,14 +1,20 @@
 "use client";
 
-import React from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import React, { useEffect, useState, useCallback } from "react";
+import { Activity, RefreshCw, ChevronLeft, UserX, Database, Zap, Clock, ShieldAlert, History, User, CheckCircle2, LayoutGrid, Server } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { SubPageHeader } from "@/components/subpage-header";
+import { API_BASE_URL } from "@/lib/api-config";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-type Metrics = {
+interface GlpiMetrics {
   initSessions: number;
   sessionCacheHits: number;
   sessionCacheMisses: number;
   pendingInitWaits: number;
+  sessionCacheSize: number;
   retries401: {
     followup: number;
     followupHeader: number;
@@ -17,196 +23,226 @@ type Metrics = {
     setTicketRequester: number;
     setTicketAssigned: number;
   };
-  sessionCacheSize: number;
-};
+  operations: {
+    createFollowup: number;
+    createFollowupWithHeader: number;
+    createTicket: number;
+    linkTickets: number;
+    setRequester: number;
+    setAssigned: number;
+  };
+  db: {
+    totalLaudos: number;
+    totalLojas: number;
+    totalSetores: number;
+  };
+}
 
-export default function AdminGlpiMonitorPage() {
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
-  const [metrics, setMetrics] = React.useState<Metrics | null>(null);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
-  const [username, setUsername] = React.useState("");
+export default function GlpiMonitorPage() {
+  const router = useRouter();
+  const [metrics, setMetrics] = useState<GlpiMetrics | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [targetUser, setTargetUser] = useState("");
 
-  const loadMetrics = React.useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
-      setLoading(true);
-      setError(null);
-      const token = typeof window !== "undefined" ? localStorage.getItem("token") || "" : "";
+      setIsLoading(true);
+      const token = localStorage.getItem("token");
       const res = await fetch(`${API_BASE_URL}/glpi/metrics`, {
-        method: "GET",
-        headers: { Authorization: token },
-        cache: "no-store",
+        headers: { Authorization: token ? `Bearer ${token}` : "" }
       });
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        throw new Error(`${res.status} ${txt}`);
+      if (res.ok) {
+        const data = await res.json();
+        setMetrics(data);
       }
-      const data = (await res.json()) as Metrics;
-      setMetrics(data);
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Falha ao obter métricas";
-      setError(msg);
+    } catch (err) {
+      console.error("Erro GLPI metrics:", err);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
-  }, [API_BASE_URL]);
+  }, []);
 
-  const resetMetrics = React.useCallback(async () => {
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
+
+  const handleAction = async (path: string, method: string = "POST", body?: Record<string, unknown>) => {
     try {
-      setLoading(true);
-      setError(null);
-      const token = typeof window !== "undefined" ? localStorage.getItem("token") || "" : "";
-      const res = await fetch(`${API_BASE_URL}/glpi/metrics/reset`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: token },
-        cache: "no-store",
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_BASE_URL}/glpi${path}`, {
+        method,
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "" 
+        },
+        body: body ? JSON.stringify(body) : undefined
       });
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        throw new Error(`${res.status} ${txt}`);
+      if (res.ok) {
+        alert("Comando executado com sucesso!");
+        fetchData();
       }
-      await loadMetrics();
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Falha ao resetar métricas";
-      setError(msg);
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      console.error("Erro na ação GLPI:", err);
+      alert("Erro ao executar comando.");
     }
-  }, [API_BASE_URL, loadMetrics]);
-
-  const clearSession = React.useCallback(async (all: boolean) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const token = typeof window !== "undefined" ? localStorage.getItem("token") || "" : "";
-      const res = await fetch(`${API_BASE_URL}/glpi/session/clear`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: token },
-        cache: "no-store",
-        body: JSON.stringify({ username: username.trim(), all }),
-      });
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        throw new Error(`${res.status} ${txt}`);
-      }
-      await loadMetrics();
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Falha ao limpar sessão";
-      setError(msg);
-    } finally {
-      setLoading(false);
-    }
-  }, [API_BASE_URL, username, loadMetrics]);
-
-  const killSession = React.useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const token = typeof window !== "undefined" ? localStorage.getItem("token") || "" : "";
-      const res = await fetch(`${API_BASE_URL}/glpi/session/kill`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: token },
-        cache: "no-store",
-        body: JSON.stringify({ username: username.trim() }),
-      });
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        throw new Error(`${res.status} ${txt}`);
-      }
-      await loadMetrics();
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Falha ao encerrar sessão";
-      setError(msg);
-    } finally {
-      setLoading(false);
-    }
-  }, [API_BASE_URL, username, loadMetrics]);
-
-  React.useEffect(() => {
-    loadMetrics();
-  }, [loadMetrics]);
+  };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Monitoramento GLPI</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <div className="flex gap-2">
-          <Button onClick={loadMetrics} disabled={loading}>Atualizar</Button>
-          <Button onClick={resetMetrics} variant="default" disabled={loading}>Resetar métricas</Button>
+    <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#F3F6F9]">
+      <SubPageHeader title={`Monitoramento\nGLPI`} icon={Activity} />
+
+      {/* Lado Esquerdo (Fixo 35%) */}
+      <div className="hidden lg:flex lg:w-[35%] bg-gradient-to-br from-[#003B99] to-[#0066FF] p-20 flex-col justify-center relative overflow-hidden sticky top-0 h-screen shadow-2xl">
+        <button onClick={() => router.push("/admin")} className="absolute top-10 left-12 flex items-center gap-2 px-6 py-3 rounded-[10px] bg-white/10 backdrop-blur-md border border-white/10 text-white hover:bg-white/20 transition-all">
+          <ChevronLeft className="w-5 h-5" /> Voltar
+        </button>
+        <div className="relative z-10 max-w-sm">
+          <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-xl">
+            <Server className="text-white w-10 h-10" />
+          </div>
+          <div className="w-[80px] h-[4px] bg-[#FECC00] mb-8 rounded-full" />
+          <h1 className="text-white text-[48px] leading-[1.1] uppercase tracking-tight mb-8">
+            Portal Integrado GLPI
+          </h1>
+          <p className="text-white/70 text-lg">Controle as sessões e acompanhe as métricas de integração dos laudos técnicos.</p>
         </div>
-        <div className="grid gap-2 md:grid-cols-3 items-end">
-          <input
-            className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
-            placeholder="username GLPI"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <Button onClick={() => clearSession(false)} disabled={loading || !username.trim()}>Limpar cache do usuário</Button>
-          <Button onClick={() => killSession()} variant="default" disabled={loading || !username.trim()}>Encerrar sessão no GLPI</Button>
-          <Button onClick={() => clearSession(true)} variant="outline" disabled={loading}>Limpar cache de todos</Button>
-        </div>
-        {error && <div className="text-red-600 text-sm">{error}</div>}
-        {!metrics && !error && (
-          <div className="text-sm text-muted-foreground">Carregando...</div>
-        )}
-        {metrics && (
-          <div className="grid gap-3 md:grid-cols-2">
-            <div className="rounded-md border p-3">
-              <div className="text-sm">Sessões iniciadas</div>
-              <div className="text-2xl font-semibold">{metrics.initSessions}</div>
-            </div>
-            <div className="rounded-md border p-3">
-              <div className="text-sm">Hits de cache</div>
-              <div className="text-2xl font-semibold">{metrics.sessionCacheHits}</div>
-            </div>
-            <div className="rounded-md border p-3">
-              <div className="text-sm">Misses de cache</div>
-              <div className="text-2xl font-semibold">{metrics.sessionCacheMisses}</div>
-            </div>
-            <div className="rounded-md border p-3">
-              <div className="text-sm">Espera por sessão concorrente</div>
-              <div className="text-2xl font-semibold">{metrics.pendingInitWaits}</div>
-            </div>
-            <div className="rounded-md border p-3">
-              <div className="text-sm">Tamanho do cache</div>
-              <div className="text-2xl font-semibold">{metrics.sessionCacheSize}</div>
+      </div>
+
+      {/* Lado Direito (Rolável 65%) */}
+      <div className="flex-1 lg:w-[65%] flex flex-col p-4 lg:p-20 overflow-y-auto">
+        <div className="max-w-[1000px] w-full mx-auto pb-20">
+          
+          {/* Header e Ações Principais */}
+          <div className="mb-8 lg:mb-12 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h2 className="text-[#1A1A2E] text-[24px] lg:text-[32px] uppercase tracking-tight">Status do Sistema</h2>
+            <div className="flex gap-2">
+               <Button variant="outline" onClick={() => handleAction("/metrics/reset")} className="h-12 lg:h-14 rounded-xl text-[10px] lg:text-xs uppercase gap-2">
+                  <History className="w-4 h-4" /> <span className="hidden sm:inline">Resetar</span>
+               </Button>
+               <Button onClick={fetchData} className="flex-1 sm:flex-none h-12 lg:h-14 bg-[#003B99] rounded-xl uppercase text-[10px] lg:text-xs gap-2">
+                  <RefreshCw className={`w-4 h-4 lg:w-5 lg:h-5 ${isLoading ? 'animate-spin' : ''}`} /> Atualizar
+               </Button>
             </div>
           </div>
-        )}
-        {metrics && (
-          <div className="grid gap-3">
-            <div className="text-sm font-medium">Retries 401</div>
-            <div className="grid gap-2 md:grid-cols-3">
-              <div className="rounded-md border p-3">
-                <div className="text-xs">Followup</div>
-                <div className="text-xl font-semibold">{metrics.retries401.followup}</div>
-              </div>
-              <div className="rounded-md border p-3">
-                <div className="text-xs">Followup c/ cabeçalho</div>
-                <div className="text-xl font-semibold">{metrics.retries401.followupHeader}</div>
-              </div>
-              <div className="rounded-md border p-3">
-                <div className="text-xs">Criar Ticket</div>
-                <div className="text-xl font-semibold">{metrics.retries401.createTicket}</div>
-              </div>
-              <div className="rounded-md border p-3">
-                <div className="text-xs">Relacionar Tickets</div>
-                <div className="text-xl font-semibold">{metrics.retries401.linkTickets}</div>
-              </div>
-              <div className="rounded-md border p-3">
-                <div className="text-xs">Definir requerente</div>
-                <div className="text-xl font-semibold">{metrics.retries401.setTicketRequester}</div>
-              </div>
-              <div className="rounded-md border p-3">
-                <div className="text-xs">Atribuir usuário</div>
-                <div className="text-xl font-semibold">{metrics.retries401.setTicketAssigned}</div>
-              </div>
-            </div>
+
+          {/* Grid de Métricas do Banco (Sincronização) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-6 mb-8 lg:mb-12">
+             <MetricCard icon={CheckCircle2} label="Laudos Sinc" value={metrics?.db?.totalLaudos || 0} color="green" small />
+             <MetricCard icon={LayoutGrid} label="Lojas Ativas" value={metrics?.db?.totalLojas || 0} color="blue" small />
+             <MetricCard icon={Database} label="Setores" value={metrics?.db?.totalSetores || 0} color="gray" small />
           </div>
-        )}
-      </CardContent>
-    </Card>
+
+          {/* Seção de Gestão de Usuários */}
+          <div className="bg-white rounded-[24px] lg:rounded-[32px] p-6 lg:p-8 shadow-sm mb-8 lg:mb-10 border border-gray-100">
+             <h4 className="text-[#1A1A2E] text-[12px] uppercase mb-6 tracking-widest text-gray-400">Gestão de Sessões Active Directory</h4>
+             <div className="flex flex-col gap-4">
+                <div className="space-y-2">
+                   <Label className="text-[11px] uppercase text-gray-400 ml-1">Username GLPI</Label>
+                   <Input value={targetUser} onChange={e => setTargetUser(e.target.value)} placeholder="vendedor.loja" className="h-12 lg:h-14 bg-gray-50 border-none rounded-xl" />
+                </div>
+                <div className="grid grid-cols-2 lg:flex gap-2">
+                   <Button variant="outline" onClick={() => handleAction("/session/clear", "POST", { username: targetUser })} disabled={!targetUser} className="h-12 lg:h-14 rounded-xl text-[9px] lg:text-[10px] uppercase gap-1">
+                      <Zap className="w-3 h-3 text-orange-500" /> Limpar cache
+                   </Button>
+                   <Button variant="outline" onClick={() => handleAction("/session/kill", "POST", { username: targetUser })} disabled={!targetUser} className="h-12 lg:h-14 rounded-xl text-[9px] lg:text-[10px] uppercase gap-1">
+                      <UserX className="w-3 h-3 text-red-500" /> Matar Sessão
+                   </Button>
+                </div>
+             </div>
+          </div>
+
+          <h3 className="text-[#1A1A2E] text-[14px] lg:text-xl uppercase mb-6 lg:mb-8">Performance Bridge GLPI</h3>
+          
+           {/* Grid de Métricas Técnicas */}
+           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-8 lg:mb-12">
+              <MetricCard icon={User} label="Sessões iniciadas" value={metrics?.initSessions || 0} color="blue" />
+              <MetricCard icon={Zap} label="Hits de cache" value={metrics?.sessionCacheHits || 0} color="green" />
+              <MetricCard icon={ShieldAlert} label="Misses de cache" value={metrics?.sessionCacheMisses || 0} color="orange" />
+              <MetricCard icon={Clock} label="Espera (Concorrência)" value={metrics?.pendingInitWaits || 0} color="purple" />
+           </div>
+
+           {/* Monitor de Cache & Alerts */}
+           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 lg:mb-12">
+             <div className="bg-white rounded-[24px] lg:rounded-[32px] p-6 lg:p-8 shadow-sm border border-gray-100 flex flex-col justify-center">
+               <div className="flex items-center justify-between mb-4">
+                 <h4 className="text-[#1A1A2E] text-[12px] uppercase tracking-widest text-gray-500 font-bold flex items-center gap-2"><Database className="w-4 h-4 text-[#0066FF]" /> Uso de Cache de Sessão</h4>
+                 <span className="text-[20px] lg:text-[28px] text-[#1A1A2E] leading-none">{metrics?.sessionCacheSize || 0} <span className="text-[12px] text-gray-400">ativos</span></span>
+               </div>
+               <div className="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
+                 <div 
+                   className="h-full bg-gradient-to-r from-[#003B99] to-[#0066FF] transition-all duration-500" 
+                   style={{ width: `${Math.min(((metrics?.sessionCacheSize || 0) / 50) * 100, 100)}%` }}
+                 />
+               </div>
+               <p className="text-[10px] text-gray-400 mt-3 uppercase tracking-wider text-right">Limite de exibição visual ~50</p>
+             </div>
+
+             <MetricCard 
+                icon={ShieldAlert} 
+                label="Total de Retries 401 (Falhas de Auth Repetidas)" 
+                value={
+                  metrics?.retries401 
+                  ? Object.values(metrics.retries401).reduce((a, b) => a + b, 0) 
+                  : 0
+                } 
+                color="red" 
+             />
+           </div>
+
+           {/* Dashboard de Operações Destacado */}
+           <h3 className="text-[#1A1A2E] text-[14px] lg:text-xl uppercase mb-6 lg:mb-8">Dashboard de Operações</h3>
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-8 lg:mb-12">
+              <MetricCard icon={Activity} label="Criar Followup" value={metrics?.operations?.createFollowup || 0} color="blue" small />
+              <MetricCard icon={Activity} label="Criar Ticket" value={metrics?.operations?.createTicket || 0} color="green" small />
+              <MetricCard icon={Activity} label="Linkar Tickets" value={metrics?.operations?.linkTickets || 0} color="purple" small />
+           </div>
+
+          {/* Detalhes de Operações */}
+          <div className="bg-white rounded-[24px] lg:rounded-[40px] p-6 lg:p-10 shadow-sm border border-gray-100">
+             <h3 className="text-[#1A1A2E] text-[14px] lg:text-xl uppercase mb-6 lg:mb-8 border-b border-gray-50 pb-4">Detalhamento de Fluxos Secundários</h3>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-x-12 lg:gap-y-6">
+                <OpDetail label="Followup c/ Cabeçalho" value={metrics?.operations?.createFollowupWithHeader || 0} />
+                <OpDetail label="Definir Requerente" value={metrics?.operations?.setRequester || 0} />
+                <OpDetail label="Atribuir Usuário" value={metrics?.operations?.setAssigned || 0} />
+             </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MetricCard({ icon: Icon, label, value, color, small }: { icon: React.ElementType, label: string, value: number, color: string, small?: boolean }) {
+  const colors: Record<string, string> = {
+    blue: "bg-blue-50 text-blue-600",
+    green: "bg-green-50 text-green-600",
+    orange: "bg-orange-50 text-orange-600",
+    purple: "bg-purple-50 text-purple-600",
+    red: "bg-red-50 text-red-600",
+    gray: "bg-gray-50 text-gray-600"
+  };
+
+  return (
+    <div className={`bg-white ${small ? 'p-4 lg:p-6' : 'p-6 lg:p-8'} rounded-[20px] lg:rounded-[32px] shadow-sm border border-gray-100 transition-all hover:shadow-md`}>
+       <div className={`flex items-center gap-2 lg:gap-4 ${small ? 'mb-2' : 'mb-4'}`}>
+         <div className={`${small ? 'w-8 h-8 rounded-xl' : 'w-10 h-10 lg:w-12 lg:h-12 rounded-xl lg:rounded-2xl'} flex items-center justify-center ${colors[color]}`}>
+            <Icon className={small ? 'w-4 h-4' : 'w-5 h-5 lg:w-6 lg:h-6'} />
+         </div>
+         <span className={`${small ? 'text-[9px]' : 'text-[10px] lg:text-[11px]'} text-gray-400 uppercase tracking-tight`}>{label}</span>
+       </div>
+       <div className={`${small ? 'text-[24px] lg:text-[32px]' : 'text-[28px] lg:text-[42px]'} text-[#1A1A2E] leading-tight`}>{value}</div>
+    </div>
+  );
+}
+
+function OpDetail({ label, value }: { label: string, value: number }) {
+  return (
+    <div className="flex items-center justify-between p-3 lg:p-4 rounded-xl lg:rounded-2xl bg-gray-50/50 hover:bg-gray-50 transition-colors">
+       <span className="text-gray-500 uppercase text-[9px] lg:text-[11px] tracking-tight">{label}</span>
+       <span className="text-[#1A1A2E] text-sm lg:text-lg">{value}</span>
+    </div>
   );
 }

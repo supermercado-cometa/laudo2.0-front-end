@@ -1,0 +1,32 @@
+# Dependências e logs do Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Next.js e Builds de JS
+.next/
+out/
+dist/
+build/
+coverage/
+
+# Ambientes virtuais e cache do Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# IDEs e Editores
+.idea/
+.vscode/
+
+# Outros
+*.log
+*.sqlite
+*.sqlite3

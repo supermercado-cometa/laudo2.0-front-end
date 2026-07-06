@@ -19,6 +19,7 @@
 
 # production
 /build
+/api-laudo
 
 # misc
 .DS_Store
@@ -39,3 +40,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# api-laudo (env, node_modules, etc.)
+/api-laudo/node_modules
+/api-laudo/.env
+
