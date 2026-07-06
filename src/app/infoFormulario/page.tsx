@@ -499,8 +499,8 @@ export default function InfoFormularioPage() {
     // Importa pdfmake dinamicamente
     const pdfMakeMod = await import("pdfmake/build/pdfmake");
     const pdfFontsMod = await import("pdfmake/build/vfs_fonts");
-    const pdfMake = pdfMakeMod.default || pdfMakeMod;
-    const pdfFonts = pdfFontsMod.default || pdfFontsMod;
+    const pdfMake: any = pdfMakeMod.default || pdfMakeMod;
+    const pdfFonts: any = pdfFontsMod.default || pdfFontsMod;
     pdfMake.vfs = pdfFonts.pdfMake?.vfs || pdfFonts.vfs;
 
     // Dados formatados
